@@ -1,0 +1,15 @@
+Damage:
+
+-- Persona 3: -- 
+
+The damage formula for Persona 3 FES is:
+
+The square root of ( ( Player Strength or Magic / Enemy Endurance ) * ( Player Level / Enemy Level ) * Move Damage Value ) * 7.4
+
+The above formula disregards a random 10% swing in either direction, for example a "100 damage" calculation can be anywhere between 90 and 110 due to RNG.
+
+In this case, Ziodyne is a 320 damage move, while God's Hand is 600. As Akihiko gets Elec Amp, his damage is further multiplied by 1.5x. 
+
+https://gamefaqs.gamespot.com/boards/932312-shin-megami-tensei-persona-3/42220140
+
+In Persona 3 and Persona 4, the damage is reduced by approximately 2/3 (The formula is 1/(1+0.5), where 0.5 is the multiplier for attack boosts, hence countering Tarukaja directly). If stacked with Tarunda on the user's attacker, the attack power is halved (1/(1+0.5+0.5)). 
