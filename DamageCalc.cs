@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp1
 {
-    public class NewClass
+    public class DamageCalc
     {
         static void Main(String[] args){
             // Void Giant
