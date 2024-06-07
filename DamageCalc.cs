@@ -45,12 +45,13 @@ namespace ConsoleApp1
 
         public static double determineAmp(byte elementalDefense, bool isDown, double skillAmp){
             double amplifier = 1;
-            amplifier = elementalDefense switch{
+            // this method of switch cases does not work
+            /*amplifier = elementalDefense switch{
                 0 => amplifier *= 0,
                 1 => amplifier *= 1,
                 2 => amplifier *= 1,
                 _ => amplifier *= 1,
-            };
+            };*/
             Console.WriteLine(amplifier);
             if (isDown){amplifier *= 1;}
             amplifier *= skillAmp;

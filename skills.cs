@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using VRC.Udon;
+using VRC.SDK3.Data; // libary that makes data dictionaries possible
 
-namespace ConsoleApp1
 
     public class skills
     {
@@ -386,7 +385,7 @@ namespace ConsoleApp1
             {"Myriad Arrows", new DataDictionary(){
                 {"Element", "Pierce"},
                 {"Power", 140},
-                {"Accuracy", .97,
+                {"Accuracy", .97},
                 {"Cost", .19},
                 {"Targets", "All"},
                 {"Times Hit", 3}, // 1-3, 3 to differentiate from Arrow Rain
@@ -1375,7 +1374,7 @@ namespace ConsoleApp1
             }},
             {"Megidolaon", new DataDictionary(){
                 {"Element", "Almighty"}, 
-                {"Power", 65o},
+                {"Power", 650},
                 {"Accuracy", 0.95},
                 {"Cost", 85},
                 {"Targets", "All"},
@@ -1402,10 +1401,9 @@ namespace ConsoleApp1
                 {"Times Hit", 1},
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
-            }},
+            }}
 
             // passive skills are gonna be so much fun -.-
             // make the attack menu not show skills with a cost of 0?
         };
     }
-}
