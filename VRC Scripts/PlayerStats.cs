@@ -2,26 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using VRC.SDKBase;
+using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
     public VRCPlayerApi Player;
+    [SerializeField]private GameObject evoker;
+    [SerializeField]private TextMeshPro textBox; 
     
-    private int PLV; // players current level
-    private int HP; // health points
-    private int SP; // mana
-    private Persona persona; // object for the users persona
+    [SerializeField]private int PLV; // players current level
+    [SerializeField]private int HP; // health points
+    [SerializeField]private int SP; // mana
+    //[SerializeField]private Persona persona; // object for the users persona
+    [SerializeField]private string username;
 
     // emppty constructor //
     public PlayerStats(){
         // vrchat way of keeping track of players
         // using level 34 koromaru for hp and sp because funny
-        //PLV = 34;
-        //HP = 354;
-        //SP = 165;
+        PLV = 34;
+        HP = 354;
+        SP = 165;
+    }
+    void Awake(){
         //persona = new Persona(); // auto assign to black frost
+        Player = Networking.LocalPlayer;
+        username = Player.displayName;
+        changeText();
     }
-    public Vector3 getPosition(){
-        return Player.GetPosition();
+    public void changeText(){
+        textBox.text = getUser();
     }
+
+    public string getUser(){return (this.username);}
 }
