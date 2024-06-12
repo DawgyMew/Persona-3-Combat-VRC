@@ -7,8 +7,11 @@ using VRC.Udon;
 using TMPro;
 
 // have to store things in a data dictionary because udon hates OOP :D
-// also cant create a dictionary outside when adding a new key to the dictionary
-// its gonna be so much fun 
+
+/*
+    Players
+    Enemies
+*/
 public class Dictionaries : UdonSharpBehaviour
 {
     public TextMeshPro board;
@@ -20,14 +23,62 @@ public class Dictionaries : UdonSharpBehaviour
             {"Name", ""},
             {"Shots", "0"},
             {"HP", "1"},
-            {"SP", "2"}
+            {"SP", "2"},
+            {"PLV", "2"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "2"},
+            {"Mg", "2"},
+            {"En", "2"},
+            {"Ag", "2"},
+            {"Lu", "2"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Weak", ""},
+
+            {"Skills", ""}
         }},
         {1, new DataDictionary(){
             {"Name", ""},
             {"Shots", "0"},
-            {"HP", "3"},
-            {"SP", "4"}
+            {"HP", "1"},
+            {"SP", "2"},
+            {"PLV", "2"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "2"},
+            {"Mg", "2"},
+            {"En", "2"},
+            {"Ag", "2"},
+            {"Lu", "2"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Weak", ""},
+            
+            {"Skills", ""}
         }},
+        {2, new DataDictionary(){
+            {"Name", ""},
+            {"Shots", "0"},
+            {"HP", "1"},
+            {"SP", "2"},
+            {"PLV", "2"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "2"},
+            {"Mg", "2"},
+            {"En", "2"},
+            {"Ag", "2"},
+            {"Lu", "2"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""}
+        }}
     };
 
     public override void OnPlayerJoined(VRCPlayerApi player){

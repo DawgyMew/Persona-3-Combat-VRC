@@ -1,0 +1,14 @@
+Information on some Personas
+
+pName = "Black Frost";
+   lvl = 34;
+   strength = 29;
+   magic = 31;
+   endurance = 25;
+   agility = 27;
+   luck = 36;
+
+   slash bash pierce | Fire Ice Elec Wind Light Darkness
+   ---   ---   ---   | Str  Nul ---  ---  Wk   Str
+
+   Skills: Mudo Agilao Bufula Marakunda Re Patra Ice Boost Rakukaja Trafuri
