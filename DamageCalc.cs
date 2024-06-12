@@ -7,6 +7,8 @@ namespace ConsoleApp1
 {
     public class DamageCalc
     {
+        [SerializeField] private Dictionaries mainDict;
+        [SerializeField] private Skills skills;
         static void Main(String[] args){
             // Void Giant
             //Console.WriteLine(CalcDamage(90, 99, 72, 98, 320, 1));
@@ -30,7 +32,31 @@ namespace ConsoleApp1
             Console.WriteLine("Damage: " + CalcDamage(power, plv, endurance, elv, moveDamage, amp));
         }
 
-        public static int CalcDamage(double power, double PLV, double eEndurance, double ELV, double moveDamage, double amplifier){
+        
+        // determines a number for the damage to be multiplied by
+        public static double determineAmp(byte elementalDefense, bool isDown, double skillAmp){
+            double amplifier = 1;
+            switch(elementalDefense){
+                case 0: //  nullify
+                    amplifier *= 0;
+                    break;
+                case 1: // weak
+                    amplifier *= 1.5;
+                    break;
+                case 2: // resist
+                    amplifier *= 0.5;
+                    break;
+                default:
+                    amplifier *= 1;
+                    break;
+            };
+            Debug.Log(amplifier);
+            if (isDown){amplifier *= 1;}
+            amplifier *= skillAmp;
+            return amplifier;
+        }
+        // The main formula for damage calculation //
+        public static int calcDamage(double power, double PLV, double eEndurance, double ELV, double moveDamage, double amplifier){
             // power works as either magic or strength
             var rnd = new Random(); // create random object
             double rngSwing = (double) rnd.Next(-10, 10) / 100; // attacks are affected by a random 10% swing
@@ -42,20 +68,10 @@ namespace ConsoleApp1
             int roundDamage = (int) Math.Round(damage);
             return (roundDamage); 
         }
-
-        public static double determineAmp(byte elementalDefense, bool isDown, double skillAmp){
-            double amplifier = 1;
-            // this method of switch cases does not work
-            /*amplifier = elementalDefense switch{
-                0 => amplifier *= 0,
-                1 => amplifier *= 1,
-                2 => amplifier *= 1,
-                _ => amplifier *= 1,
-            };*/
-            Console.WriteLine(amplifier);
-            if (isDown){amplifier *= 1;}
-            amplifier *= skillAmp;
-            return amplifier;
+        /* next commit :3
+        public static int damageTurn(string playerName, string enemyName, string skill){
+            
         }
+        */
     }
 }

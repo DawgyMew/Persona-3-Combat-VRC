@@ -21,23 +21,25 @@ public class Dictionaries : UdonSharpBehaviour
         // hard code the options and apply the information from that //
         {0, new DataDictionary(){
             {"Name", ""},
-            {"Shots", "0"},
-            {"HP", "1"},
-            {"SP", "2"},
-            {"PLV", "2"},
+            {"HP", "354"},
+            {"SP", "165"},
+            {"PLV", "34"},
             // persona stats //
-            {"pName", ""},
-            {"St", "2"},
-            {"Mg", "2"},
-            {"En", "2"},
-            {"Ag", "2"},
-            {"Lu", "2"},
+            {"pName", "Black Frost"},
+            {"St", "29"},
+            {"Mg", "31"},
+            {"En", "25"},
+            {"Ag", "27"},
+            {"Lu", "36"},
+            
             // persona type affinities //
-            {"Strengths", ""},
-            {"Nullifies", ""},
-            {"Weak", ""},
-
-            {"Skills", ""}
+            {"Strengths", "Fire, Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Mudo, Agilao, Bufula, Marakunda, Re Patra, Ice Boost, Rakukaja, Trafuri"}
         }},
         {1, new DataDictionary(){
             {"Name", ""},
@@ -55,13 +57,14 @@ public class Dictionaries : UdonSharpBehaviour
             // persona type affinities //
             {"Strengths", ""},
             {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
             {"Weak", ""},
-            
+            // skills //
             {"Skills", ""}
         }},
         {2, new DataDictionary(){
             {"Name", ""},
-            {"Shots", "0"},
             {"HP", "1"},
             {"SP", "2"},
             {"PLV", "2"},
@@ -75,6 +78,75 @@ public class Dictionaries : UdonSharpBehaviour
             // persona type affinities //
             {"Strengths", ""},
             {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""}
+        }}
+    };
+
+    public DataDictionary activeEnemies = new DataDictionary(){
+        // hard code the options and apply the information from that //
+        {0, new DataDictionary(){
+            {"Name", "Shouting Tiara"},
+            {"HP", "242"},
+            {"SP", "138"},
+            {"LVL", "35"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "19"},
+            {"Mg", "31"},
+            {"En", "19"},
+            {"Ag", "22"},
+            {"Lu", "21"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", "Light"},
+            {"Absorb", "Fire"},
+            {"Reflect", ""},
+            {"Weak", "Ice, Dark"},
+
+            {"Skills", "Maragi, Agilao, Maragion, Mahama, Media"}
+        }},
+        {1, new DataDictionary(){
+            {"Name", ""},
+            {"HP", "1"},
+            {"SP", "2"},
+            {"LVL", "2"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "2"},
+            {"Mg", "2"},
+            {"En", "2"},
+            {"Ag", "2"},
+            {"Lu", "2"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""}
+        }},
+        {2, new DataDictionary(){
+            {"Name", ""},
+            {"HP", "1"},
+            {"SP", "2"},
+            {"LVL", "2"},
+            // persona stats //
+            {"pName", ""},
+            {"St", "2"},
+            {"Mg", "2"},
+            {"En", "2"},
+            {"Ag", "2"},
+            {"Lu", "2"},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
             {"Weak", ""},
             // skills //
             {"Skills", ""}
@@ -94,7 +166,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     // Goes through the list of keys to find out which id stores the value //
     // defaults to "Name" because thats the most likely to need to find an id of //
-    private static int findID(DataDictionary dict, string strToFind, string keyToSrch = "Name"){
+    public static int findID(DataDictionary dict, string strToFind, string keyToSrch = "Name"){
         DataList keys = dict.GetKeys();
         keys.Sort();
         for (int i = 0; i < keys.Count; i++){
@@ -109,19 +181,24 @@ public class Dictionaries : UdonSharpBehaviour
     } 
 
     // Get Stat for if you know the id //
-    private static string getStat(DataDictionary dict, int id, string key){
+    public static string getStat(DataDictionary dict, int id, string key){
         var stat = (dict[id].DataDictionary[key]);
         //Debug.Log($"getStat returns {stat}");
         return (stat.String);
     }
     // get stat for if you don't know the id //
     // Requires the Dictionary, the key to search for, the unique string, and the stat to show //
-    private static string getStat(DataDictionary dict, string uStr, string statToShow, string key = "Name"){
+    public static string getStat(DataDictionary dict, string uStr, string statToShow, string key = "Name"){
         var id = findID(dict, uStr, key);
         return (getStat(dict, id, statToShow));
     }
+    // return a string array //
+    public static string[] getArray(DataDictionary dict, string uStr, string statToShow, string key){
+        var strStat = getStat(dict, uStr, statToShow, key);
+        return (strStat.Split(", "));
+    }
     // replaces the current stat with a new string //
-    private static void setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
+    public static void setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
         var id = findID(dict, uStr);
         Debug.Log($"{newStat} replacing {statToChange} at id {id}");
         dict[id].DataDictionary[statToChange] = newStat;
