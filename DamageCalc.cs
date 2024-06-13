@@ -1,77 +1,87 @@
-using System;
-using System.Collections.Generic;
+﻿
+using UdonSharp;
+using UnityEngine;
+using VRC.SDKBase;
+using VRC.Udon;
+using VRC.SDK3.Data;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace ConsoleApp1
+// same as old damageCalc but now has an udon object with it in unity
+public class damageCalc : UdonSharpBehaviour
 {
-    public class DamageCalc
-    {
-        [SerializeField] private Dictionaries mainDict;
-        [SerializeField] private Skills skills;
-        static void Main(String[] args){
-            // Void Giant
-            //Console.WriteLine(CalcDamage(90, 99, 72, 98, 320, 1));
-            determineAmp(0, false, 1);
-            // amorous snake
-            //Console.WriteLine(CalcDamage(90, 99, 49, 93, 320, 1));
-        }
-        static void userInput(){
-            Console.Write("Magic/Strength: ");
-            int power = int.Parse(Console.ReadLine());
-            Console.Write("Enemy's Endurance: ");
-            int endurance = int.Parse(Console.ReadLine());
-            Console.Write("Player Level: ");
-            int plv = int.Parse(Console.ReadLine());
-            Console.Write("Enemy Level: ");
-            int elv = int.Parse(Console.ReadLine());
-            Console.Write("Move's Power: ");
-            int moveDamage = int.Parse(Console.ReadLine());
-            Console.Write("Amplifier: ");
-            float amp = float.Parse(Console.ReadLine());
-            Console.WriteLine("Damage: " + CalcDamage(power, plv, endurance, elv, moveDamage, amp));
-        }
-
+    public Dictionaries statDict;
+    public Skills skillDictionary;
+    public int test;
         
-        // determines a number for the damage to be multiplied by
-        public static double determineAmp(byte elementalDefense, bool isDown, double skillAmp){
-            double amplifier = 1;
-            switch(elementalDefense){
-                case 0: //  nullify
-                    amplifier *= 0;
-                    break;
-                case 1: // weak
-                    amplifier *= 1.5;
-                    break;
-                case 2: // resist
-                    amplifier *= 0.5;
-                    break;
-                default:
-                    amplifier *= 1;
-                    break;
-            };
-            Debug.Log(amplifier);
-            if (isDown){amplifier *= 1;}
-            amplifier *= skillAmp;
-            return amplifier;
-        }
-        // The main formula for damage calculation //
-        public static int calcDamage(double power, double PLV, double eEndurance, double ELV, double moveDamage, double amplifier){
-            // power works as either magic or strength
-            var rnd = new Random(); // create random object
-            double rngSwing = (double) rnd.Next(-10, 10) / 100; // attacks are affected by a random 10% swing
-            Console.WriteLine("Random: " + rngSwing);
-            double damage = Math.Sqrt((power / eEndurance) * (PLV / ELV) * moveDamage) * 7.4 * amplifier;
-            Console.WriteLine((damage + (damage * -.1)) + " - " + (damage + (damage * .1))) ;
-            damage += damage * rngSwing; // apply the rng junk here
-            //Console.WriteLine(damage);
-            int roundDamage = (int) Math.Round(damage);
-            return (roundDamage); 
-        }
-        /* next commit :3
-        public static int damageTurn(string playerName, string enemyName, string skill){
+    // determines a number for the damage to be multiplied by
+    public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp){
+        string[] defences = {"Strengths", "Nullifies", "Absorb", "Reflect", "Weak"};
+        int resistance = 0;
+        for (int i = 0; i < defences.Length; i++){
+            string eleStr = enemyStats[defences[i]].String;
+            string[] elements = eleStr.Split(',');
             
+            foreach (string element in elements){
+                if (element.Equals(attackElement)){
+                    resistance = i;
+                    break;
+                }
+            }
+            if (resistance != 0){break;}
         }
-        */
+        double amplifier = 1;
+        switch(resistance){
+            case 0: //  nullify
+                amplifier *= 0;
+                break;
+            case 1: // weak
+                amplifier *= 1.5;
+                break;
+            case 2: // resist
+                amplifier *= 0.5;
+                break;
+            default:
+                amplifier *= 1;
+                break;
+        };
+        Debug.Log(amplifier);
+        if (isDown){amplifier *= 1;}
+        amplifier *= skillAmp;
+        return ((float) amplifier);
+    }
+        // The main formula for damage calculation //
+    public static int calcDamage(float power, float PLV, float eEndurance, float ELV, float moveDamage, float amplifier){
+        // power works as either magic or strength
+        float rngSwing = (float) Random.Range(-10, 10) / 100; // attacks are affected by a random 10% swing
+        Debug.Log("Random: " + rngSwing);
+        float damage = Mathf.Sqrt((power / eEndurance) * (PLV / ELV) * moveDamage) * 7.4f * amplifier;
+        Debug.Log((damage + (damage * -.1)) + " - " + (damage + (damage * .1))) ;
+        damage += damage * rngSwing; // apply the rng junk here
+        //Debug.Log(damage);
+        int roundDamage = (int) Mathf.Round(damage);
+        return (roundDamage); 
+    }
+
+    // calculates the damage dealt to an opponent //
+    public static int damageTurn(Dictionaries mainDict, string playerName, string enemyName, string skill){
+        // get the dictionaries for the player and enemies stats //
+        int playerId = Dictionaries.findID(mainDict.self, playerName); // call the general dictionary class and then the specific object???? 
+        DataDictionary playerStats = Dictionaries.getDict(mainDict.self, playerId);
+        int enemyId = Dictionaries.findID(mainDict.activeEnemies, enemyName); 
+        DataDictionary enemyStats = Dictionaries.getDict(mainDict.activeEnemies, playerId);
+        // get skill info //
+        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
+        // Determind if the move is physical or magical //
+        int power = 0;
+        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
+            power = playerStats["St"].Int; // phys
+        }
+        else{
+            power = playerStats["Mg"].Int; // magic if not
+        }
+        var amplifier = determineAmp(enemyStats, skillInfo["Element"].String, false, 1);
+        var damage = calcDamage(power, playerStats["PLV"].Float, enemyStats["En"].Float, enemyStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
+        Debug.Log(damage);
+        return (damage);
     }
 }
