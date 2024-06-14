@@ -63,21 +63,19 @@ public class damageCalc : UdonSharpBehaviour
     }
 
     // calculates the damage dealt to an opponent //
-    public static int damageTurn(Dictionaries mainDict, string playerName, string enemyName, string skill){
+    public static int damageTurn(Dictionaries mainDict, string playerName, string enemyName, DataDictionary skillInfo){
         // get the dictionaries for the player and enemies stats //
-        int playerId = Dictionaries.findID(mainDict.self, playerName); // call the general dictionary class and then the specific object???? 
+        int playerId = Dictionaries.findID(mainDict.self, playerName); // call the general for the static method and pull the nonstatic dictionary 
         DataDictionary playerStats = Dictionaries.getDict(mainDict.self, playerId);
         int enemyId = Dictionaries.findID(mainDict.activeEnemies, enemyName); 
         DataDictionary enemyStats = Dictionaries.getDict(mainDict.activeEnemies, playerId);
-        // get skill info //
-        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         // Determind if the move is physical or magical //
         int power = 0;
-        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
-            power = playerStats["St"].Int; // phys
+        if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){ 
+            power = playerStats["St"].Int; 
         }
         else{
-            power = playerStats["Mg"].Int; // magic if not
+            power = playerStats["Mg"].Int; 
         }
         var amplifier = determineAmp(enemyStats, skillInfo["Element"].String, false, 1);
         var damage = calcDamage(power, playerStats["PLV"].Float, enemyStats["En"].Float, enemyStats["LVL"].Float, skillInfo["Power"].Float, amplifier);

@@ -7,18 +7,22 @@ using VRC.Udon;
 using TMPro;
 
 // have to store things in a data dictionary because udon hates OOP :D
-// This is a central hub for scripts to access other scripts //
-// it aint a good way to do it but its a way //
+// This is a central hub for scripts to access other scripts 
+// it aint a good way to do it but its a way 
 
 /*
-    Players
-    Enemies
+    Players:
+        self: Information on the local player (you!).
+        others: Information displayed about the remote players (not you).
+    Enemies:
+        activeEnemies: The Enemies that are currently in play
+    Skills: 
+        skills: Full Dictionary containing every skill in persona 3
 */
 public class Dictionaries : UdonSharpBehaviour
 {
     public TextMeshPro board;
     public damageCalc damage;
-    // store everything as string for simplicity //
     /// Players ///
     // save these on the local machine or something 
     public DataDictionary self = new DataDictionary(){
@@ -28,6 +32,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"HP", 354},
             {"Max HP", 354},
             {"SP", 165},
+            {"Max SP", 165},
             {"PLV", 34},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
@@ -44,7 +49,12 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri"}
+            {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri"},
+
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }}
     };
     // other players in the instance //
@@ -55,27 +65,42 @@ public class Dictionaries : UdonSharpBehaviour
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
+            {"Max SP", 2},
             {"PLV", 2},
             // persona stats //
             {"pName", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }},
         {1, new DataDictionary(){
             {"Name", ""},
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
+            {"Max SP", 2},
             {"PLV", 2},
             // persona stats //
             {"pName", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }},
         {2, new DataDictionary(){
             {"Name", ""},
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
+            {"Max SP", 2},
             {"PLV", 2},
             // persona stats //
             {"pName", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }}
     };
 
@@ -86,6 +111,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"HP", 242},
             {"Max HP", 242},
             {"SP", 138},
+            {"Max SP", 138},
             {"LVL", 35},
             // persona stats //
             {"pName", "Shouting Tiara"},
@@ -102,12 +128,17 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", "Ice,Dark"},
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"}
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }},
         {1, new DataDictionary(){
             {"Name", ""},
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
+            {"Max SP", 2},
             {"LVL", 2},
             // persona stats //
             {"pName", ""},
@@ -124,12 +155,17 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", ""}
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }},
         {2, new DataDictionary(){
             {"Name", ""},
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
+            {"Max SP", 2},
             {"LVL", 2},
             // persona stats //
             {"pName", ""},
@@ -146,6 +182,10 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", ""}
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }}
     };
     // im gonna  scream why do i have to put this in here //
@@ -158,8 +198,9 @@ public class Dictionaries : UdonSharpBehaviour
                 Almighty - Magic but Funnier
                 Light, Darkness - Instant Kills
                 Recovery - Healing
+                Down - Makes the user no longer downed
                 Revive - Revive from death
-                Attack, Defense, Evasion, Crit Rate, All Stats - Stat Changes
+                Attack, Defense, Evasion, Crit Rate, Ailment Sus, All Stats - Stat Changes
                 Reflect Phys, Reflect Magic - Barriers that reflect physical/magic skills once
                 Fear, Panic, Distress, Poison, Charm, Rage, Ailments - Cause/Heal Ailments
                 HP Drain, SP Drain - Transfers HP/SP from the opponent to the user.
@@ -1049,12 +1090,41 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
 
-            // TODO: add these ones
-            /*
-            Patra
-            Re Patra
-            Me Patra
-            */
+            
+            // !!! Not properly filled out yet !!
+            {"Patra", new DataDictionary(){
+                {"Element", "Panic"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 3},
+                {"Targets", "Ally"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 1.00}
+            }},
+            {"Re Patra", new DataDictionary(){
+                {"Element", "Down"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 3},
+                {"Targets", "Ally"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 1.00}
+            }},
+            {"Me Patra", new DataDictionary(){
+                {"Element", "Panic"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 6},
+                {"Targets", "Party"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 1.00}
+            }},
+            
+            ///
+
             {"Posumudi", new DataDictionary(){
                 {"Element", "Poison"}, 
                 {"Power", 0},
@@ -1304,7 +1374,49 @@ public class Dictionaries : UdonSharpBehaviour
 
                 40 SP each
             */
-
+            // !!These arent done yet they just have entries so the ui stuff doesnt throw a fit in the future!! //
+            {"Fire Break", new DataDictionary(){
+                {"Element", "Break"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 40},
+                {"Targets", "One"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Ice Break", new DataDictionary(){
+                {"Element", "Break"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 40},
+                {"Targets", "One"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Elec Break", new DataDictionary(){
+                {"Element", "Break"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 40},
+                {"Targets", "One"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Wind Break", new DataDictionary(){
+                {"Element", "Break"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 40},
+                {"Targets", "One"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            ///// 
+            
             {"Tetrakarn", new DataDictionary(){
                 {"Element", "Reflect Phys"}, 
                 {"Power", 0},
@@ -1486,12 +1598,36 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
             }},
-
-            /*
-            TODO:  
-                Foul Breath
-                Stagnant Air
-            */
+            {"Foul Breath", new DataDictionary(){
+                {"Element", "Ailment Sus"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 15},
+                {"Targets", "One"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Stagnant Air", new DataDictionary(){
+                {"Element", "Ailment Sus"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 15},
+                {"Targets", "Everyone"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Patra", new DataDictionary(){
+                {"Element", "Panic"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 5},
+                {"Targets", "Ally"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 1.00}
+            }},
 
             {"Megido", new DataDictionary(){
                 {"Element", "Almighty"}, 
@@ -1651,9 +1787,40 @@ public class Dictionaries : UdonSharpBehaviour
         }
 
     }
+    
+    public static string determineSkillType(Dictionaries mainDict, string skill){
+        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
+        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
+            return ("Physical");
+        }
+        else{
+           return ("Magic");
+        }
+    }
+    public static string determineSkillType(DataDictionary skillInfo){
+        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
+            return ("Physical");
+        }
+        else{
+           return ("Magic");
+        }
+    }
 
     // pass on to the damage calc script //
     public static void calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
-        var plink = damageCalc.damageTurn(mainDict, playerName, enemyName, skill);
+        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
+        var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
+        // deal the damage to the target //
+        mainDict.changeNum(enemyName, "HP", damage * -1);
+        // Cost the user HP/SP for the skill //
+        var skillType = Dictionaries.determineSkillType(skillInfo);
+        if (skillType.Equals("Magic")){
+            mainDict.changeNum(playerName, "SP", (skillInfo["Cost"].Float * -1));
+        }
+        else{
+            var maxHP = Dictionaries.getStat(mainDict.self, playerName, "Max HP");
+            var cost = (int) ((maxHP * skillInfo["Cost"].Float) * -1); 
+            mainDict.changeNum(playerName, "HP", cost);
+        }
     }
 }

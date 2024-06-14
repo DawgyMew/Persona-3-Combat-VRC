@@ -30,7 +30,9 @@ public class shoot : UdonSharpBehaviour
     // helpful since this wont be actually shooting bullets :3 //
     private void fire(VRCPlayerApi player){
         // currently hard coded into only using bufula on enemy1 //
-        Dictionaries.calculateDamage(dictionary, player.displayName, "enemy1", "Bufula");
+        string enemy = "enemy1";
+        string skill = "Bufula";
+        Dictionaries.calculateDamage(dictionary, player.displayName, enemy, skill);
         if (Physics.Raycast(maw.transform.position, maw.transform.forward, out hit)){
             var hitObj = hit.collider.gameObject;
             textBox.text = hitObj.name;

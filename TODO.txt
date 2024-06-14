@@ -1,0 +1,28 @@
+General:
+    add to the dictionary of preset personas and enemies
+    code healing spells functionality
+    code ailments
+    code stat changes
+    add passive skills
+
+Unity Reliant:
+    Evoker:
+        Display the menu of skills
+        Display current hp and sp
+        allow the player to select a skill
+        allow the player to select an enemy
+        allow the player to summon their persona
+
+        Non Essential:
+            Check current persona's stats
+            check status of other players
+    Persona:
+        Assign or let players choose a persona
+    Enemies:
+        Create spawning systems for the enemies
+
+
+Research:
+    Figure out turn order
+    figure out enemy ai
+    figure out network syncing
