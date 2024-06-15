@@ -43,9 +43,9 @@ public class Presets : MonoBehaviour
             // skills //
             {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri"},
         }},
-    }
+    };
     // Preset of Enemies //
-    public DataDictionary personas = new DataDictionary(){
+    public DataDictionary enemies = new DataDictionary(){
         {"Shouting Tiara", new DataDictionary(){
             {"Name", ""}, // unique identifier
             {"HP", 242},
@@ -92,5 +92,5 @@ public class Presets : MonoBehaviour
             // skills //
             {"Skills", "Agidyne,Maragidyne,Mahama,Mahamaon,Diarama,Mediarahan,Sexy Dance,Virus Breath,Re Patra"},
         }},
-    }
+    };
 }

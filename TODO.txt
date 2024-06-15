@@ -8,7 +8,6 @@ General:
 Unity Reliant:
     Evoker:
         Display the menu of skills
-        Display current hp and sp
         allow the player to select a skill
         allow the player to select an enemy
         allow the player to summon their persona

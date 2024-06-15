@@ -10,17 +10,15 @@ using System.Linq;
 public class damageCalc : UdonSharpBehaviour
 {
     public Dictionaries statDict;
-    public Skills skillDictionary;
     public int test;
         
     // determines a number for the damage to be multiplied by
     public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp){
         string[] defences = {"Strengths", "Nullifies", "Absorb", "Reflect", "Weak"};
-        int resistance = 0;
+        int resistance = 5;
         for (int i = 0; i < defences.Length; i++){
             string eleStr = enemyStats[defences[i]].String;
             string[] elements = eleStr.Split(',');
-            
             foreach (string element in elements){
                 if (element.Equals(attackElement)){
                     resistance = i;
@@ -44,7 +42,7 @@ public class damageCalc : UdonSharpBehaviour
                 amplifier *= 1;
                 break;
         };
-        Debug.Log(amplifier);
+        //Debug.Log("Amp: " + amplifier);
         if (isDown){amplifier *= 1;}
         amplifier *= skillAmp;
         return ((float) amplifier);
@@ -53,9 +51,9 @@ public class damageCalc : UdonSharpBehaviour
     public static int calcDamage(float power, float PLV, float eEndurance, float ELV, float moveDamage, float amplifier){
         // power works as either magic or strength
         float rngSwing = (float) Random.Range(-10, 10) / 100; // attacks are affected by a random 10% swing
-        Debug.Log("Random: " + rngSwing);
+        //Debug.Log("Random: " + rngSwing);
         float damage = Mathf.Sqrt((power / eEndurance) * (PLV / ELV) * moveDamage) * 7.4f * amplifier;
-        Debug.Log((damage + (damage * -.1)) + " - " + (damage + (damage * .1))) ;
+        //Debug.Log((damage + (damage * -.1)) + " - " + (damage + (damage * .1))) ;
         damage += damage * rngSwing; // apply the rng junk here
         //Debug.Log(damage);
         int roundDamage = (int) Mathf.Round(damage);
@@ -79,7 +77,7 @@ public class damageCalc : UdonSharpBehaviour
         }
         var amplifier = determineAmp(enemyStats, skillInfo["Element"].String, false, 1);
         var damage = calcDamage(power, playerStats["PLV"].Float, enemyStats["En"].Float, enemyStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
-        Debug.Log(damage);
+        //Debug.Log(damage);
         return (damage);
     }
 }

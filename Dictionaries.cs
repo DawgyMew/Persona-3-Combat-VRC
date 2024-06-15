@@ -22,6 +22,7 @@ using TMPro;
 public class Dictionaries : UdonSharpBehaviour
 {
     public TextMeshPro board;
+    public updateText textUpdater;
     public damageCalc damage;
     /// Players ///
     // save these on the local machine or something 
@@ -127,7 +128,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Ice,Dark"},
             // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"}
+            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -154,7 +155,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", ""},
             // skills //
-            {"Skills", ""}
+            {"Skills", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -181,7 +182,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", ""},
             // skills //
-            {"Skills", ""}
+            {"Skills", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -1618,16 +1619,6 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
             }},
-            {"Patra", new DataDictionary(){
-                {"Element", "Panic"}, 
-                {"Power", 0},
-                {"Accuracy", 1.00},
-                {"Cost", 5},
-                {"Targets", "Ally"},
-                {"Times Hit", 1},
-                {"Critical", 0},
-                {"Ailment Chance", 1.00}
-            }},
 
             {"Megido", new DataDictionary(){
                 {"Element", "Almighty"}, 
@@ -1713,8 +1704,8 @@ public class Dictionaries : UdonSharpBehaviour
                 }
             }
         }
-        Debug.LogWarning("Could not Find in Dictionary");
-        return -1;
+        Debug.LogWarning("Could not Find " + strToFind + " under " + keyToSrch + " Dictionary");
+        return (-1);
     } 
 
     // Get Stat for if you know the id //
@@ -1776,16 +1767,27 @@ public class Dictionaries : UdonSharpBehaviour
         board.text = displayText;
     }
 
-    public void changeNum(string uName, string numKey, int changeInNum){
-        string num = getStat(self, uName, numKey);
+    public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder=false){
+        string num = getStat(dictToChange, uName, numKey);
         bool result = int.TryParse(num, out int intNum);
         if (result){
             intNum += changeInNum;
+            if (intNum < 0){
+                if (cantGoUnder){
+                    return (false);
+                }
+                else{ // the numbers dont need to go into the negatives
+                    intNum = 0;
+                }
+            }
             num = intNum.ToString(); // convert back to string :>
-            setStat(self, uName, numKey, num); // change contents of dict
+            setStat(dictToChange, uName, numKey, num); // change contents of dict
             displayPlayers(); // update board
+            return (true);
         }
-
+        else{
+            return (false);
+        }
     }
     
     public static string determineSkillType(Dictionaries mainDict, string skill){
@@ -1807,20 +1809,33 @@ public class Dictionaries : UdonSharpBehaviour
     }
 
     // pass on to the damage calc script //
-    public static void calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
+    // returns the value spent (hp/sp) //
+    public static string calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
-        // deal the damage to the target //
-        mainDict.changeNum(enemyName, "HP", damage * -1);
-        // Cost the user HP/SP for the skill //
         var skillType = Dictionaries.determineSkillType(skillInfo);
+        bool canUse;
+        string strReturn = "";
+        // Cost the user HP/SP for the skill //
         if (skillType.Equals("Magic")){
-            mainDict.changeNum(playerName, "SP", (skillInfo["Cost"].Float * -1));
+            canUse = mainDict.changeNum(playerName, "SP", (int) (skillInfo["Cost"].Float * -1), mainDict.self, true);
+            strReturn = "SP";
         }
         else{
             var maxHP = Dictionaries.getStat(mainDict.self, playerName, "Max HP");
-            var cost = (int) ((maxHP * skillInfo["Cost"].Float) * -1); 
-            mainDict.changeNum(playerName, "HP", cost);
+            var cost = (int) (((float.Parse(maxHP)) * skillInfo["Cost"].Double) * -1); 
+            canUse = mainDict.changeNum(playerName, "HP", cost, mainDict.self, true);
+            strReturn = "HP";
         }
+        // deal the damage to the target //
+        if (canUse){ // can only use if the user has enough hp/sp
+            mainDict.changeNum(enemyName, "HP", damage * -1, mainDict.activeEnemies);
+            updateText.changeEnemyText(enemyName, Dictionaries.getStat(mainDict.activeEnemies, enemyName, "HP"));
+            return (strReturn);
+        }
+        else{
+            return (null);
+        }
+        
     }
 }
