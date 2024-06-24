@@ -1,0 +1,49 @@
+General Feel for one turn
+
+Ailment Info: (will probably move)
+https://megamitensei.fandom.com/wiki/Status_Changes_in_Persona_3
+
+    Fear - odds of foreiting turn or fleeing the battle, greatly increased chance of being hit by a crit
+    Panic - prevents afflicted from using persona skills, slightly more likely to get hit by crits
+    Distress - evasion reduced to 0, more likely to be hit by crits, reduced defence, more likely to be hit by light/dark spells
+    Poison - 30% of hp at the end of every turn, cannot kill
+    Charm - odds of forfeiting turn, attacking allies, or healing the enemy, player has no control
+    Rage - attacks enemies automatically, get 2 turns, increased attack but reduced accuracy and defence
+
+    Cured after one turn:
+    Freeze - Evasion reduced to 0, more likely to be hit by crits
+    Shock - Evasion reduced to 0, guarenteed crit when hit by slash/pierce/strike attack
+
+    Down - knocked down and cannot evade, defence decreased
+    Dizzy - same as down but they lose a turn
+
+START
+
+    Before Turn:
+        if buff/debuff counter = 0, remove the buff/debuff
+        stand up if applicable
+        roll if charm/fear will skip turn
+            charm - lose turn, attack teammate, or heal opponent
+            fear - flee
+            if turn skipped: JUMP to END
+        roll if specific ailments will be cured
+            hi
+    
+    
+    Selecting Skill:
+        select attack that the user has enough hp/sp to use
+        select target for the skill 
+
+    Skill Use:
+        hit the target with the skill
+        deal the damage to the target if the skill hits and cost the user hp/sp
+        if enemy health = 0: remove them from the board
+        if enemy is hit by a light/dark spell: remove them from the board
+        determine if the enemies will be afflicted with any ailments
+
+        if enemy becomes downed: JUMP to Selecting Skill (1 more)
+
+    After Turn:
+        deal damage to self if poisoned.
+
+END

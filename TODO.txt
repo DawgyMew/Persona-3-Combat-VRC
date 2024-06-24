@@ -4,6 +4,8 @@ General:
     code ailments
     code stat changes
     add passive skills
+    code turn order based on agility
+    add spells that attack 
 
 Unity Reliant:
     Evoker:
@@ -12,7 +14,7 @@ Unity Reliant:
         allow the player to select an enemy
         allow the player to summon their persona
 
-        Non Essential:
+        Less Essential:
             Check current persona's stats
             check status of other players
     Persona:
@@ -22,6 +24,8 @@ Unity Reliant:
 
 
 Research:
-    Figure out turn order
     figure out enemy ai
+        https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/56726166
+        generally try to knock down your teammates by exploiting weaknesses to continue the '1 more' chain
+        might try to target the protagonist but that doesnt matter here :>
     figure out network syncing
