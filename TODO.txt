@@ -5,7 +5,6 @@ General:
     code stat changes
     add passive skills
     code turn order based on agility
-    add spells that attack 
 
 Unity Reliant:
     Evoker:

@@ -17,6 +17,9 @@ https://megamitensei.fandom.com/wiki/Status_Changes_in_Persona_3
     Down - knocked down and cannot evade, defence decreased
     Dizzy - same as down but they lose a turn
 
+BEFORE TURNS:
+    determine turn order, compare all agility stats and create a list containing who goes when
+
 START
 
     Before Turn:

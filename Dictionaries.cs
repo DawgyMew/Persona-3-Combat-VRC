@@ -1810,27 +1810,27 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-    public static string calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
+    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
-        var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
+        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
         var skillType = Dictionaries.determineSkillType(skillInfo);
         bool canUse;
         string strReturn = "";
         // Cost the user HP/SP for the skill //
         if (skillType.Equals("Magic")){
-            canUse = mainDict.changeNum(playerName, "SP", (int) (skillInfo["Cost"].Float * -1), mainDict.self, true);
+            canUse = mainDict.changeNum(user, "SP", (int) (skillInfo["Cost"].Float * -1), mainDict.self, true);
             strReturn = "SP";
         }
         else{
-            var maxHP = Dictionaries.getStat(mainDict.self, playerName, "Max HP");
+            var maxHP = Dictionaries.getStat(mainDict.self, user, "Max HP");
             var cost = (int) (((float.Parse(maxHP)) * skillInfo["Cost"].Double) * -1); 
-            canUse = mainDict.changeNum(playerName, "HP", cost, mainDict.self, true);
+            canUse = mainDict.changeNum(user, "HP", cost, mainDict.self, true);
             strReturn = "HP";
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            mainDict.changeNum(enemyName, "HP", damage * -1, mainDict.activeEnemies);
-            updateText.changeEnemyText(enemyName, Dictionaries.getStat(mainDict.activeEnemies, enemyName, "HP"));
+            mainDict.changeNum(target, "HP", damage * -1, mainDict.activeEnemies);
+            updateText.changeEnemyText(target, Dictionaries.getStat(mainDict.activeEnemies, target, "HP"));
             return (strReturn);
         }
         else{
