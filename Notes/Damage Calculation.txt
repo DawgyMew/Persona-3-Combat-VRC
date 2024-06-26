@@ -13,3 +13,19 @@ In this case, Ziodyne is a 320 damage move, while God's Hand is 600. As Akihiko 
 https://gamefaqs.gamespot.com/boards/932312-shin-megami-tensei-persona-3/42220140
 
 In Persona 3 and Persona 4, the damage is reduced by approximately 2/3 (The formula is 1/(1+0.5), where 0.5 is the multiplier for attack boosts, hence countering Tarukaja directly). If stacked with Tarunda on the user's attacker, the attack power is halved (1/(1+0.5+0.5)). 
+
+--Defence and Stat changes and mind charge:--
+https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/69351661
+
+    (Ma)Tarukaja: Increase ally's attack (final) damage (not base power*) by 50% (stacked to 100% with Rakunda)
+    (Ma)Rakukaja: Increase ally's defense by 2/3 (stacked to 1/2 with Tarunda)
+    (Ma)Sukukaja: No specific data available.
+
+    (Ma)Tarunda: Decrease enemy's attack by 2/3 (stacked to 1/2 with Rakukaja)
+    (Ma)Rakunda: Decrease enemy's defense by 50% (stacked to 100% with Tarukaja)
+    (Ma)Sukunda: No specific data available.
+
+
+*Note that, Mind/Power Charge make the base power of an attack increased to 2.5x of the usual, and not increasing the (usual) numerical damage dealt. Of course, by increasing the base power, the numerical damage dealt will inevitably increase as well. *sigh* I'm not making much sense here, do I?
+
+Someone playing with the emulator might be able to confirm those, and find the approximate multipliers for Sukunda/Sukukaja skills. Since there are multiplier values provided for Passive Skills [evasions], a rough comparison could be made.

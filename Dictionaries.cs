@@ -11,11 +11,10 @@ using TMPro;
 // it aint a good way to do it but its a way 
 
 /*
+    Local Info:
+        self: Information on the local player (you!) and the active enemies
     Players:
-        self: Information on the local player (you!).
         others: Information displayed about the remote players (not you).
-    Enemies:
-        activeEnemies: The Enemies that are currently in play
     Skills: 
         skills: Full Dictionary containing every skill in persona 3
 */
@@ -26,6 +25,7 @@ public class Dictionaries : UdonSharpBehaviour
     public damageCalc damage;
     /// Players ///
     // save these on the local machine or something 
+    // self now contains all the local data not skills tho
     public DataDictionary self = new DataDictionary(){
         // hard code the options and apply the information from that //
         {0, new DataDictionary(){ 
@@ -55,7 +55,92 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}
+            {"Stat Changes", ""},
+            {"Stat Change Timers", ""}
+        }},
+        {1, new DataDictionary(){
+            {"Name", "enemy1"}, // unique identifier
+            {"HP", 242},
+            {"Max HP", 242},
+            {"SP", 138},
+            {"Max SP", 138},
+            {"LVL", 35},
+            // persona stats //
+            {"pName", "Shouting Tiara"},
+            {"St", 19},
+            {"Mg", 31},
+            {"En", 19},
+            {"Ag", 22},
+            {"Lu", 21},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", "Light"},
+            {"Absorb", "Fire"},
+            {"Reflect", ""},
+            {"Weak", "Ice,Dark"},
+            // skills //
+            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""},
+            {"Stat Change Timers", ""}
+        }},
+        {2, new DataDictionary(){
+            {"Name", ""},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"St", 2},
+            {"Mg", 2},
+            {"En", 2},
+            {"Ag", 2},
+            {"Lu", 2},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""},
+            {"Stat Change Timers", ""}
+        }},
+        {3, new DataDictionary(){
+            {"Name", ""},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"St", 2},
+            {"Mg", 2},
+            {"En", 2},
+            {"Ag", 2},
+            {"Lu", 2},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""},
+            {"Stat Change Timers", ""}
         }}
     };
     // other players in the instance //
@@ -107,87 +192,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public DataDictionary activeEnemies = new DataDictionary(){
         // hard code the options and apply the information from that //
-        {0, new DataDictionary(){
-            {"Name", "enemy1"}, // unique identifier
-            {"HP", 242},
-            {"Max HP", 242},
-            {"SP", 138},
-            {"Max SP", 138},
-            {"LVL", 35},
-            // persona stats //
-            {"pName", "Shouting Tiara"},
-            {"St", 19},
-            {"Mg", 31},
-            {"En", 19},
-            {"Ag", 22},
-            {"Lu", 21},
-            // persona type affinities //
-            {"Strengths", ""},
-            {"Nullifies", "Light"},
-            {"Absorb", "Fire"},
-            {"Reflect", ""},
-            {"Weak", "Ice,Dark"},
-            // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }},
-        {1, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
-            // persona stats //
-            {"pName", ""},
-            {"St", 2},
-            {"Mg", 2},
-            {"En", 2},
-            {"Ag", 2},
-            {"Lu", 2},
-            // persona type affinities //
-            {"Strengths", ""},
-            {"Nullifies", ""},
-            {"Absorb", ""},
-            {"Reflect", ""},
-            {"Weak", ""},
-            // skills //
-            {"Skills", ""},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }},
-        {2, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
-            // persona stats //
-            {"pName", ""},
-            {"St", 2},
-            {"Mg", 2},
-            {"En", 2},
-            {"Ag", 2},
-            {"Lu", 2},
-            // persona type affinities //
-            {"Strengths", ""},
-            {"Nullifies", ""},
-            {"Absorb", ""},
-            {"Reflect", ""},
-            {"Weak", ""},
-            // skills //
-            {"Skills", ""},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }}
+        
     };
     // im gonna  scream why do i have to put this in here //
     // i wanted to have these dictionaries in seperate files but udon and unity are throwing a fit so here we are 1000 liunes added to dictionaries.cs

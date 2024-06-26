@@ -27,4 +27,6 @@ Research:
         https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/56726166
         generally try to knock down your teammates by exploiting weaknesses to continue the '1 more' chain
         might try to target the protagonist but that doesnt matter here :>
+        make a temp cube that simulates an enemy turn
     figure out network syncing
+        if the enemy targets another player or all players calculate that on the local machine and share a packet with what changed??

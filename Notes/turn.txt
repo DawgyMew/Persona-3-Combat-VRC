@@ -49,4 +49,5 @@ START
     After Turn:
         deal damage to self if poisoned.
 
+    Sync Changes 
 END

@@ -65,8 +65,8 @@ public class damageCalc : UdonSharpBehaviour
         // get the dictionaries for the player and enemies stats //
         int playerId = Dictionaries.findID(mainDict.self, playerName); // call the general for the static method and pull the nonstatic dictionary 
         DataDictionary playerStats = Dictionaries.getDict(mainDict.self, playerId);
-        int enemyId = Dictionaries.findID(mainDict.activeEnemies, enemyName); 
-        DataDictionary enemyStats = Dictionaries.getDict(mainDict.activeEnemies, playerId);
+        int enemyId = Dictionaries.findID(mainDict.self, enemyName); 
+        DataDictionary enemyStats = Dictionaries.getDict(mainDict.self, enemyId);
         // Determind if the move is physical or magical //
         int power = 0;
         if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){ 
