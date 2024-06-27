@@ -1692,8 +1692,10 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Times Hit", 1},
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
+            }},
+            {"Error", new DataDictionary(){ // return this if it cant be found
+                {"Cost", -1}
             }}
-
             // passive skills are gonna be so much fun -.-
             // make the attack menu not show skills with a cost of 0?
         }}};    
@@ -1701,6 +1703,7 @@ public class Dictionaries : UdonSharpBehaviour
     public override void OnPlayerJoined(VRCPlayerApi player){
         if (player.isLocal){
             setStat(self, "", "Name", player.displayName);
+            //setStat(others, "", "Name", player.displayName);
         }
         else{
             setStat(others, "", "Name", player.displayName);
@@ -1762,7 +1765,17 @@ public class Dictionaries : UdonSharpBehaviour
         if (dict.TryGetValue(id, TokenType.DataDictionary, out DataToken value)){
             return (value.DataDictionary);
         }
-        else return null;
+        else{return null;}
+    }
+    // simple way to get back a specific skill's information //
+    public static DataDictionary getSkillInfo(Dictionaries mainDict, string skill){
+        var dict = Dictionaries.getDict(mainDict.skillDict, 0);
+        if (dict.TryGetValue(skill, TokenType.DataDictionary, out DataToken value)){
+            return (value.DataDictionary);
+        }
+        else{
+            return (dict["Error"].DataDictionary);
+        }
     }
     ////////
 
@@ -1814,7 +1827,7 @@ public class Dictionaries : UdonSharpBehaviour
     }
     
     public static string determineSkillType(Dictionaries mainDict, string skill){
-        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
+        DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
         if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
             return ("Physical");
         }
@@ -1833,9 +1846,15 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
+<<<<<<< Updated upstream
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+=======
+    public static string calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
+        DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
+        var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
+>>>>>>> Stashed changes
         var skillType = Dictionaries.determineSkillType(skillInfo);
         bool canUse;
         string strReturn = "";

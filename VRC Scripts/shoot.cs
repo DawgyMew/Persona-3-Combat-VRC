@@ -7,7 +7,7 @@ using TMPro;
 
 public class shoot : UdonSharpBehaviour
 {
-    [SerializeField] public TextMeshProUGUI textBox; // get tmp objec
+    //[SerializeField] public TextMeshProUGUI textBox; // get tmp objec
     //[SerializeField] public TextMeshProUGUI test;
     [SerializeField] private GameObject maw;
     public int shots = 0;
@@ -23,9 +23,11 @@ public class shoot : UdonSharpBehaviour
     }
     // adjusts the hp and sp bar whenever someone picks up the evoker //
     public override void OnPickup(){
-        string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
-        manager.updateValue("HP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "HP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max HP"))));
-        manager.updateValue("SP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "SP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max SP"))));
+        if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
+            string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
+            manager.updateValue("HP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "HP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max HP"))));
+            manager.updateValue("SP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "SP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max SP"))));
+        }
     }
     // acts when the holder "shoots" the gun //
     public override void OnPickupUseDown(){
@@ -43,7 +45,7 @@ public class shoot : UdonSharpBehaviour
         var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill);
         if (statUsed != null){ // always hp or sp or null
             // updates the bars on the evoker //
-            textBox.text = skill + " used.";
+            //textBox.text = skill + " used on " + enemy + ".";
             manager.updateValue(statUsed, int.Parse(Dictionaries.getStat(dictionary.self, playerName, statUsed)), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max " + statUsed))));
         }
         if (Physics.Raycast(maw.transform.position, maw.transform.forward, out hit)){
