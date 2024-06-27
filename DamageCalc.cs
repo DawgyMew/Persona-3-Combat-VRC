@@ -61,22 +61,22 @@ public class damageCalc : UdonSharpBehaviour
     }
 
     // calculates the damage dealt to an opponent //
-    public static int damageTurn(Dictionaries mainDict, string playerName, string enemyName, DataDictionary skillInfo){
-        // get the dictionaries for the player and enemies stats //
-        int playerId = Dictionaries.findID(mainDict.self, playerName); // call the general for the static method and pull the nonstatic dictionary 
-        DataDictionary playerStats = Dictionaries.getDict(mainDict.self, playerId);
-        int enemyId = Dictionaries.findID(mainDict.self, enemyName); 
-        DataDictionary enemyStats = Dictionaries.getDict(mainDict.self, enemyId);
+    public static int damageTurn(Dictionaries mainDict, string userName, string targetName, DataDictionary skillInfo){
+        // get the dictionaries for the user and enemies stats //
+        int userId = Dictionaries.findID(mainDict.self, userName); // call the general for the static method and pull the nonstatic dictionary 
+        DataDictionary userStats = Dictionaries.getDict(mainDict.self, userId);
+        int targetId = Dictionaries.findID(mainDict.self, targetName); 
+        DataDictionary targetStats = Dictionaries.getDict(mainDict.self, targetId);
         // Determind if the move is physical or magical //
         int power = 0;
         if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){ 
-            power = playerStats["St"].Int; 
+            power = userStats["St"].Int; 
         }
         else{
-            power = playerStats["Mg"].Int; 
+            power = userStats["Mg"].Int; 
         }
-        var amplifier = determineAmp(enemyStats, skillInfo["Element"].String, false, 1);
-        var damage = calcDamage(power, playerStats["PLV"].Float, enemyStats["En"].Float, enemyStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
+        var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1);
+        var damage = calcDamage(power, userStats["LVL"].Float, targetStats["En"].Float, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
         //Debug.Log(damage);
         return (damage);
     }

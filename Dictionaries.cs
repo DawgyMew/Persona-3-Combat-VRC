@@ -28,13 +28,32 @@ public class Dictionaries : UdonSharpBehaviour
     // self now contains all the local data not skills tho
     public DataDictionary self = new DataDictionary(){
         // hard code the options and apply the information from that //
+
+        /*
+            Name: The unique identifier, either the players username or the enemy's internal name
+            HP, Max HP: Current Health Point and Max Health Point
+            SP, Max SP: Current Spirit Point and Max Spirit Points
+                HP and SP will change while Max HP and Max SP will always remain the same
+            LVL: The Current level of the character
+            pName: The name of the persona or shadow that the holder has, usually used for pulling a model
+            St, Mg, En, Ag, Lu: The Persona's stats
+                Strength, Magic, Endurance, Agility, Luck
+            
+            Strengths: Elements of these types by will deal less damage.
+            Nullifies: Elements of these types will deal no damage.
+            Absorb: Elements of these types will heal the target for the amount of damage that would've been dealt.
+            Reflect: Elements of these types will deal no damage to the target and deal that damage to the user.
+            Weak: Elements of these types will deal extra damage and knock them down.
+
+            Skills: The skills that they are able to use.
+        */      
         {0, new DataDictionary(){ 
             {"Name", ""},
             {"HP", 354},
             {"Max HP", 354},
             {"SP", 165},
             {"Max SP", 165},
-            {"PLV", 34},
+            {"LVL", 34},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -152,7 +171,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max HP", 1},
             {"SP", 2},
             {"Max SP", 2},
-            {"PLV", 2},
+            {"LVL", 2},
             // persona stats //
             {"pName", ""},
             // other //
@@ -166,7 +185,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max HP", 1},
             {"SP", 2},
             {"Max SP", 2},
-            {"PLV", 2},
+            {"LVL", 2},
             // persona stats //
             {"pName", ""},
             // other //
@@ -180,7 +199,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max HP", 1},
             {"SP", 2},
             {"Max SP", 2},
-            {"PLV", 2},
+            {"LVL", 2},
             // persona stats //
             {"pName", ""},
             // other //
@@ -190,10 +209,9 @@ public class Dictionaries : UdonSharpBehaviour
         }}
     };
 
-    public DataDictionary activeEnemies = new DataDictionary(){
-        // hard code the options and apply the information from that //
-        
-    };
+    // no more activeEnemies dictionary crab rave
+
+
     // im gonna  scream why do i have to put this in here //
     // i wanted to have these dictionaries in seperate files but udon and unity are throwing a fit so here we are 1000 liunes added to dictionaries.cs
     public DataDictionary skillDict = new DataDictionary(){
@@ -1834,8 +1852,8 @@ public class Dictionaries : UdonSharpBehaviour
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            mainDict.changeNum(target, "HP", damage * -1, mainDict.activeEnemies);
-            updateText.changeEnemyText(target, Dictionaries.getStat(mainDict.activeEnemies, target, "HP"));
+            mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
+            updateText.changeEnemyText(target, Dictionaries.getStat(mainDict.self, target, "HP"));
             return (strReturn);
         }
         else{
