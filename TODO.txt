@@ -1,14 +1,20 @@
+* '--' means the feature has been implemented but not currently tested.
+
+!:
+    Fix the error that happens in the actual vrchat client aaaaaaaaaaa
+
 General:
     add to the dictionary of preset personas and enemies
-    code healing spells functionality
+    -- code healing spells functionality
     code ailments
     code stat changes
     add passive skills
+    -- code accuracy on moves
     code turn order based on agility
 
 Unity Reliant:
     Evoker:
-        Display the menu of skills
+        Display the menu of skills -- in progress on different machine
         allow the player to select a skill
         allow the player to select an enemy
         allow the player to summon their persona

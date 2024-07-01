@@ -1846,16 +1846,11 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-<<<<<<< Updated upstream
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
-        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
-=======
-    public static string calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
-        DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
-        var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
->>>>>>> Stashed changes
+        
         var skillType = Dictionaries.determineSkillType(skillInfo);
+        var targets = skillInfo["targets"].String;
         bool canUse;
         string strReturn = "";
         // Cost the user HP/SP for the skill //
@@ -1871,9 +1866,28 @@ public class Dictionaries : UdonSharpBehaviour
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
-            updateText.changeEnemyText(target, Dictionaries.getStat(mainDict.self, target, "HP"));
-            return (strReturn);
+            var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+            if (targets.Equals("One")){
+                if (damage != -1){
+                    mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
+                    updateText.changeEnemyText(target, "-" + damage + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                }
+                else{
+                    updateText.changeEnemyText(target, "miss");
+                }
+                return (strReturn);
+            }
+            else if (targets.Equals("Ally")){
+                int amtHeal = skillInfo["Power"].Int;
+                // Skills that heal //
+                if (amtHeal != 0){
+                    mainDict.changeNum(target, "HP", amtHeal, mainDict.self); // gonna have to change this one when adding syncing
+                }
+                return (strReturn);
+            }
+            else{ // if the skills target hasnt been added yet 
+                return (null);
+            }
         }
         else{
             return (null);

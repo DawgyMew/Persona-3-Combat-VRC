@@ -60,24 +60,39 @@ public class damageCalc : UdonSharpBehaviour
         return (roundDamage); 
     }
 
-    // calculates the damage dealt to an opponent //
+    // true if hit, false if miss
+    public static bool determineHit(DataDictionary skill){
+        var accuracy = skill["Accuracy"].Double;
+        int randNum = Random.Range(0, 100);
+        return (randNum <= accuracy * 100); // this probably isnt the greatest way to do it but here we are
+    }
+
+    // calculates the damage dealt to one specific opponent //
+    // loop call the function if hitting multiple //
     public static int damageTurn(Dictionaries mainDict, string userName, string targetName, DataDictionary skillInfo){
-        // get the dictionaries for the user and enemies stats //
-        int userId = Dictionaries.findID(mainDict.self, userName); // call the general for the static method and pull the nonstatic dictionary 
-        DataDictionary userStats = Dictionaries.getDict(mainDict.self, userId);
-        int targetId = Dictionaries.findID(mainDict.self, targetName); 
-        DataDictionary targetStats = Dictionaries.getDict(mainDict.self, targetId);
-        // Determind if the move is physical or magical //
-        int power = 0;
-        if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){ 
-            power = userStats["St"].Int; 
+        // determine if the skill is going to hit //
+        bool hit = determineHit(skillInfo);
+        if (hit){
+            // get the dictionaries for the user and enemies stats //
+            int userId = Dictionaries.findID(mainDict.self, userName); // call the general for the static method and pull the nonstatic dictionary 
+            DataDictionary userStats = Dictionaries.getDict(mainDict.self, userId);
+            int targetId = Dictionaries.findID(mainDict.self, targetName); 
+            DataDictionary targetStats = Dictionaries.getDict(mainDict.self, targetId);
+            // Determind if the move is physical or magical //
+            int power = 0;
+            if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){
+                power = userStats["St"].Int; 
+            }
+            else{
+                power = userStats["Mg"].Int; 
+            }
+            var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1);
+            var damage = calcDamage(power, userStats["LVL"].Float, targetStats["En"].Float, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
+            //Debug.Log(damage);
+            return (damage);
         }
         else{
-            power = userStats["Mg"].Int; 
+            return (-1); // miss
         }
-        var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1);
-        var damage = calcDamage(power, userStats["LVL"].Float, targetStats["En"].Float, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
-        //Debug.Log(damage);
-        return (damage);
     }
 }
