@@ -7,7 +7,7 @@ General:
     add to the dictionary of preset personas and enemies
     -- code healing spells functionality
     code ailments
-    code stat changes
+    -- code stat changes
     add passive skills
     -- code accuracy on moves
     code turn order based on agility

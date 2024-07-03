@@ -46,6 +46,15 @@ public class Dictionaries : UdonSharpBehaviour
             Weak: Elements of these types will deal extra damage and knock them down.
 
             Skills: The skills that they are able to use.
+            Ailment: The current negative ailment
+            IsDown: Whether or not they are down and will take more damage from attacks
+            Stat Changes: How certain stats have been changed.
+                Stored as string in format of: "[stat changed][+ or -][number of turns left on the timer]" followed by the next stat seperated with a ,
+                                                atk+3,df-2
+                atk: attack, changes the power of the move used
+                df: defense, changes how much damage they will take
+                ev: evasion/accuracy, changes whether the user has better aim or is more likely to dodge an attack.
+                crit: critical hit chance, changes the likelyhood of hitting a critical hit with a physical skill
         */      
         {0, new DataDictionary(){ 
             {"Name", ""},
@@ -74,8 +83,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
         {1, new DataDictionary(){
             {"Name", "enemy1"}, // unique identifier
@@ -102,8 +110,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
+            {"Stat Changes", ""}, 
         }},
         {2, new DataDictionary(){
             {"Name", ""},
@@ -131,7 +138,6 @@ public class Dictionaries : UdonSharpBehaviour
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
         }},
         {3, new DataDictionary(){
             {"Name", ""},
@@ -159,7 +165,6 @@ public class Dictionaries : UdonSharpBehaviour
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
         }}
     };
     // other players in the instance //
@@ -1842,6 +1847,37 @@ public class Dictionaries : UdonSharpBehaviour
         else{
            return ("Magic");
         }
+    }
+
+    // returns all stat changes 
+    public static string[] getStatChanges(DataDictionary entityStats){
+        string statChangeStr = entityStats["Stat Changes"].String;
+        if (statChangeStr.Length != 0){
+            string[] statChanges = statChangeStr.Split(',');
+        }
+        else{
+            string[] arr = {}; // empty array
+            return (arr);
+        }
+    }
+    // returns specific stat changes as an array //
+    public static string[] getStatChanges(DataDictionary entityStats, string stat){
+        var statArr = getStatChanges(entityStats);
+        if (statArr.Length != 0){
+            foreach(string statChange in statArr){
+                string change = statChange[statChange.Length - 1].ToString();
+                string status = statChange.Remove(statChange.Length - 1);
+                if (status.Equals(stat)){
+                    string[] statChangeArr = {status, change};
+                    return (statChangeArr); // [stat, change]
+                }
+            }
+            return (null);
+        }
+        else{
+            return (null);
+        }
+        
     }
 
     // pass on to the damage calc script //
