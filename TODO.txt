@@ -11,6 +11,9 @@ General:
     add passive skills
     -- code accuracy on moves
     code turn order based on agility
+    code evasion effects on dodging and hitting
+    implement critical hits on physical moves
+    complete the turn logic, turn.txt
 
 Unity Reliant:
     Evoker:

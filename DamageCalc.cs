@@ -86,8 +86,29 @@ public class damageCalc : UdonSharpBehaviour
             else{
                 power = userStats["Mg"].Int; 
             }
+
+            // apply stat changes //
+            // check user attack
+            var change = Dictionaries.getStatChanges("atk", userStats)[1];
+            if (change.Equals("+")){
+                power *= 1.50;
+            }
+            else if (change.Equals("-")){
+                power *= .50;
+            }
+            // check target defence 
+            var change = Dictionaries.getStatChanges("df", targetStats)[1];
+            float endurance = targetStats["En"].Float;
+            if (change.Equals("+")){
+                endurance *= 1.66;
+            }
+            else if (change.Equals("-")){
+                endurance *= .66;
+            }
+
+            // calculate damage
             var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1);
-            var damage = calcDamage(power, userStats["LVL"].Float, targetStats["En"].Float, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
+            var damage = calcDamage(power, userStats["LVL"].Float, endurance, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
             //Debug.Log(damage);
             return (damage);
         }
