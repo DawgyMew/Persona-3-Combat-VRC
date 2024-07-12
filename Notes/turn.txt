@@ -19,12 +19,14 @@ https://megamitensei.fandom.com/wiki/Status_Changes_in_Persona_3
 
 BEFORE TURNS:
     determine turn order, compare all agility stats and create a list containing who goes when
+    activate auto passive skills (unsure if the counter should go down on the first turn)
 
 START
 
     Before Turn:
         if buff/debuff counter = 0, remove the buff/debuff
         stand up if applicable
+        if regenerate or invigorate: restore hp and/or sp
         roll if charm/fear will skip turn
             charm - lose turn, attack teammate, or heal opponent
             fear - flee
@@ -51,3 +53,7 @@ START
 
     Sync Changes 
 END
+
+AFTER BATLLE:
+    cure all ailments.
+    check and apply cool breeze/victory cry

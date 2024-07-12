@@ -8,7 +8,7 @@ General:
     -- code healing spells functionality
     code ailments
     -- code stat changes
-    add passive skills
+    finish passive skills
     -- code accuracy on moves
     code turn order based on agility
     code evasion effects on dodging and hitting
