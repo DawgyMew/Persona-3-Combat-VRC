@@ -1846,15 +1846,9 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-<<<<<<< Updated upstream
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
-=======
-    public static string calculateDamage(Dictionaries mainDict, string playerName, string enemyName, string skill){
-        DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
-        var damage = damageCalc.damageTurn(mainDict, playerName, enemyName, skillInfo);
->>>>>>> Stashed changes
         var skillType = Dictionaries.determineSkillType(skillInfo);
         bool canUse;
         string strReturn = "";
