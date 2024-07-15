@@ -2641,6 +2641,12 @@ public class Dictionaries : UdonSharpBehaviour
         Debug.Log($"{newStat} replacing {statToChange} at id {id}");
         dict[id].DataDictionary[statToChange] = newStat;
     }
+
+    // changes the boolean //
+    public static void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat){
+        var id = findID(dict, uStr);
+        dict[id].DataDictionary[statToChange] = newStat;
+    }
     // returns an entire data dictionary segment //
     public static DataDictionary getDict(DataDictionary dict, int id){
         if (dict.TryGetValue(id, TokenType.DataDictionary, out DataToken value)){

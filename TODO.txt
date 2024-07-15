@@ -21,7 +21,7 @@ Unity Reliant:
         allow the player to select a skill
         allow the player to select an enemy
         allow the player to summon their persona
-
+        show what ailments the player has
         Less Essential:
             Check current persona's stats
             check status of other players

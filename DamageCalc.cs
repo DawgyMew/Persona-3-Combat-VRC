@@ -6,16 +6,13 @@ using VRC.Udon;
 using VRC.SDK3.Data;
 using System.Linq;
 
-// same as old damageCalc but now has an udon object with it in unity
 public class damageCalc : UdonSharpBehaviour
 {
     public Dictionaries statDict;
-    public int test;
-        
     // determines a number for the damage to be multiplied by
-    public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp){
+    public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp, Dictionaries mainDict){
         string[] defences = {"Strengths", "Nullifies", "Absorb", "Reflect", "Weak"};
-        int resistance = 5;
+        int resistance = 0;
         for (int i = 0; i < defences.Length; i++){
             string eleStr = enemyStats[defences[i]].String;
             string[] elements = eleStr.Split(',');
@@ -29,11 +26,17 @@ public class damageCalc : UdonSharpBehaviour
         }
         double amplifier = 1;
         switch(resistance){
-            case 0: //  nullify
+            case 0: // nullify
                 amplifier *= 0;
                 break;
             case 1: // weak
                 amplifier *= 1.5;
+                if (!isDown){
+                    Dictionaries.setStat(mainDict.self, enemyStats["Name"], "isDown", true); // change the state of the enemy to downed if not already
+                }
+                else{
+                    Dictionaries.setStat(mainDict.self, enemyStats["Name"], "Ailment", "Dizzy") // make them dizzy if they were already downed
+                }
                 break;
             case 2: // resist
                 amplifier *= 0.5;
@@ -42,12 +45,13 @@ public class damageCalc : UdonSharpBehaviour
                 amplifier *= 1;
                 break;
         };
-        //Debug.Log("Amp: " + amplifier);
-        if (isDown){amplifier *= 1;}
+        // i forgot that i dont know how much the damage was affected by the downed status
+        if (isDown){amplifier *= 1;} // this will still be the old downed status which works for this
         amplifier *= skillAmp;
         return ((float) amplifier);
     }
-        // The main formula for damage calculation //
+    
+    // The main formula for damage calculation //
     public static int calcDamage(float power, float PLV, float eEndurance, float ELV, float moveDamage, float amplifier){
         // power works as either magic or strength
         float rngSwing = (float) Random.Range(-10, 10) / 100; // attacks are affected by a random 10% swing
@@ -107,7 +111,7 @@ public class damageCalc : UdonSharpBehaviour
             }
 
             // calculate damage
-            var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1);
+            var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1, mainDict);
             var damage = calcDamage(power, userStats["LVL"].Float, endurance, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
             //Debug.Log(damage);
             return (damage);
