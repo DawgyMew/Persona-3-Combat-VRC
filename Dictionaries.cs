@@ -46,6 +46,15 @@ public class Dictionaries : UdonSharpBehaviour
             Weak: Elements of these types will deal extra damage and knock them down.
 
             Skills: The skills that they are able to use.
+            Ailment: The current negative ailment
+            IsDown: Whether or not they are down and will take more damage from attacks
+            Stat Changes: How certain stats have been changed.
+                Stored as string in format of: "[stat changed][+ or -][number of turns left on the timer]" followed by the next stat seperated with a ,
+                                                atk+3,df-2
+                atk: attack, changes the power of the move used
+                df: defense, changes how much damage they will take
+                ev: evasion/accuracy, changes whether the user has better aim or is more likely to dodge an attack.
+                crit: critical hit chance, changes the likelyhood of hitting a critical hit with a physical skill
         */      
         {0, new DataDictionary(){ 
             {"Name", ""},
@@ -74,8 +83,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
         {1, new DataDictionary(){
             {"Name", "enemy1"}, // unique identifier
@@ -102,8 +110,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
+            {"Stat Changes", ""}, 
         }},
         {2, new DataDictionary(){
             {"Name", ""},
@@ -131,7 +138,6 @@ public class Dictionaries : UdonSharpBehaviour
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
         }},
         {3, new DataDictionary(){
             {"Name", ""},
@@ -159,7 +165,6 @@ public class Dictionaries : UdonSharpBehaviour
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
-            {"Stat Change Timers", ""}
         }}
     };
     // other players in the instance //
@@ -209,8 +214,6 @@ public class Dictionaries : UdonSharpBehaviour
         }}
     };
 
-    // no more activeEnemies dictionary crab rave
-
 
     // im gonna  scream why do i have to put this in here //
     // i wanted to have these dictionaries in seperate files but udon and unity are throwing a fit so here we are 1000 liunes added to dictionaries.cs
@@ -222,15 +225,18 @@ public class Dictionaries : UdonSharpBehaviour
                 Almighty - Magic but Funnier
                 Light, Darkness - Instant Kills
                 Recovery - Healing
+                SP Recovery - Recovers SP
                 Down - Makes the user no longer downed
                 Revive - Revive from death
                 Attack, Defense, Evasion, Crit Rate, Ailment Sus, All Stats - Stat Changes
                 Reflect Phys, Reflect Magic - Barriers that reflect physical/magic skills once
                 Fear, Panic, Distress, Poison, Charm, Rage, Ailments - Cause/Heal Ailments
                 HP Drain, SP Drain - Transfers HP/SP from the opponent to the user.
+                Counter - Passive, Chance to Reflect physical attacks
             Power: How much damage the attack does. (Healing power for recovery moves)
             Accuracy: How likely the move is to hit. (1.00 is guarenteed to hit(maybe not if evasion lowered))
             Cost: The amount of SP/Percentage of HP used when the move is used.
+                -1 is to pass through an exception
             Targets: Who the move will hit.
                 One/All: Opposing Team (Enemies)
                 Ally/Party: Team Using the ability (Party)
@@ -1693,11 +1699,886 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
             }},
-            {"Error", new DataDictionary(){ // return this if it cant be found
+            
+            // Passive Skills //
+            /* 
+                All Cost = 0
+                Power is the multiplier
+                    Negative Numbers is defensive
+                Resist, Repel, and Absorb will add it to the persona's list
+                    Add it when its iterating through the spells to display them
+                Times Hit indicates whether it will resist, repel, or absorb the attack
+                    1 - Resist
+                    2 - Null
+                    3 - Repel
+                    4 - Absorb
+                Accuracy is the chance that the skill will activate
+            */
+
+            /// Defence ///
+            // slash //
+            {"Dodge Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Slash", new DataDictionary(){
+                {"Element", "Slash"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Strike //
+            {"Dodge Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Strike", new DataDictionary(){
+                {"Element", "Strike"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Pierce //
+            {"Dodge Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Pierce", new DataDictionary(){
+                {"Element", "Pierce"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            
+            // Fire //
+            {"Dodge Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Fire", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            
+            // Ice //
+            {"Dodge Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Ice", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Elec //
+            {"Dodge Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Elec", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Wind //
+            {"Dodge Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", -2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Evade Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", -3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Absorb Wind", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 4},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Light //
+            {" Light", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 0.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Endure Light", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Light", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Light", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Light", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Darkness //
+            {"Survive Dark", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 0.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Endure Dark", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Resist Dark", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Null Dark", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 2},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Repel Dark", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 3},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            /// Offensive ///
+            // Fire //
+            {"Fire Boost", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 1.25},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Fire Amp", new DataDictionary(){
+                {"Element", "Fire"}, 
+                {"Power", 1.50},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Ice //
+            {"Ice Boost", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 1.25},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Ice Amp", new DataDictionary(){
+                {"Element", "Ice"}, 
+                {"Power", 1.50},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Elec //
+            {"Elec Boost", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 1.25},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Elec Amp", new DataDictionary(){
+                {"Element", "Elec"}, 
+                {"Power", 1.50},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Wind //
+            {"Wind Boost", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 1.25},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Wind Amp", new DataDictionary(){
+                {"Element", "Wind"}, 
+                {"Power", 1.50},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Light/Dark //
+            // increases the success rate of hama and mudo skills
+            // the way im doing this rn doesnt make the most sense but im tired
+            {"Hama Boost", new DataDictionary(){
+                {"Element", "Light"}, 
+                {"Power", 0},
+                {"Accuracy", 1.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Mudo Boost", new DataDictionary(){
+                {"Element", "Darkness"}, 
+                {"Power", 0},
+                {"Accuracy", 1.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // Ailments //
+            {"Fear Boost", new DataDictionary(){
+                {"Element", "Fear"}, 
+                {"Power", 0},
+                {"Accuracy", 1.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Panic Boost", new DataDictionary(){
+                {"Element", "Panic"}, 
+                {"Power", 0},
+                {"Accuracy", 1.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            /*
+            TODO: 
+                Null Fear
+                Null Panic
+                Null Poison,
+                Null Charm
+                Null Rage
+                Null Shock
+                Null Freeze
+                Unshaken Will - Asura Exclusive, Protects from all ailments
+                    I wonder what these do
+            */
+
+            /*
+            TODO:
+                These Skills auto activate at the start of a battle 
+                Buffs:
+                    Auto-Tarukaja
+                    Auto-Rakukaja
+                    Auto-Sukukaja
+                Debuffs:
+                    Auto-Mataru
+                    Auto-Maraku
+                    Auto-Masuku
+            */
+            
+            /// Recovery ///
+            // strengrthens recovery magic by 100% 
+            {"Divine Grace", new DataDictionary(){
+                {"Element", "Recovery"}, 
+                {"Power", 2},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // regen hp //
+            // these do stack :)
+            {"Regenerate 1", new DataDictionary(){
+                {"Element", "Recovery"}, 
+                {"Power", 0.02},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Regenerate 2", new DataDictionary(){
+                {"Element", "Recovery"}, 
+                {"Power", 0.04},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Regenerate 3", new DataDictionary(){
+                {"Element", "Recovery"}, 
+                {"Power", 0.06},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Spring of Life", new DataDictionary(){ // trismegistus exclusive
+                {"Element", "Recovery"}, 
+                {"Power", 0.08},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            // regen sp each turn //
+            // these also stack :)
+            {"Invigorate 1", new DataDictionary(){
+                {"Element", "SP Recovery"}, 
+                {"Power", 3},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Invigorate 2", new DataDictionary(){
+                {"Element", "SP Recovery"}, 
+                {"Power", 5},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Invigorate 3", new DataDictionary(){
+                {"Element", "SP Recovery"}, 
+                {"Power", 7},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            /// The Rest ///
+            /*
+            TODO:
+                Cool Breeze
+                Victory Cry
+                    Restores HP and SP after the battle
+                    touch up on these after the turn logic is built
+                Endure
+                Enduring Soul
+                    Restores health upon death once per battle
+                    these do stack with eachother
+            */
+            // Counter Skills //
+            {"Counter", new DataDictionary(){
+                {"Element", "Counter"}, 
+                {"Power", 0},
+                {"Accuracy", 0.15},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Counterstrike", new DataDictionary(){
+                {"Element", "Counter"}, 
+                {"Power", 0},
+                {"Accuracy", 0.30},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"High Counter", new DataDictionary(){
+                {"Element", "Counter"}, 
+                {"Power", 0},
+                {"Accuracy", 0.50},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            /*
+                Apt Pupil
+                    Increases users crit rate
+                Sharp Student
+                    Decreases chance to be hit by crits
+                Raging Tiger
+                    Doubles attack while enraged
+                Weapons Master
+                    Doubles damage dealt with weapons
+                    may add if i add weapons
+                Arms Master
+                Spell Master
+                    Halves cost for skills
+                Magic Skill up (Messiah)
+                    Strengthens all magical attacks, including almighty, by 25%
+
+            */
+            // no Alertness, Fast Retreat, Growth 1-3
+
+            // return this if the skill cannot be found //
+            {"Error", new DataDictionary(){ 
                 {"Cost", -1}
             }}
-            // passive skills are gonna be so much fun -.-
-            // make the attack menu not show skills with a cost of 0?
         }}};    
 
     public override void OnPlayerJoined(VRCPlayerApi player){
@@ -1758,6 +2639,12 @@ public class Dictionaries : UdonSharpBehaviour
     public static void setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
         var id = findID(dict, uStr);
         Debug.Log($"{newStat} replacing {statToChange} at id {id}");
+        dict[id].DataDictionary[statToChange] = newStat;
+    }
+
+    // changes the boolean //
+    public static void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat){
+        var id = findID(dict, uStr);
         dict[id].DataDictionary[statToChange] = newStat;
     }
     // returns an entire data dictionary segment //
@@ -1844,12 +2731,67 @@ public class Dictionaries : UdonSharpBehaviour
         }
     }
 
+    // returns all stat changes 
+    public static string[] getStatChanges(DataDictionary entityStats){
+        string statChangeStr = entityStats["Stat Changes"].String;
+        if (statChangeStr.Length != 0){
+            string[] statChanges = statChangeStr.Split(',');
+        }
+        else{
+            string[] arr = {}; // empty array
+            return (arr);
+        }
+    }
+    // returns specific stat changes as an array //
+    public static string[] getStatChanges(DataDictionary entityStats, string stat){
+        var statArr = getStatChanges(entityStats);
+        if (statArr.Length != 0){
+            foreach(string statChange in statArr){
+                string change = statChange[statChange.Length - 2].ToString();
+                string time = statChange[statChange.Length - 1].ToString();
+                string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
+                if (status.Equals(stat)){
+                    string[] statChangeArr = {status, change, time};
+                    return (statChangeArr); // [stat, change]
+                }
+            }
+            return (null);
+        }
+        else{
+            return (null);
+        }
+    }
+
+    // decreases all of the timers on one entries stat changes and repackages them //
+    public static void decreaseStatTimer(Dictionaries mainDict, string uStr){
+        string[] statChanges = Dictionaries.getArray(mainDict.self, uStr, "Stat Changes", "Name");
+        string[] newStats = new string[4];
+        int count = 0
+        for (int i = 0; i < statChanges.Length; i++){
+            string timeStr = statChanges[i][statChanges[i].Length - 1]; // get the number
+            int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
+            
+            // only add if theres time left on the timer
+            // stats are removed at the start of the turn
+            if (time > 0){
+                newStats[i] = (statChanges[i].Remove(statChanges[i].Length - 1) + time);
+                count += 1; 
+            }
+        }
+        string newStr = "";
+        if (newStats.Length != 0){
+            newStr = string.Join(",", newStats);
+        }
+        Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
+    }
+
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
         var skillType = Dictionaries.determineSkillType(skillInfo);
+        var targets = skillInfo["targets"].String;
         bool canUse;
         string strReturn = "";
         // Cost the user HP/SP for the skill //
@@ -1865,9 +2807,28 @@ public class Dictionaries : UdonSharpBehaviour
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
-            updateText.changeEnemyText(target, Dictionaries.getStat(mainDict.self, target, "HP"));
-            return (strReturn);
+            var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+            if (targets.Equals("One")){
+                if (damage != -1){
+                    mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
+                    updateText.changeEnemyText(target, "-" + damage + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                }
+                else{
+                    updateText.changeEnemyText(target, "miss");
+                }
+                return (strReturn);
+            }
+            else if (targets.Equals("Ally")){
+                int amtHeal = skillInfo["Power"].Int;
+                // Skills that heal //
+                if (amtHeal != 0){
+                    mainDict.changeNum(target, "HP", amtHeal, mainDict.self); // gonna have to change this one when adding syncing
+                }
+                return (strReturn);
+            }
+            else{ // if the skills target hasnt been added yet 
+                return (null);
+            }
         }
         else{
             return (null);

@@ -18,10 +18,10 @@ In Persona 3 and Persona 4, the damage is reduced by approximately 2/3 (The form
 https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/69351661
 
     (Ma)Tarukaja: Increase ally's attack (final) damage (not base power*) by 50% (stacked to 100% with Rakunda)
-    (Ma)Rakukaja: Increase ally's defense by 2/3 (stacked to 1/2 with Tarunda)
+    (Ma)Rakukaja: Increase ally's defense by 2/3 [.66] (stacked to 1/2 [.50] with Tarunda)
     (Ma)Sukukaja: No specific data available.
 
-    (Ma)Tarunda: Decrease enemy's attack by 2/3 (stacked to 1/2 with Rakukaja)
+    (Ma)Tarunda: Decrease enemy's attack by 2/3 [.66] (stacked to 1/2 [.50] with Rakukaja)
     (Ma)Rakunda: Decrease enemy's defense by 50% (stacked to 100% with Tarukaja)
     (Ma)Sukunda: No specific data available.
 
@@ -29,3 +29,27 @@ https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/693
 *Note that, Mind/Power Charge make the base power of an attack increased to 2.5x of the usual, and not increasing the (usual) numerical damage dealt. Of course, by increasing the base power, the numerical damage dealt will inevitably increase as well. *sigh* I'm not making much sense here, do I?
 
 Someone playing with the emulator might be able to confirm those, and find the approximate multipliers for Sukunda/Sukukaja skills. Since there are multiplier values provided for Passive Skills [evasions], a rough comparison could be made.
+
+-- hi --
+Dodges can only happen on turns when you attack with your weapon, you will be downed if the opponent Dodges
+
+-- luck --
+Crit chance, ailment chance, ailment recovery.  
+
+I think they just work on normal attacks, and I've tested this lately and I THINK (notice THINK) that weapons with low crit have 10%, med crit 15% and high crit 20%.
+
+- Without any factors you have a 5% chance of doing a critical on normal attacks.
+- If you use a Physical skill, check the skill's own critical rate.
+- No idea how elemental attacks work though (they do critical). When your character yells the Persona's name, it means it landed a critical on AT LEAST one foe (if hitting multiple targets) Elemental criticals are sure-hit. Meaning if you cast Mahamaon and MC yells out the persona's name, you can be sure at least one enemy will die.
+
+With Apt Pupil and high critical rate, I crit nearly half the time, meaning 40% would be around those results.
+
+I still need to test if Revolution adds more to that or not. If it did you could very end up with a 80% crit rate. Also about those two skills, again with the testing I've done. I think they work like this:
+- Rebellions 1.5x the critical rate
+- Revolution double the critical rate
+
+This become interesting since the best power for physical skills is around 600 with 10% critical rate.
+A 400 power weapon with high critical coupled with the weapon master for it doubles the power yielding a 800 power 20% critical rate attack.
+
+God hand 600 power 20% crit with Apt Pupil
+High Critical sword 800 power with 1h Sword Master 40% crit with Apt Pupil
