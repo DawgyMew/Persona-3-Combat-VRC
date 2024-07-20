@@ -113,31 +113,32 @@ public class Dictionaries : UdonSharpBehaviour
             {"Stat Changes", ""}, 
         }},
         {2, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
+            // currently just a clone of enemy1
+            {"Name", "enemy2"}, // unique identifier
+            {"HP", 242},
+            {"Max HP", 242},
+            {"SP", 138},
+            {"Max SP", 138},
+            {"LVL", 35},
             // persona stats //
-            {"pName", ""},
-            {"St", 2},
-            {"Mg", 2},
-            {"En", 2},
-            {"Ag", 2},
-            {"Lu", 2},
+            {"pName", "Shouting Tiara"},
+            {"St", 19},
+            {"Mg", 31},
+            {"En", 19},
+            {"Ag", 22},
+            {"Lu", 21},
             // persona type affinities //
             {"Strengths", ""},
-            {"Nullifies", ""},
-            {"Absorb", ""},
+            {"Nullifies", "Light"},
+            {"Absorb", "Fire"},
             {"Reflect", ""},
-            {"Weak", ""},
+            {"Weak", "Ice,Dark"},
             // skills //
-            {"Skills", ""},
+            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""},
+            {"Stat Changes", ""}, 
         }},
         {3, new DataDictionary(){
             {"Name", ""},
@@ -2587,20 +2588,26 @@ public class Dictionaries : UdonSharpBehaviour
             //setStat(others, "", "Name", player.displayName);
         }
         else{
-            setStat(others, "", "Name", player.displayName);
+            bool space = setStat(others, "", "Name", player.displayName);
+            if (!space){
+                Debug.Log("Haha " + player.displayName + " cant fit in the dictionary haha");
+            }
         }
         // add the player to the dictionary when they join //
         
     }
 
     public override void OnPlayerLeft(VRCPlayerApi player){
-        setStat(others, player.displayName, "Name", "");
+        if (!player.isLocal){ // i dont need to remove the local player from the dictionary because thats not the local players problem anymore :->
+            setStat(others, player.displayName, "Name", "");
+        }
     }
 
-    /// METHODS TO INTERACT WITH THE DICTIONARY //
-
+    /// METHODS TO INTERACT WITH THE DICTIONARY ///
+    
     // Goes through the list of keys to find out which id stores the value //
     // defaults to "Name" because thats the most likely to need to find an id of //
+
     public static int findID(DataDictionary dict, string strToFind, string keyToSrch = "Name"){
         DataList keys = dict.GetKeys();
         keys.Sort();
@@ -2636,10 +2643,14 @@ public class Dictionaries : UdonSharpBehaviour
         return (strStat.Split(','));
     }
     // replaces the current stat with a new string //
-    public static void setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
+    public static bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
         var id = findID(dict, uStr);
-        Debug.Log($"{newStat} replacing {statToChange} at id {id}");
-        dict[id].DataDictionary[statToChange] = newStat;
+        //Debug.Log($"{newStat} replacing {statToChange} at id {id}");
+        if (id != -1){
+            dict[id].DataDictionary[statToChange] = newStat;
+            return true;
+        }
+        else{return false;}
     }
 
     // changes the boolean //
@@ -2663,6 +2674,19 @@ public class Dictionaries : UdonSharpBehaviour
         else{
             return (dict["Error"].DataDictionary);
         }
+    }
+    // returns the number of active entities in the self dicitonary //
+    // check which ones have names
+    // i can maybe update this one for the other players for when they attack the entire party
+    public static int countActive(Dictionaries mainDict, DataDictionary dict){
+        var count = 0;
+        for (int i = 0; i < dict.Count; i++){
+            var name = Dictionaries.getStat(dict, i, "Name");
+            if (name != ""){
+                count++;
+            }
+        }
+        return (count);
     }
     ////////
 
@@ -2712,7 +2736,9 @@ public class Dictionaries : UdonSharpBehaviour
             return (false);
         }
     }
-    
+    public static void removeEnemy(){
+        
+    }
     public static string determineSkillType(Dictionaries mainDict, string skill){
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
         if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
@@ -2736,6 +2762,7 @@ public class Dictionaries : UdonSharpBehaviour
         string statChangeStr = entityStats["Stat Changes"].String;
         if (statChangeStr.Length != 0){
             string[] statChanges = statChangeStr.Split(',');
+            return (statChanges);
         }
         else{
             string[] arr = {}; // empty array
@@ -2745,6 +2772,7 @@ public class Dictionaries : UdonSharpBehaviour
     // returns specific stat changes as an array //
     public static string[] getStatChanges(DataDictionary entityStats, string stat){
         var statArr = getStatChanges(entityStats);
+        string[] empty = new string[3];
         if (statArr.Length != 0){
             foreach(string statChange in statArr){
                 string change = statChange[statChange.Length - 2].ToString();
@@ -2766,9 +2794,9 @@ public class Dictionaries : UdonSharpBehaviour
     public static void decreaseStatTimer(Dictionaries mainDict, string uStr){
         string[] statChanges = Dictionaries.getArray(mainDict.self, uStr, "Stat Changes", "Name");
         string[] newStats = new string[4];
-        int count = 0
+        int count = 0;
         for (int i = 0; i < statChanges.Length; i++){
-            string timeStr = statChanges[i][statChanges[i].Length - 1]; // get the number
+            string timeStr = statChanges[i][statChanges[i].Length - 1].ToString(); // get the number
             int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
             
             // only add if theres time left on the timer
@@ -2791,7 +2819,7 @@ public class Dictionaries : UdonSharpBehaviour
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
         var skillType = Dictionaries.determineSkillType(skillInfo);
-        var targets = skillInfo["targets"].String;
+        var skillTarget = skillInfo["Targets"].String;
         bool canUse;
         string strReturn = "";
         // Cost the user HP/SP for the skill //
@@ -2807,22 +2835,39 @@ public class Dictionaries : UdonSharpBehaviour
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
-            if (targets.Equals("One")){
-                if (damage != -1){
-                    mainDict.changeNum(target, "HP", damage * -1, mainDict.self);
-                    updateText.changeEnemyText(target, "-" + damage + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+            
+            if (skillTarget.Equals("One")){
+                var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+                if (damageDealt != -1){
+                    mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self);
+                    updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                 }
                 else{
-                    updateText.changeEnemyText(target, "miss");
+                    updateText.changeEnemyText(target, "miss" + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                 }
                 return (strReturn);
             }
-            else if (targets.Equals("Ally")){
+            else if (skillTarget.Equals("Ally")){
                 int amtHeal = skillInfo["Power"].Int;
                 // Skills that heal //
                 if (amtHeal != 0){
                     mainDict.changeNum(target, "HP", amtHeal, mainDict.self); // gonna have to change this one when adding syncing
+                }
+                return (strReturn);
+            }
+            else if (skillTarget.Equals("All")){
+                var enemyCount = Dictionaries.countActive(mainDict, mainDict.self) - 1;
+                for (int i = 1; i <= enemyCount; i++){
+                    // calculate damage for the enemy
+                    var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+                    // this part could probably be its own function v
+                    if (damageDealt != -1){
+                        mainDict.changeNum("enemy" + i, "HP", damageDealt * -1, mainDict.self);
+                        updateText.changeEnemyText("enemy" + i, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
+                        }
+                    else{
+                        updateText.changeEnemyText("enemy" + i, "miss" + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
+                    }   
                 }
                 return (strReturn);
             }

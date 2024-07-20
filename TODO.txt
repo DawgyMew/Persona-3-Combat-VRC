@@ -1,7 +1,5 @@
 * '--' means the feature has been implemented but not currently tested.
 
-!:
-    Fix the error that happens in the actual vrchat client aaaaaaaaaaa
 
 General:
     add to the dictionary of preset personas and enemies
@@ -9,7 +7,6 @@ General:
     code ailments
     -- code stat changes
     finish passive skills
-    -- code accuracy on moves
     code turn order based on agility
     code evasion effects on dodging and hitting
     implement critical hits on physical moves
@@ -17,7 +14,6 @@ General:
 
 Unity Reliant:
     Evoker:
-        Display the menu of skills -- in progress on different machine
         allow the player to select a skill
         allow the player to select an enemy
         allow the player to summon their persona
@@ -30,6 +26,11 @@ Unity Reliant:
     Enemies:
         Create spawning systems for the enemies
 
+Networking:
+    Figure out how network syncing even works
+        if the enemy targets another player or all players calculate that on the local machine and share a packet with what changed??
+    Sync Players who join late with all the stats of everyone else in their dictionaries
+
 
 Research:
     figure out enemy ai
@@ -37,5 +38,3 @@ Research:
         generally try to knock down your teammates by exploiting weaknesses to continue the '1 more' chain
         might try to target the protagonist but that doesnt matter here :>
         make a temp cube that simulates an enemy turn
-    figure out network syncing
-        if the enemy targets another player or all players calculate that on the local machine and share a packet with what changed??

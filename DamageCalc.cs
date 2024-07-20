@@ -9,6 +9,8 @@ using System.Linq;
 public class damageCalc : UdonSharpBehaviour
 {
     public Dictionaries statDict;
+
+    
     // determines a number for the damage to be multiplied by
     public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp, Dictionaries mainDict){
         string[] defences = {"Strengths", "Nullifies", "Absorb", "Reflect", "Weak"};
@@ -26,20 +28,26 @@ public class damageCalc : UdonSharpBehaviour
         }
         double amplifier = 1;
         switch(resistance){
-            case 0: // nullify
+            case 0: // strengths
+                amplifier *= 0.5f;
+                break;
+            case 1: // Nulls
                 amplifier *= 0;
                 break;
-            case 1: // weak
-                amplifier *= 1.5;
+            case 2: // Absorb
+                amplifier *= -1;
+                break;
+            case 3: // Reflect
+                amplifier *= 1;
+                break;
+            case 4: // weak
+                amplifier *= 1.5f;
                 if (!isDown){
-                    Dictionaries.setStat(mainDict.self, enemyStats["Name"], "isDown", true); // change the state of the enemy to downed if not already
+                    Dictionaries.setStat(mainDict.self, enemyStats["Name"].String, "isDown", true); // change the state of the enemy to downed if not already
                 }
                 else{
-                    Dictionaries.setStat(mainDict.self, enemyStats["Name"], "Ailment", "Dizzy") // make them dizzy if they were already downed
+                    Dictionaries.setStat(mainDict.self, enemyStats["Name"].String, "Ailment", "Dizzy"); // make them dizzy if they were already downed
                 }
-                break;
-            case 2: // resist
-                amplifier *= 0.5;
                 break;
             default:
                 amplifier *= 1;
@@ -83,33 +91,40 @@ public class damageCalc : UdonSharpBehaviour
             int targetId = Dictionaries.findID(mainDict.self, targetName); 
             DataDictionary targetStats = Dictionaries.getDict(mainDict.self, targetId);
             // Determind if the move is physical or magical //
-            int power = 0;
+            float power = 0;
             if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){
-                power = userStats["St"].Int; 
+                power = userStats["St"].Float; 
             }
             else{
-                power = userStats["Mg"].Int; 
+                power = userStats["Mg"].Float; 
             }
 
             // apply stat changes //
+            string change;
             // check user attack
-            var change = Dictionaries.getStatChanges("atk", userStats)[1];
-            if (change.Equals("+")){
-                power *= 1.50;
-            }
-            else if (change.Equals("-")){
-                power *= .50;
+            var statDif = Dictionaries.getStatChanges(userStats, "atk");
+            if (statDif != null){
+                change = statDif[1];
+                if (change.Equals("+")){
+                    power *= 1.50f;
+                }
+                else if (change.Equals("-")){
+                    power *= .50f;
+                }
             }
             // check target defence 
-            var change = Dictionaries.getStatChanges("df", targetStats)[1];
             float endurance = targetStats["En"].Float;
-            if (change.Equals("+")){
-                endurance *= 1.66;
+            statDif = Dictionaries.getStatChanges(targetStats, "df");
+            if (statDif != null){
+                change = statDif[1];
+                if (change.Equals("+")){
+                    endurance *= 1.66f;
+                }
+                else if (change.Equals("-")){
+                    endurance *= .66f;
+                }
             }
-            else if (change.Equals("-")){
-                endurance *= .66;
-            }
-
+            int powerInt = (int) power;
             // calculate damage
             var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1, mainDict);
             var damage = calcDamage(power, userStats["LVL"].Float, endurance, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);

@@ -10,13 +10,14 @@ public class displaySkills : UdonSharpBehaviour
     public TextMeshProUGUI txtBox;
 
 
-    void Awake(){
-        dictionary = GameObject.Find("Dictionary").GetComponent<Dictionaries>();
-    }
+    // it did not like when i put this in awake so now it runs everytime the local player picks up an evoker yipee
     public override void OnPickup(){
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
-            Debug.Log(playerName);
+            var dictionaryGO = GameObject.Find("Dictionary");
+            dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
+            
+            //Debug.Log(playerName);
             var playerSkills = Dictionaries.getArray(dictionary.self, playerName, "Skills", "Name"); // get the array of skills the player has
             int i = 1;
             string leftText = "";
