@@ -10,11 +10,13 @@ public class shoot : UdonSharpBehaviour
     //[SerializeField] public TextMeshProUGUI textBox; // get tmp objec
     //[SerializeField] public TextMeshProUGUI test;
     [SerializeField] private GameObject maw;
-    public int shots = 0;
     public Dictionaries dictionary;
+    public displaySkills ds;
     public barManager manager;
-    
+    public int skillSel = 0;
     RaycastHit hit; // object the raycast hit
+    private int lastTimeUsed = 0; // use to add a buffer for the change of moves
+    private int timeToWait = 100; //ms
 
     // no more awake because the ACTUAL vrchat client was throwing a fit :)
     // isnt the most efficient to run it like this probably but plink
@@ -33,8 +35,39 @@ public class shoot : UdonSharpBehaviour
     // acts when the holder "shoots" the gun //
     public override void OnPickupUseDown(){
         fire(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer); //player holding the evoker
+        GetComponent<VRC.SDKBase.VRC_Pickup>().PlayHaptics();
     }
-
+    
+    /// Move Choosing ///
+    // uses the right stick in vr to change which move the user has selected //
+    // sucks in flat but i might fix that later lel
+    public override void InputLookVertical(float value, VRC.Udon.Common.UdonInputEventArgs args){
+        //Debug.Log("Last Time Used: " + lastTimeUsed + " | Time - " + timeToWait + ": " + (Networking.GetServerTimeInMilliseconds() - timeToWait));
+        var change = 0;
+        var player = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer;
+        if (player != null){
+            if (true){
+                if ((Networking.GetServerTimeInMilliseconds() - timeToWait) > lastTimeUsed){ // create a buffer to make selection easier?
+                    lastTimeUsed = Networking.GetServerTimeInMilliseconds(); 
+                    if (!player.IsUserInVR()){}
+                    if (value <= -0.6){
+                        change = 1;
+                    }
+                    else if(value >= 0.6){
+                        change = -1;
+                    }
+                    else{
+                        change = 0;
+                    }
+                    changeSelMove(player, change, dictionary);
+                    }
+                    else{
+                        //Debug.Log("Too Soon");
+                    }
+                }
+                //Debug.Log(change);
+            }
+    }
     
     // sends a raycast to check if the target will be hit //
     // helpful since this wont be actually shooting bullets :3 //
@@ -42,7 +75,7 @@ public class shoot : UdonSharpBehaviour
         // currently hard coded into only using bufula on enemy1 //
         string playerName = player.displayName;
         string enemy = "enemy1";
-        string skill = "Gale Slash";
+        string skill = getMove(playerName, skillSel, dictionary);
         var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill);
         //Debug.Log(statUsed);
         if (statUsed != null){ // always hp or sp or null
@@ -57,5 +90,26 @@ public class shoot : UdonSharpBehaviour
             var hitObj = hit.collider.gameObject;
         }
         */
+    }
+
+    // return the string with the name of the skill to use //
+    private static string getMove(string user, int moveNum, Dictionaries dictionary){
+        string[] skillArr = Dictionaries.getArray(dictionary.self, user, "Skills", "Name");
+        return (skillArr[moveNum]);
+    }
+    // Returns the number of skills the holder has //
+    private static int getMoveCount(string user, Dictionaries dictionary){
+        return (Dictionaries.getArray(dictionary.self, user, "Skills", "Name").Length - 1);
+    }
+    
+    private void changeSelMove(VRCPlayerApi player, int change, Dictionaries dictionary){
+        if (change != 0){ds.changeSel(change);}
+        skillSel += change;
+        if (skillSel < 0){skillSel = 0;}
+        else{
+            int moveCount = getMoveCount(player.displayName, dictionary);
+            if (skillSel > moveCount){skillSel = moveCount;}
+            }
+        ds.displayDesc(dictionary, getMove(player.displayName, skillSel, dictionary), player.displayName);
     }
 }

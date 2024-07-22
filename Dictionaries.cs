@@ -23,6 +23,8 @@ public class Dictionaries : UdonSharpBehaviour
     public TextMeshPro board;
     public updateText textUpdater;
     public damageCalc damage;
+
+    public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"};
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -46,6 +48,7 @@ public class Dictionaries : UdonSharpBehaviour
             Weak: Elements of these types will deal extra damage and knock them down.
 
             Skills: The skills that they are able to use.
+            Passive: The skills that affect the player but they cannot cast.
             Ailment: The current negative ailment
             IsDown: Whether or not they are down and will take more damage from attacks
             Stat Changes: How certain stats have been changed.
@@ -78,7 +81,8 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri"},
+            {"Skills", "Agilao,Gale Slash,Mudo,Bufula,Marakunda,Re Patra,Rakukaja"},
+            {"Passive", "Ice Boost"},
 
             // other //
             {"Ailment", ""},
@@ -2290,7 +2294,7 @@ public class Dictionaries : UdonSharpBehaviour
             // Ice //
             {"Ice Boost", new DataDictionary(){
                 {"Element", "Ice"}, 
-                {"Power", 1.25},
+                {"Power", 1.25f},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
                 {"Targets", "Self"},
@@ -2574,7 +2578,7 @@ public class Dictionaries : UdonSharpBehaviour
                     Strengthens all magical attacks, including almighty, by 25%
 
             */
-            // no Alertness, Fast Retreat, Growth 1-3
+            // no Alertness, Fast Retreat, Growth 1-3, trafuri
 
             // return this if the skill cannot be found //
             {"Error", new DataDictionary(){ 
@@ -2642,6 +2646,7 @@ public class Dictionaries : UdonSharpBehaviour
         var strStat = getStat(dict, uStr, statToShow, key);
         return (strStat.Split(','));
     }
+
     // replaces the current stat with a new string //
     public static bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
         var id = findID(dict, uStr);
@@ -2816,7 +2821,7 @@ public class Dictionaries : UdonSharpBehaviour
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
-        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary;
+        DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary; // this will error if a bad spell is sent thru, i count check if the spell is in the list but that would be costly
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
         var skillType = Dictionaries.determineSkillType(skillInfo);
         var skillTarget = skillInfo["Targets"].String;

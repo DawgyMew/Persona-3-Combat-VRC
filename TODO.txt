@@ -2,19 +2,17 @@
 
 
 General:
-    add to the dictionary of preset personas and enemies
-    -- code healing spells functionality
+    maybe add to the dictionary of preset personas and enemies
     code ailments
-    -- code stat changes
     finish passive skills
     code turn order based on agility
     code evasion effects on dodging and hitting
     implement critical hits on physical moves
     complete the turn logic, turn.txt
+    Make healing not go over the max health
 
 Unity Reliant:
     Evoker:
-        allow the player to select a skill
         allow the player to select an enemy
         allow the player to summon their persona
         show what ailments the player has
