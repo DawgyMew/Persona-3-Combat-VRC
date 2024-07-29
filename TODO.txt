@@ -1,4 +1,5 @@
 * '--' means the feature has been implemented but not currently tested.
+* _ means the feature is not as essential
 
 
 General:
@@ -14,11 +15,15 @@ General:
 Unity Reliant:
     Evoker:
         allow the player to select an enemy
+            improve circle that appears over the enemy you are selecting
+            _show stat changes of the enemy you are targeting
+            
+            if using a move that affects your teamate have a different counter when you are hovering over the spell
         allow the player to summon their persona
         show what ailments the player has
-        Less Essential:
-            Check current persona's stats
-            check status of other players
+        
+        _Check current persona's stats
+        _check status of other players
     Persona:
         Assign or let players choose a persona
     Enemies:

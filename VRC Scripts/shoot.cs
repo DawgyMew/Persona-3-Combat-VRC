@@ -12,10 +12,13 @@ public class shoot : UdonSharpBehaviour
     [SerializeField] private GameObject maw;
     public Dictionaries dictionary;
     public displaySkills ds;
+    public selectEnemy se;
     public barManager manager;
-    public int skillSel = 0;
+    public int skillSel = 0; // the current index of the skill to select
+    public int enemySel = 0; // the current enemy to target
     RaycastHit hit; // object the raycast hit
-    private int lastTimeUsed = 0; // use to add a buffer for the change of moves
+    private int moveTimeUsed = 0; // use to add a buffer for the change of moves
+    //private int enemySelTime = 0; // make the jump not run twice
     private int timeToWait = 100; //ms
 
     // no more awake because the ACTUAL vrchat client was throwing a fit :)
@@ -27,9 +30,13 @@ public class shoot : UdonSharpBehaviour
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
             var dictionaryGO = GameObject.Find("Dictionary");
             dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
+            
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
             manager.updateValue("HP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "HP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max HP"))));
             manager.updateValue("SP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "SP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max SP"))));
+
+            var seg = GameObject.Find("enemySelection");
+            se = (selectEnemy)seg.GetComponent(typeof(UdonBehaviour));
         }
     }
     // acts when the holder "shoots" the gun //
@@ -42,13 +49,13 @@ public class shoot : UdonSharpBehaviour
     // uses the right stick in vr to change which move the user has selected //
     // sucks in flat but i might fix that later lel
     public override void InputLookVertical(float value, VRC.Udon.Common.UdonInputEventArgs args){
-        //Debug.Log("Last Time Used: " + lastTimeUsed + " | Time - " + timeToWait + ": " + (Networking.GetServerTimeInMilliseconds() - timeToWait));
+        //Debug.Log("Last Time Used: " + moveTimeUsed + " | Time - " + timeToWait + ": " + (Networking.GetServerTimeInMilliseconds() - timeToWait));
         var change = 0;
         var player = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer;
         if (player != null){
             if (true){
-                if ((Networking.GetServerTimeInMilliseconds() - timeToWait) > lastTimeUsed){ // create a buffer to make selection easier?
-                    lastTimeUsed = Networking.GetServerTimeInMilliseconds(); 
+                if ((Networking.GetServerTimeInMilliseconds() - timeToWait) > moveTimeUsed){ // create a buffer to make selection easier?
+                    moveTimeUsed = Networking.GetServerTimeInMilliseconds(); 
                     if (!player.IsUserInVR()){}
                     if (value <= -0.6){
                         change = 1;
@@ -68,13 +75,22 @@ public class shoot : UdonSharpBehaviour
                 //Debug.Log(change);
             }
     }
+    // used to change which enemy the user is going to attack //
+    public override void InputJump(bool value, VRC.Udon.Common.UdonInputEventArgs args){
+        if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer != null && value){
+            enemySel = (enemySel + 1) % (Dictionaries.countActive(dictionary, dictionary.self) - 1);
+            se.moveSelect(Dictionaries.getStat(dictionary.self, enemySel + 1, "Name"));
+        }
+    }
     
     // sends a raycast to check if the target will be hit //
     // helpful since this wont be actually shooting bullets :3 //
     private void fire(VRCPlayerApi player){
         // currently hard coded into only using bufula on enemy1 //
+        se.hide();
         string playerName = player.displayName;
-        string enemy = "enemy1";
+        string enemy = Dictionaries.getStat(dictionary.self, enemySel + 1, "Name");
+        Debug.Log(enemy);
         string skill = getMove(playerName, skillSel, dictionary);
         var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill);
         //Debug.Log(statUsed);

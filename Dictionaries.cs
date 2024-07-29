@@ -2693,6 +2693,8 @@ public class Dictionaries : UdonSharpBehaviour
         }
         return (count);
     }
+
+    
     ////////
 
     public void displayPlayers(){
@@ -2816,6 +2818,11 @@ public class Dictionaries : UdonSharpBehaviour
             newStr = string.Join(",", newStats);
         }
         Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
+    }
+
+    public static Vector3 getLocation(string name){
+        GameObject creature = GameObject.Find(name);
+        return creature.transform.position;
     }
 
     // pass on to the damage calc script //
