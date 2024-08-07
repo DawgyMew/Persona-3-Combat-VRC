@@ -11,15 +11,26 @@ using TMPro;
 public class Capsule : UdonSharpBehaviour
 {
     public Dictionaries dictionaries;
+    public GameObject syncText;
+    public GameObject syncText2;
+    [UdonSynced] private bool textShown;
     
     public override void Interact(){
         //Debug.Log("meow");
-        SendCustomNetworkEvent(NetworkEventTarget.All, nameof(Plink));
-        Plink();
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Plink");
+        //Plink();
         //dictionaries.displayContents();
     }
 
-    private void Plink(){
+    // this needed to be public .-.
+    public void Plink(){
+        textShown = !textShown;
+        syncText.SetActive(textShown);
+        syncText2.SetActive(textShown);
         dictionaries.displayPlayers();
+    }
+    public override void OnDeserialization(){
+        syncText.SetActive(textShown);
+        syncText2.SetActive(textShown);
     }
 }

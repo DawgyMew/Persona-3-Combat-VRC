@@ -12,19 +12,21 @@ using TMPro;
 
 /*
     Local Info:
-        self: Information on the local player (you!) and the active enemies
-    Players:
-        others: Information displayed about the remote players (not you).
+        self: Information on the local player (you!) and the active enemies and also basic information on the other players.
     Skills: 
         skills: Full Dictionary containing every skill in persona 3
 */
 public class Dictionaries : UdonSharpBehaviour
 {
     public TextMeshPro board;
+    public GameObject hi; // dummy object
     public updateText textUpdater;
+    public networking network;
     public damageCalc damage;
 
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"};
+    // Place to Reference for the IDs of the stats that sync
+    public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ailment", "isDown", "Stat Changes"};
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -81,14 +83,15 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Agilao,Gale Slash,Mudo,Bufula,Marakunda,Re Patra,Rakukaja"},
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
             {"Passive", "Ice Boost"},
-
+        
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
+        // enemies //
         {1, new DataDictionary(){
             {"Name", "enemy1"}, // unique identifier
             {"HP", 242},
@@ -145,7 +148,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Stat Changes", ""}, 
         }},
         {3, new DataDictionary(){
-            {"Name", ""},
+            {"Name", "_"}, // empty placehilder 
             {"HP", 1},
             {"Max HP", 1},
             {"SP", 2},
@@ -170,54 +173,86 @@ public class Dictionaries : UdonSharpBehaviour
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
+        }},
+        {4, new DataDictionary(){
+            {"Name", "_"},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"St", 2},
+            {"Mg", 2},
+            {"En", 2},
+            {"Ag", 2},
+            {"Lu", 2},
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", ""},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""},
+        }},
+        
+        // other players //
+
+        {5, new DataDictionary(){
+            {"Name", ""},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"Ag", 2},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
+        }},
+        {6, new DataDictionary(){
+            {"Name", ""},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"Ag", 2},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
+        }},
+        {7, new DataDictionary(){
+            {"Name", ""},
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
+            // persona stats //
+            {"pName", ""},
+            {"Ag", 2},
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}
         }}
     };
     // other players in the instance //
     // dont need to transmit as much data since the user most likely wont have to see the other stats
-    public DataDictionary others = new DataDictionary(){
-        {0, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
-            // persona stats //
-            {"pName", ""},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }},
-        {1, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
-            // persona stats //
-            {"pName", ""},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }},
-        {2, new DataDictionary(){
-            {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
-            // persona stats //
-            {"pName", ""},
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}
-        }}
-    };
+    // no more others dictionary :D
 
 
     // im gonna  scream why do i have to put this in here //
@@ -2592,7 +2627,7 @@ public class Dictionaries : UdonSharpBehaviour
             //setStat(others, "", "Name", player.displayName);
         }
         else{
-            bool space = setStat(others, "", "Name", player.displayName);
+            bool space = setStat(self, "", "Name", player.displayName); // was different when there was a seperate dictionary for others
             if (!space){
                 Debug.Log("Haha " + player.displayName + " cant fit in the dictionary haha");
             }
@@ -2603,7 +2638,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public override void OnPlayerLeft(VRCPlayerApi player){
         if (!player.isLocal){ // i dont need to remove the local player from the dictionary because thats not the local players problem anymore :->
-            setStat(others, player.displayName, "Name", "");
+            setStat(self, player.displayName, "Name", "");
         }
     }
 
@@ -2687,7 +2722,7 @@ public class Dictionaries : UdonSharpBehaviour
         var count = 0;
         for (int i = 0; i < dict.Count; i++){
             var name = Dictionaries.getStat(dict, i, "Name");
-            if (name != ""){
+            if (name != "" || name != "_"){
                 count++;
             }
         }
@@ -2699,21 +2734,23 @@ public class Dictionaries : UdonSharpBehaviour
 
     public void displayPlayers(){
         string displayText = "";
+        /*
         var selfDict = getDict(self, 0);
         DataList selfKeys = selfDict.GetKeys();
         for (int i = 0; i < selfKeys.Count; i++){
             displayText += selfKeys[i] + ": " + selfDict[selfKeys[i]] + " "; 
         }
         displayText += "\n";
-        DataList keys = others.GetKeys();
+        */
+        DataList keys = self.GetKeys();
         keys.Sort();
 
         for (int i = 0; i < keys.Count; i++){
             displayText += i + ". ";
-            if (others.TryGetValue(i, TokenType.DataDictionary, out DataToken dict)){
+            if (self.TryGetValue(i, TokenType.DataDictionary, out DataToken dict)){
                 DataList newKeys = dict.DataDictionary.GetKeys();
                 for (int j = 0; j < newKeys.Count; j++){
-                    displayText += newKeys[j].String + ": " + getStat(others, i, newKeys[j].String) + " ";
+                    displayText += newKeys[j].String + ": " + getStat(self, i, newKeys[j].String) + " ";
                 }
             }
             displayText += "\n";
@@ -2736,6 +2773,7 @@ public class Dictionaries : UdonSharpBehaviour
             }
             num = intNum.ToString(); // convert back to string :>
             setStat(dictToChange, uName, numKey, num); // change contents of dict
+            Debug.Log("Changed " + numKey + "!");
             displayPlayers(); // update board
             return (true);
         }
@@ -2743,8 +2781,9 @@ public class Dictionaries : UdonSharpBehaviour
             return (false);
         }
     }
+
     public static void removeEnemy(){
-        
+        // add this
     }
     public static string determineSkillType(Dictionaries mainDict, string skill){
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
@@ -2827,7 +2866,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill){
+    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, networking ne, VRCPlayerApi player){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary; // this will error if a bad spell is sent thru, i count check if the spell is in the list but that would be costly
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
         var skillType = Dictionaries.determineSkillType(skillInfo);
@@ -2851,6 +2890,7 @@ public class Dictionaries : UdonSharpBehaviour
             if (skillTarget.Equals("One")){
                 var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
                 if (damageDealt != -1){
+                    ne.changeNumO(mainDict, target, "HP", damageDealt, true, player);
                     mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self);
                     updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                 }
@@ -2890,6 +2930,9 @@ public class Dictionaries : UdonSharpBehaviour
         else{
             return (null);
         }
-        
+    }
+    public void networkTest(){
+        Debug.Log("test sent");
+        network.KSCNE("test", null, Networking.GetOwner(hi));
     }
 }

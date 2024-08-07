@@ -1,6 +1,12 @@
 * '--' means the feature has been implemented but not currently tested.
 * _ means the feature is not as essential
 
+Bugs:
+    Scroll doesnt work in multiplayer
+    CountActive hasnt been updated with the new self dictionary changes in multiplayer
+        attacks targeting all break
+        changing selection from the last enemy back to the first breaks
+    The 
 
 General:
     maybe add to the dictionary of preset personas and enemies
@@ -28,11 +34,15 @@ Unity Reliant:
         Assign or let players choose a persona
     Enemies:
         Create spawning systems for the enemies
+        remove the enemies when they die
 
 Networking:
-    Figure out how network syncing even works
-        if the enemy targets another player or all players calculate that on the local machine and share a packet with what changed??
-    Sync Players who join late with all the stats of everyone else in their dictionaries
+    implement network events for more parts of the project
+    have a way to keep the player order in the same order for all players
+        maybe a shared array?
+    pain
+    Sync Players who join late with all the stats of everyone else in their dictionaries oh no
+        maybe put them in jail until the battles over?
 
 
 Research:

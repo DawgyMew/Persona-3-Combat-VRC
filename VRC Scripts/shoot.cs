@@ -13,6 +13,7 @@ public class shoot : UdonSharpBehaviour
     public Dictionaries dictionary;
     public displaySkills ds;
     public selectEnemy se;
+    public networking ne;
     public barManager manager;
     public int skillSel = 0; // the current index of the skill to select
     public int enemySel = 0; // the current enemy to target
@@ -27,16 +28,22 @@ public class shoot : UdonSharpBehaviour
 
     // adjusts the hp and sp bar whenever someone picks up the evoker //
     public override void OnPickup(){
-        if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
-            var dictionaryGO = GameObject.Find("Dictionary");
-            dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
+        var player = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer;
+        if (player.isLocal){
+            var obj = GameObject.Find("Dictionary");
+            dictionary = (Dictionaries)obj.GetComponent(typeof(UdonBehaviour));
             
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
             manager.updateValue("HP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "HP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max HP"))));
             manager.updateValue("SP", int.Parse(Dictionaries.getStat(dictionary.self, playerName, "SP")), int.Parse(Dictionaries.getStat(dictionary.self, playerName, ("Max SP"))));
 
-            var seg = GameObject.Find("enemySelection");
-            se = (selectEnemy)seg.GetComponent(typeof(UdonBehaviour));
+            obj = GameObject.Find("enemySelection");
+            se = (selectEnemy)obj.GetComponent(typeof(UdonBehaviour));
+
+            obj  = GameObject.Find("Networking");
+            ne = (networking)obj.GetComponent(typeof(UdonBehaviour));
+
+            Networking.SetOwner(player, this.gameObject); // set the owner of the evoker to the one holding it
         }
     }
     // acts when the holder "shoots" the gun //
@@ -88,11 +95,12 @@ public class shoot : UdonSharpBehaviour
     private void fire(VRCPlayerApi player){
         // currently hard coded into only using bufula on enemy1 //
         se.hide();
+        //dictionary.networkTest();
         string playerName = player.displayName;
         string enemy = Dictionaries.getStat(dictionary.self, enemySel + 1, "Name");
         Debug.Log(enemy);
         string skill = getMove(playerName, skillSel, dictionary);
-        var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill);
+        var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill, ne, player);
         //Debug.Log(statUsed);
         if (statUsed != null){ // always hp or sp or null
             // updates the bars on the evoker //
