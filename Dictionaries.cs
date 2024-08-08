@@ -26,7 +26,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"};
     // Place to Reference for the IDs of the stats that sync
-    public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ailment", "isDown", "Stat Changes"};
+    public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes"};
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -68,6 +68,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"SP", 165},
             {"Max SP", 165},
             {"LVL", 34},
+            {"Tag", "player"},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -99,6 +100,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"SP", 138},
             {"Max SP", 138},
             {"LVL", 35},
+            {"Tag", "enemy"},
             // persona stats //
             {"pName", "Shouting Tiara"},
             {"St", 19},
@@ -127,6 +129,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"SP", 138},
             {"Max SP", 138},
             {"LVL", 35},
+            {"Tag", "enemy"},
             // persona stats //
             {"pName", "Shouting Tiara"},
             {"St", 19},
@@ -154,6 +157,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"SP", 2},
             {"Max SP", 2},
             {"LVL", 2},
+            {"Tag", "enemy"},
             // persona stats //
             {"pName", ""},
             {"St", 2},
@@ -181,6 +185,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"SP", 2},
             {"Max SP", 2},
             {"LVL", 2},
+            {"Tag", "enemy"},
             // persona stats //
             {"pName", ""},
             {"St", 2},
@@ -203,52 +208,102 @@ public class Dictionaries : UdonSharpBehaviour
         }},
         
         // other players //
+        // i think that it downloads a copy of the instance owners funny thing so it should get all the past information
+        // so the players cannot have their own personal thing
 
-        {5, new DataDictionary(){
+        {5, new DataDictionary(){ 
             {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
             // persona stats //
-            {"pName", ""},
-            {"Ag", 2},
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
+            {"Passive", "Ice Boost"},
+        
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
-        {6, new DataDictionary(){
+        {6, new DataDictionary(){ 
             {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
             // persona stats //
-            {"pName", ""},
-            {"Ag", 2},
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
+            {"Passive", "Ice Boost"},
+        
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
-        {7, new DataDictionary(){
+        {7, new DataDictionary(){ 
             {"Name", ""},
-            {"HP", 1},
-            {"Max HP", 1},
-            {"SP", 2},
-            {"Max SP", 2},
-            {"LVL", 2},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
             // persona stats //
-            {"pName", ""},
-            {"Ag", 2},
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
+            {"Passive", "Ice Boost"},
+        
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}
-        }}
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
+        }},
     };
     // other players in the instance //
     // dont need to transmit as much data since the user most likely wont have to see the other stats
@@ -2718,12 +2773,15 @@ public class Dictionaries : UdonSharpBehaviour
     // returns the number of active entities in the self dicitonary //
     // check which ones have names
     // i can maybe update this one for the other players for when they attack the entire party
-    public static int countActive(Dictionaries mainDict, DataDictionary dict){
+    public static int countActive(Dictionaries mainDict, DataDictionary dict, string tag="*"){
         var count = 0;
         for (int i = 0; i < dict.Count; i++){
             var name = Dictionaries.getStat(dict, i, "Name");
-            if (name != "" || name != "_"){
+            var tags = Dictionaries.getStat(dict, i, "Tag");
+            if (tag == "*" || tags == tag){ // allow any options if tag is left as *
+                if (name != "" && name != "_"){
                 count++;
+                }
             }
         }
         return (count);
@@ -2908,7 +2966,7 @@ public class Dictionaries : UdonSharpBehaviour
                 return (strReturn);
             }
             else if (skillTarget.Equals("All")){
-                var enemyCount = Dictionaries.countActive(mainDict, mainDict.self) - 1;
+                var enemyCount = Dictionaries.countActive(mainDict, mainDict.self, "enemy");
                 for (int i = 1; i <= enemyCount; i++){
                     // calculate damage for the enemy
                     var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);

@@ -1,12 +1,8 @@
 * '--' means the feature has been implemented but not currently tested.
 * _ means the feature is not as essential
 
-Bugs:
-    Scroll doesnt work in multiplayer
-    CountActive hasnt been updated with the new self dictionary changes in multiplayer
-        attacks targeting all break
-        changing selection from the last enemy back to the first breaks
-    The 
+Known Bugs:
+    therell be some soon enough :3
 
 General:
     maybe add to the dictionary of preset personas and enemies
@@ -20,10 +16,7 @@ General:
 
 Unity Reliant:
     Evoker:
-        allow the player to select an enemy
-            improve circle that appears over the enemy you are selecting
-            _show stat changes of the enemy you are targeting
-            
+        allow the player to select teamates for helpful moves
             if using a move that affects your teamate have a different counter when you are hovering over the spell
         allow the player to summon their persona
         show what ailments the player has
@@ -35,13 +28,17 @@ Unity Reliant:
     Enemies:
         Create spawning systems for the enemies
         remove the enemies when they die
+    UX:
+        improve circle that appears over the enemy you are selecting
+        _show stat changes of the enemy you are targeting
+        add icons to show how to interact with the world
 
 Networking:
     implement network events for more parts of the project
-    have a way to keep the player order in the same order for all players
-        maybe a shared array?
     pain
+    create function that copies information from the preset list into a slot of the dictionary
     Sync Players who join late with all the stats of everyone else in their dictionaries oh no
+        it seems like when players join it copies the dictionary from the instance owner automatically
         maybe put them in jail until the battles over?
 
 

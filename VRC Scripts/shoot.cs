@@ -22,6 +22,8 @@ public class shoot : UdonSharpBehaviour
     //private int enemySelTime = 0; // make the jump not run twice
     private int timeToWait = 100; //ms
 
+    public TextMeshProUGUI plonk;
+
     // no more awake because the ACTUAL vrchat client was throwing a fit :)
     // isnt the most efficient to run it like this probably but plink
     // 
@@ -44,6 +46,7 @@ public class shoot : UdonSharpBehaviour
             ne = (networking)obj.GetComponent(typeof(UdonBehaviour));
 
             Networking.SetOwner(player, this.gameObject); // set the owner of the evoker to the one holding it
+            moveTimeUsed = Networking.GetServerTimeInMilliseconds(); // add this so if the server time is in the negatives (for some reason) it should still work!
         }
     }
     // acts when the holder "shoots" the gun //
@@ -61,6 +64,7 @@ public class shoot : UdonSharpBehaviour
         var player = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer;
         if (player != null){
             if (true){
+                //plonk.text = (Networking.GetServerTimeInMilliseconds() - timeToWait) + " - " + moveTimeUsed; 
                 if ((Networking.GetServerTimeInMilliseconds() - timeToWait) > moveTimeUsed){ // create a buffer to make selection easier?
                     moveTimeUsed = Networking.GetServerTimeInMilliseconds(); 
                     if (!player.IsUserInVR()){}
@@ -85,7 +89,7 @@ public class shoot : UdonSharpBehaviour
     // used to change which enemy the user is going to attack //
     public override void InputJump(bool value, VRC.Udon.Common.UdonInputEventArgs args){
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer != null && value){
-            enemySel = (enemySel + 1) % (Dictionaries.countActive(dictionary, dictionary.self) - 1);
+            enemySel = (enemySel + 1) % (Dictionaries.countActive(dictionary, dictionary.self, "enemy"));
             se.moveSelect(Dictionaries.getStat(dictionary.self, enemySel + 1, "Name"));
         }
     }

@@ -15,7 +15,6 @@ public class displaySkills : UdonSharpBehaviour
 
     public int currentStartY = 69;
     public string leftText;
-    
 
     public TextMeshProUGUI description;
     public override void OnPickup(){
@@ -52,6 +51,7 @@ public class displaySkills : UdonSharpBehaviour
     }
     // changes the gui highlighting the skill the user is selecting //
     public void changeSel(int change){
+        //direction.text = change + " DS";
         var newY = skillBack.anchoredPosition.y + (change * -70);
         if (newY < 70 && newY > -104){
             skillBack.anchoredPosition = new Vector2(0, newY);

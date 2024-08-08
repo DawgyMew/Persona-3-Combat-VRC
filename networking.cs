@@ -26,7 +26,7 @@ public class networking : UdonSharpBehaviour
             0 - Nothing
             1 - Change Stat by Amount
             2 - Unassigned ?Set Stat?
-            3 - Unassigned
+            3 - Unassigned ?Set Preset?
             4 - Unassigned
             5 - Unassigned
             6 - Unassigned
