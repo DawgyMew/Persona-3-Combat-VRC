@@ -34,6 +34,7 @@ public class Dictionaries : UdonSharpBehaviour
         // hard code the options and apply the information from that //
 
         /*
+            ID: The number that the datadictionary is interally marked by.
             Name: The unique identifier, either the players username or the enemy's internal name
             HP, Max HP: Current Health Point and Max Health Point
             SP, Max SP: Current Spirit Point and Max Spirit Points
@@ -84,7 +85,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
             {"Passive", "Ice Boost"},
         
             // other //
@@ -92,8 +93,108 @@ public class Dictionaries : UdonSharpBehaviour
             {"isDown", false},
             {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
+        
+        // other players //
+        // i think that it downloads a copy of the instance owners funny thing so it should get all the past information
+        // so the players cannot have their own personal thing
+
+        {1, new DataDictionary(){ 
+            {"Name", ""},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
+            // persona stats //
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
+            {"Passive", "Ice Boost"},
+        
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
+        }},
+        {2, new DataDictionary(){ 
+            {"Name", ""},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
+            // persona stats //
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
+            {"Passive", "Ice Boost"},
+        
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
+        }},
+        {3, new DataDictionary(){ 
+            {"Name", ""},
+            {"HP", 354},
+            {"Max HP", 354},
+            {"SP", 165},
+            {"Max SP", 165},
+            {"LVL", 34},
+            {"Tag", "player"},
+            // persona stats //
+            {"pName", "Plink plonk Black Frost"},
+            {"St", 29},
+            {"Mg", 31},
+            {"En", 25},
+            {"Ag", 27},
+            {"Lu", 36},
+            
+            // persona type affinities //
+            {"Strengths", "Fire,Darkness"},
+            {"Nullifies", "Ice"},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", "Light"},
+            // skills //
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
+            {"Passive", "Ice Boost"},
+        
+            // other //
+            {"Ailment", ""},
+            {"isDown", false},
+            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
+        }},
+
         // enemies //
-        {1, new DataDictionary(){
+
+        {4, new DataDictionary(){
             {"Name", "enemy1"}, // unique identifier
             {"HP", 242},
             {"Max HP", 242},
@@ -115,13 +216,13 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Ice,Dark"},
             // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
+            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""}, 
         }},
-        {2, new DataDictionary(){
+        {5, new DataDictionary(){
             // currently just a clone of enemy1
             {"Name", "enemy2"}, // unique identifier
             {"HP", 242},
@@ -144,13 +245,13 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Ice,Dark"},
             // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
+            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""}, 
         }},
-        {3, new DataDictionary(){
+        {6, new DataDictionary(){
             {"Name", "_"}, // empty placehilder 
             {"HP", 1},
             {"Max HP", 1},
@@ -172,13 +273,13 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", ""},
             // skills //
-            {"Skills", ""},
+            {"Skills", "Wait"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
         }},
-        {4, new DataDictionary(){
+        {7 new DataDictionary(){
             {"Name", "_"},
             {"HP", 1},
             {"Max HP", 1},
@@ -200,115 +301,13 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", ""},
             // skills //
-            {"Skills", ""},
+            {"Skills", "Wait"},
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
         }},
-        
-        // other players //
-        // i think that it downloads a copy of the instance owners funny thing so it should get all the past information
-        // so the players cannot have their own personal thing
-
-        {5, new DataDictionary(){ 
-            {"Name", ""},
-            {"HP", 354},
-            {"Max HP", 354},
-            {"SP", 165},
-            {"Max SP", 165},
-            {"LVL", 34},
-            {"Tag", "player"},
-            // persona stats //
-            {"pName", "Plink plonk Black Frost"},
-            {"St", 29},
-            {"Mg", 31},
-            {"En", 25},
-            {"Ag", 27},
-            {"Lu", 36},
-            
-            // persona type affinities //
-            {"Strengths", "Fire,Darkness"},
-            {"Nullifies", "Ice"},
-            {"Absorb", ""},
-            {"Reflect", ""},
-            {"Weak", "Light"},
-            // skills //
-            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
-            {"Passive", "Ice Boost"},
-        
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
-        }},
-        {6, new DataDictionary(){ 
-            {"Name", ""},
-            {"HP", 354},
-            {"Max HP", 354},
-            {"SP", 165},
-            {"Max SP", 165},
-            {"LVL", 34},
-            {"Tag", "player"},
-            // persona stats //
-            {"pName", "Plink plonk Black Frost"},
-            {"St", 29},
-            {"Mg", 31},
-            {"En", 25},
-            {"Ag", 27},
-            {"Lu", 36},
-            
-            // persona type affinities //
-            {"Strengths", "Fire,Darkness"},
-            {"Nullifies", "Ice"},
-            {"Absorb", ""},
-            {"Reflect", ""},
-            {"Weak", "Light"},
-            // skills //
-            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
-            {"Passive", "Ice Boost"},
-        
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
-        }},
-        {7, new DataDictionary(){ 
-            {"Name", ""},
-            {"HP", 354},
-            {"Max HP", 354},
-            {"SP", 165},
-            {"Max SP", 165},
-            {"LVL", 34},
-            {"Tag", "player"},
-            // persona stats //
-            {"pName", "Plink plonk Black Frost"},
-            {"St", 29},
-            {"Mg", 31},
-            {"En", 25},
-            {"Ag", 27},
-            {"Lu", 36},
-            
-            // persona type affinities //
-            {"Strengths", "Fire,Darkness"},
-            {"Nullifies", "Ice"},
-            {"Absorb", ""},
-            {"Reflect", ""},
-            {"Weak", "Light"},
-            // skills //
-            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja"},
-            {"Passive", "Ice Boost"},
-        
-            // other //
-            {"Ailment", ""},
-            {"isDown", false},
-            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
-        }},
     };
-    // other players in the instance //
-    // dont need to transmit as much data since the user most likely wont have to see the other stats
-    // no more others dictionary :D
-
 
     // im gonna  scream why do i have to put this in here //
     // i wanted to have these dictionaries in seperate files but udon and unity are throwing a fit so here we are 1000 liunes added to dictionaries.cs
@@ -1795,6 +1794,28 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             
+            // Pass your turn //
+            {"Wait", new DataDictionary(){ // assign this until guard is more implemented
+                {"Element", "Pass"},  // default to wait if the user takes too long to choose a move
+                {"Power", 0},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Guard", new DataDictionary(){
+                {"Element", "Pass"}, 
+                {"Power", 1},
+                {"Accuracy", 1.00},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 1},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
             // Passive Skills //
             /* 
                 All Cost = 0
@@ -2821,6 +2842,13 @@ public class Dictionaries : UdonSharpBehaviour
         bool result = int.TryParse(num, out int intNum);
         if (result){
             intNum += changeInNum;
+            // prevent the number from going over the max if HP or SP
+            if (numKey.Equals("HP") || numKey.Equals("SP")){
+                var maxNum = getStat(dictToChange, uName, "Max " + numKey);
+                if (intNum > maxNum){
+                    intNum = maxNum;
+                }
+            }
             if (intNum < 0){
                 if (cantGoUnder){
                     return (false);

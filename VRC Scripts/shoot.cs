@@ -97,7 +97,6 @@ public class shoot : UdonSharpBehaviour
     // sends a raycast to check if the target will be hit //
     // helpful since this wont be actually shooting bullets :3 //
     private void fire(VRCPlayerApi player){
-        // currently hard coded into only using bufula on enemy1 //
         se.hide();
         //dictionary.networkTest();
         string playerName = player.displayName;

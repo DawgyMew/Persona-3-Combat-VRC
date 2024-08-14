@@ -73,9 +73,16 @@ public class damageCalc : UdonSharpBehaviour
     }
 
     // true if hit, false if miss
-    public static bool determineHit(DataDictionary skill){
-        var accuracy = skill["Accuracy"].Double;
-        int randNum = Random.Range(0, 100);
+    public static bool determineHit(DataDictionary skill, bool acc=true){
+        string stat;
+        if (acc){
+            stat = "Accuracy";           
+        }
+        else{
+            stat = "Critical";
+        }
+        var accuracy = skill[stat].Double;
+        int randNum = Random.Range(0, 100); // could add a luck thing here but thatd be some work
         return (randNum <= accuracy * 100); // this probably isnt the greatest way to do it but here we are
     }
 
@@ -127,6 +134,10 @@ public class damageCalc : UdonSharpBehaviour
             int powerInt = (int) power;
             // calculate damage
             var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1, mainDict);
+            // check if crit 
+            if (determineHit(skillInfo, false)){
+                amplifier *= 1.50;
+            }
             var damage = calcDamage(power, userStats["LVL"].Float, endurance, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
             //Debug.Log(damage);
             return (damage);
