@@ -42,11 +42,13 @@ public class damageCalc : UdonSharpBehaviour
                 break;
             case 4: // weak
                 amplifier *= 1.5f;
+                string name = enemyStats["Name"].String;
+                updateText.enemyHitText(name, "Weak");
                 if (!isDown){
-                    Dictionaries.setStat(mainDict.self, enemyStats["Name"].String, "isDown", true); // change the state of the enemy to downed if not already
+                    Dictionaries.setStat(mainDict.self, name, "isDown", true); // change the state of the enemy to downed if not already
                 }
                 else{
-                    Dictionaries.setStat(mainDict.self, enemyStats["Name"].String, "Ailment", "Dizzy"); // make them dizzy if they were already downed
+                    Dictionaries.setStat(mainDict.self, name, "Ailment", "Dizzy"); // make them dizzy if they were already downed
                 }
                 break;
             default:
@@ -136,7 +138,8 @@ public class damageCalc : UdonSharpBehaviour
             var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1, mainDict);
             // check if crit 
             if (determineHit(skillInfo, false)){
-                amplifier *= 1.50;
+                updateText.enemyHitText(targetName, "Crit");
+                amplifier *= 1.50f;
             }
             var damage = calcDamage(power, userStats["LVL"].Float, endurance, targetStats["LVL"].Float, skillInfo["Power"].Float, amplifier);
             //Debug.Log(damage);

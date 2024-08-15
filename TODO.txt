@@ -5,23 +5,23 @@ Known Bugs:
     therell be some soon enough :3
 
 General:
-    maybe add to the dictionary of preset personas and enemies
+    add to the dictionary of preset personas and enemies
     code ailments
     implement downed system
     finish passive skills
-    code turn order based on agility
+    code turn order based on agility (started)
     code evasion effects on dodging and hitting
-    implement critical hits on physical moves
     complete the turn logic, turn.txt
         make players not be able to act when its not their turn
             add timer to skip turn of afk players?
                 make them wait and pass their turn
         implement one more! when hitting a weaknesses
         use port priority to handle speed ties.
-    add ability to guard and wait (or just wait if im feeling lazy)
+    implement ability to guard and wait (or just wait if im feeling lazy)
         guarding prevents you from being knocked for one hit
         enemies are only able to wait.
-    Make healing not go over the max health
+    finish the skill descriptions
+    
 
 Unity Reliant:
     Evoker:
@@ -38,10 +38,13 @@ Unity Reliant:
                 atk^ 
         
         _Check current persona's stats
-            show similar bar above the player as above the enemies
         _check status of other players
+            show similar bar above the player as above the enemies
     Persona:
         Assign or let players choose a persona
+        add simple animations whenever you use a skill
+            base it off the element of the skill
+            particle system
     Enemies:
         Create spawning systems for the enemies
         remove the enemies when they die
@@ -49,12 +52,13 @@ Unity Reliant:
         improve circle that appears over the enemy you are selecting
         _show stat changes of the enemy you are targeting
         improve icons to show how to interact with the world
+        improve hp bar above enemies
 
 Networking:
     implement network events for more parts of the project
-    pain
     create function that copies information from the preset list into a slot of the dictionary
-    Sync Players who join late with all the stats of everyone else in their dictionaries oh no
+    add functions that affect stat changes
+    Sync Players who join late with all the stats of everyone else in their dictionaries
         it seems like when players join it copies the dictionary from the instance owner automatically
         maybe put them in jail until the battles over?
 

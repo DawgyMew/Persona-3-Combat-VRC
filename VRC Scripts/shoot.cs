@@ -90,7 +90,7 @@ public class shoot : UdonSharpBehaviour
     public override void InputJump(bool value, VRC.Udon.Common.UdonInputEventArgs args){
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer != null && value){
             enemySel = (enemySel + 1) % (Dictionaries.countActive(dictionary, dictionary.self, "enemy"));
-            se.moveSelect(Dictionaries.getStat(dictionary.self, enemySel + 1, "Name"));
+            se.moveSelect(Dictionaries.getStat(dictionary.self, enemySel + 4, "Name"));
         }
     }
     
@@ -100,8 +100,8 @@ public class shoot : UdonSharpBehaviour
         se.hide();
         //dictionary.networkTest();
         string playerName = player.displayName;
-        string enemy = Dictionaries.getStat(dictionary.self, enemySel + 1, "Name");
-        Debug.Log(enemy);
+        string enemy = Dictionaries.getStat(dictionary.self, enemySel + 4, "Name");
+        //Debug.Log("Enemy Targetted: " + enemy);
         string skill = getMove(playerName, skillSel, dictionary);
         var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill, ne, player);
         //Debug.Log(statUsed);

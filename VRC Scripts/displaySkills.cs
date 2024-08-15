@@ -32,7 +32,6 @@ public class displaySkills : UdonSharpBehaviour
                 var skillInfo = Dictionaries.getSkillInfo(dictionary, skill);
                 var cost = skillInfo["Cost"].Number; // this one checks if its 0 or -1
                 var displayCost = determineCost(dictionary, skillInfo, playerName); // this is the amount of hp or sp will be taken
-                if (cost != 0){
                     if (cost != -1){
                         leftText += skill + " \t" + displayCost + "\n";
                     }
@@ -40,7 +39,6 @@ public class displaySkills : UdonSharpBehaviour
                         leftText += "null\n";
                     }
                     i++;
-                }
             }
             leftText += "|";
             txtBox.text = leftText;
@@ -112,9 +110,55 @@ public class displaySkills : UdonSharpBehaviour
     // creates a description to display //
     private static string createDescMsg(Dictionaries dictionary, DataDictionary skillInfo){
         string description = "";
+        // general skill info // 
+        string skillElement = skillInfo["Element"].String;
+        string targets = skillInfo["Targets"].String;
+        var power = skillInfo["Power"].Number;
+        // quickly check the funny ones //
+        switch (skillElement){
+            case "Pass":
+                if (skillInfo["Power"].Int == 0){
+                    return ("Pass your turn.");
+                }
+                else{
+                    return ("Take defensive action.");
+                }
+            case "Light":
+            case "Darkness":
+                description += skillElement + ": instant kill, " + targets + " foe";
+                if (skillInfo["Accuracy"].Double > .40){ // for samsara and die for me
+                    description += " (very high)";
+                }
+                else if (skillInfo["Accuracy"].Double > .30){ 
+                    description += " (high odds)";
+                }
+                description += ".";
+                return (description);
+            case "Patra":
+                description += "Dispels ";
+                foreach (string ailment in dictionary.patraAil){
+                    description += ailment + ", ";
+                }
+                description += "(" + targets + ")";
+                return (description);
+            case "Recovery":
+                if (power <= 50){
+                    description += "Slightly ";
+                }
+                else if (power <= 160){
+                    description += "Moderately ";
+                }
+                else{
+                    description += "Fully ";
+                }
+                description += "restores " + targets + "'s HP.";
+                return (description);
+            default:
+                break;
+        }
+        // check if its a general offensive element //
         foreach (var element in dictionary.offensiveElements){
-            if (skillInfo["Element"].String.Equals(element)){
-                var power = skillInfo["Power"].Int;
+            if (skillElement.Equals(element)){
                 description += "Deals ";
                 // determine the vague damage word to use //
                 if (power <= 110){ description += "light ";}// kill rush is considered light at 110 while zanei is considered medium at 120
@@ -128,7 +172,30 @@ public class displaySkills : UdonSharpBehaviour
                 return description;
             }
         }
-        return "...";
+
+        // check if its a stat change skill //
+        foreach (var element in dictionary.statChanges){
+            if (skillElement.Equals(element)){
+                
+                switch (targets){
+                    case "Ally":
+                    case "Party":
+                    case "Everyone":
+                        description += "Increases " + targets; 
+                        break;
+                    case "One":
+                    case "All":
+                        description += "Decreases " + targets + " foe";
+                        break;
+                    default:
+                        break;
+                }
+                description += "'s " + element + ".";
+                return description;
+            }
+        }
+
+        return (skillElement + " skill."); // text for if it doesnt fall under any of these elements.
     }
 
     private static string determineCost(Dictionaries dictionary, DataDictionary skillInfo, string userName){

@@ -25,8 +25,11 @@ public class Dictionaries : UdonSharpBehaviour
     public damageCalc damage;
 
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"};
+    
+    public string[] statChanges = {"Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats"};
     // Place to Reference for the IDs of the stats that sync
     public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes"};
+    public string[] patraAil = {"Panic", "Fear", "Distress"};
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -85,7 +88,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
+            {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Mediarama,Wait,Guard"},
             {"Passive", "Ice Boost"},
         
             // other //
@@ -217,6 +220,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", "Ice,Dark"},
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
+            {"Passive", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -246,6 +250,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", "Ice,Dark"},
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
+            {"Passive", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -274,12 +279,13 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", "Wait"},
+            {"Passive", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
             {"Stat Changes", ""},
         }},
-        {7 new DataDictionary(){
+        {7, new DataDictionary(){
             {"Name", "_"},
             {"HP", 1},
             {"Max HP", 1},
@@ -302,6 +308,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", "Wait"},
+            {"Passive", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -324,7 +331,7 @@ public class Dictionaries : UdonSharpBehaviour
                 Revive - Revive from death
                 Attack, Defense, Evasion, Crit Rate, Ailment Sus, All Stats - Stat Changes
                 Reflect Phys, Reflect Magic - Barriers that reflect physical/magic skills once
-                Fear, Panic, Distress, Poison, Charm, Rage, Ailments - Cause/Heal Ailments
+                Patra[Fear, Panic, Distress], Poison, Charm, Rage, Ailments - Cause/Heal Ailments
                 HP Drain, SP Drain - Transfers HP/SP from the opponent to the user.
                 Counter - Passive, Chance to Reflect physical attacks
             Power: How much damage the attack does. (Healing power for recovery moves)
@@ -1217,7 +1224,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             // !!! Not properly filled out yet !!
             {"Patra", new DataDictionary(){
-                {"Element", "Panic"}, 
+                {"Element", "Patra"}, 
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 3},
@@ -1237,7 +1244,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Me Patra", new DataDictionary(){
-                {"Element", "Panic"}, 
+                {"Element", "Patra"}, 
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 6},
@@ -2844,7 +2851,8 @@ public class Dictionaries : UdonSharpBehaviour
             intNum += changeInNum;
             // prevent the number from going over the max if HP or SP
             if (numKey.Equals("HP") || numKey.Equals("SP")){
-                var maxNum = getStat(dictToChange, uName, "Max " + numKey);
+                string max = getStat(dictToChange, uName, "Max " + numKey);
+                int.TryParse(max, out int maxNum);
                 if (intNum > maxNum){
                     intNum = maxNum;
                 }
@@ -2947,7 +2955,11 @@ public class Dictionaries : UdonSharpBehaviour
 
     public static Vector3 getLocation(string name){
         GameObject creature = GameObject.Find(name);
-        return creature.transform.position;
+        if (creature != null){
+            return creature.transform.position;
+        }
+        else{return new Vector3(0, 0, 0);}
+        
     }
 
     // pass on to the damage calc script //
@@ -2974,6 +2986,7 @@ public class Dictionaries : UdonSharpBehaviour
         if (canUse){ // can only use if the user has enough hp/sp
             
             if (skillTarget.Equals("One")){
+                // could make this into its own function but i dont want to do that yet -.-
                 var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
                 if (damageDealt != -1){
                     ne.changeNumO(mainDict, target, "HP", damageDealt, true, player);
@@ -2981,7 +2994,8 @@ public class Dictionaries : UdonSharpBehaviour
                     updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                 }
                 else{
-                    updateText.changeEnemyText(target, "miss" + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    updateText.changeEnemyText(target, "" + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    updateText.enemyHitText(target, "Miss");
                 }
                 return (strReturn);
             }
@@ -3004,7 +3018,8 @@ public class Dictionaries : UdonSharpBehaviour
                         updateText.changeEnemyText("enemy" + i, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
                         }
                     else{
-                        updateText.changeEnemyText("enemy" + i, "miss" + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
+                        updateText.changeEnemyText("enemy" + i, "" + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
+                        updateText.enemyHitText(target, "Miss");
                     }   
                 }
                 return (strReturn);
