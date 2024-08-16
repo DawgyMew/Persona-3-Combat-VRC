@@ -46,7 +46,10 @@ Unity Reliant:
         remove the enemies when they die
         Create a system for enemies to be able to attack players
             gonna need something to refresh the specific evoker of the player attacked
+            assign the enemies to the instance master
+                have the turns be ran on the master's machine and sync to the others
         show when an enemy has an ailment
+        preform an all out attack when all the enemies are downed
     UX:
         improve circle that appears over the enemy you are selecting
         _show stat changes of the enemy you are targeting

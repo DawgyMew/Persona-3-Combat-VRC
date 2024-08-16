@@ -27,6 +27,7 @@ public class Dictionaries : UdonSharpBehaviour
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"}; // ID: 1
     
     public string[] statChanges = {"Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats"};
+    public string[] shortStatChanges = {"atk", "df", "ev", "crit", "ail", "all"};
     // Place to Reference for the IDs of the stats that sync 
     public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes"};
     public string[] AILMENTS = {"Fear", "Panic", "Distress", "Poison", "Charm", "Rage", "Freeze", "Shock", "Dizzy"}; // ID: 0
@@ -1824,7 +1825,13 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
             }},
-
+            {"Error", new DataDictionary(){ 
+                {"Cost", -1}
+            }}
+        }
+    }
+    }
+    public DataDictionary passiveSkills = new DataDictionary(){
             // Passive Skills //
             /* 
                 All Cost = 0
@@ -1839,7 +1846,7 @@ public class Dictionaries : UdonSharpBehaviour
                     4 - Absorb
                 Accuracy is the chance that the skill will activate
             */
-
+        {0, new DataDictionary(){
             /// Defence ///
             // slash //
             {"Dodge Slash", new DataDictionary(){
@@ -2536,19 +2543,70 @@ public class Dictionaries : UdonSharpBehaviour
                     I wonder what these do
             */
 
-            /*
-            TODO:
-                These Skills auto activate at the start of a battle 
-                Buffs:
-                    Auto-Tarukaja
-                    Auto-Rakukaja
-                    Auto-Sukukaja
-                Debuffs:
-                    Auto-Mataru
-                    Auto-Maraku
-                    Auto-Masuku
-            */
+            // skills that activate at the start of the battle //
             
+            {"Auto-Tarukaja", new DataDictionary(){
+                {"Element", "Attack"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Auto-Tarunda", new DataDictionary(){
+                {"Element", "Attack"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Party"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Auto-Rakukaja", new DataDictionary(){
+                {"Element", "Defense"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Auto-Maraku", new DataDictionary(){
+                {"Element", "Defense"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Party"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+
+            {"Auto-Sukukaja", new DataDictionary(){
+                {"Element", "Evasion"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Self"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
+            {"Auto-Masuku", new DataDictionary(){
+                {"Element", "Evasion"}, 
+                {"Power", 0},
+                {"Accuracy", 1},
+                {"Cost", 0},
+                {"Targets", "Party"},
+                {"Times Hit", 0},
+                {"Critical", 0},
+                {"Ailment Chance", 0.00}
+            }},
             /// Recovery ///
             // strengrthens recovery magic by 100% 
             {"Divine Grace", new DataDictionary(){
@@ -2701,9 +2759,6 @@ public class Dictionaries : UdonSharpBehaviour
             // no Alertness, Fast Retreat, Growth 1-3, trafuri
 
             // return this if the skill cannot be found //
-            {"Error", new DataDictionary(){ 
-                {"Cost", -1}
-            }}
         }}};    
 
     public override void OnPlayerJoined(VRCPlayerApi player){
@@ -2936,7 +2991,45 @@ public class Dictionaries : UdonSharpBehaviour
         string[] statChangeArr = {status, change, time};
         return statChangeArr;
     }
+    // change - false + true
+    // 
+    public string packStatChange(string stat, bool change, int timer=3){
+        string packStat = "";
+        string shortStat = shortStatChanges[Array.IndexOf(dict.statChanges, stat)]; // get abbreviated form of the stat change
+        packStat += shortStat;
+        if (change){packStat += "+";}
+        else {packStat += "-";}
+        packStat += timer + "";
+        return (packStat);
+    }
 
+    public static void applyStatChange(Dictionaries dict, string target, string stat, bool change){
+        var shortStat = dict.shortStatChanges[Array.IndexOf(dict.statChanges, stat)];
+        var statChanges = getStatChanges(getDict(dict.self, findID(dict.self, target)));
+        string packet = packStatChange(stat, change) + ",";
+        string allStats = "";
+        if (statChanges.Length > 0){
+            foreach (var stats in statChanges){
+                string[] checkStats = parseStatChange(stats);
+                if (checkStats[0].Equals(shortStat)){
+                    if (checkStats[1].Equals("+") == change){ // if the existing stat is the same as the new stat
+                        allStats += stats;
+                    }
+                    else{ // replace it if the stat on there is opposite of what it will be
+                        allStats += packet;
+                    }
+                }
+                else{
+                    allStats += stat;
+                }
+                allStats += ",";
+            }
+            setStat(dict.self, target, "Stat Changes", allStats);
+        }
+        else{
+            setStat(dict.self, target, "Stat Changes", packet);
+        }
+    }
     // decreases all of the timers on one entries stat changes and repackages them //
     public static void decreaseStatTimer(Dictionaries mainDict, string uStr){
         string[] statChanges = Dictionaries.getArray(mainDict.self, uStr, "Stat Changes", "Name");
@@ -2973,7 +3066,7 @@ public class Dictionaries : UdonSharpBehaviour
     // returns the value spent (hp/sp) //
     public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, networking ne, VRCPlayerApi player){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary; // this will error if a bad spell is sent thru, i count check if the spell is in the list but that would be costly
-        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
         var skillType = Dictionaries.determineSkillType(skillInfo);
         var skillTarget = skillInfo["Targets"].String;
         bool canUse;
@@ -2994,7 +3087,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             if (skillTarget.Equals("One")){
                 // could make this into its own function but i dont want to do that yet -.-
-                var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+                var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
                 if (damageDealt != -1){
                     ne.changeNumO(mainDict, target, "HP", damageDealt, true, player);
                     mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self);
@@ -3018,7 +3111,7 @@ public class Dictionaries : UdonSharpBehaviour
                 var enemyCount = Dictionaries.countActive(mainDict, mainDict.self, "enemy");
                 for (int i = 1; i <= enemyCount; i++){
                     // calculate damage for the enemy
-                    var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo);
+                    var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
                     // this part could probably be its own function v
                     if (damageDealt != -1){
                         mainDict.changeNum("enemy" + i, "HP", damageDealt * -1, mainDict.self);

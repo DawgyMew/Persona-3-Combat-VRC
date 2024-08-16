@@ -28,7 +28,7 @@ public class networking : UdonSharpBehaviour
             2 - Unassigned ?Set Stat to num?
             3 - Unassigned ?Set Preset?
             4 - Change stat to index in array
-            5 - Unassigned
+            5 - Unassigned ?status changes?
             6 - Unassigned
             7 - Unassigned
             8 - Unassigned
@@ -56,12 +56,7 @@ public class networking : UdonSharpBehaviour
                 }
                 break;
             case "changeNum":
-                sharedInfo[0] = 1;
-                for (int i = 0; i < info.Length; i++){
-                    sharedInfo[i + 1] = info[i];
-                }
-                break;
-            case "statFromArrayIndex": // could combine these cases, id just have to change how changeNum works ^
+            case "statFromArrayIndex": 
                 sharedInfo = info;
                 break;
             case "test":
@@ -107,25 +102,27 @@ public class networking : UdonSharpBehaviour
     
     // 1 [OUT] - prepares a packet to instruct others to change an entities stat //
     /*
-        0 - Target ID
-        1 - Stat ID
-        [2 3] - amount
-        4 - [bool] sign (0 - Positive | 1 - Negative)
-        5 - [bool] display (unused)
-        6 - [bool] cant go under 0
+        0 - Instruction
+        1 - Target ID
+        2 - Stat ID
+        [3 4] - amount
+        5 - [bool] sign (0 - Positive | 1 - Negative)
+        6 - [bool] display (unused)
+        7 - [bool] cant go under 0
     */
     public void changeNumO(Dictionaries dict, string target, string statToChange, int num, bool display, VRCPlayerApi player, bool cantGoUnder=false){
         // get id for target and stat
-        byte[] data = new byte[7];
-        data[0] = (byte)Dictionaries.findID(dict.self, target); // target
-        data[1] = (byte)Array.IndexOf(dict.syncStats, statToChange);
+        byte[] data = new byte[10];
+        data[0] = 1; // instruction
+        data[1] = (byte)Dictionaries.findID(dict.self, target); // target
+        data[2] = (byte)Array.IndexOf(dict.syncStats, statToChange); // stat id
         var numByte = convertBytes(num);
-        // 2 3 4
+        // 3 4 5
         for (int i = 0; i < 3; i++){
-            data[i + 2] = numByte[i];
+            data[i + 3] = numByte[i];
         }
-        if (display){data[5] = 1;} else{data[5] = 0;}
-        if (cantGoUnder){data[6] = 1;} else{data[6] = 0;}
+        if (display){data[6] = 1;} else{data[6] = 0;}
+        if (cantGoUnder){data[7] = 1;} else{data[7] = 0;}
 
         KSCNE("changeNum", data, player);
     }

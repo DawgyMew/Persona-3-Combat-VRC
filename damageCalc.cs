@@ -47,6 +47,7 @@ public class damageCalc : UdonSharpBehaviour
                 }
                 else{
                     Dictionaries.setStat(mainDict.self, name, "Ailment", "Dizzy"); // make them dizzy if they were already downed
+
                 }
                 break;
             default:
@@ -80,7 +81,7 @@ public class damageCalc : UdonSharpBehaviour
         return (randNum <= accuracy * 100); // this probably isnt the greatest way to do it but here we are
     }
 
-    public static void determineAilment(Dictionaries dict, DataDictionary skill, string targetName){
+    public static string determineAilment(Dictionaries dict, DataDictionary skill, string targetName){
         if (determineHit(skill, "Ailment Chance")){ // run if the ailment chance hits
             string ail;
             switch (skill["Element"].String){
@@ -98,12 +99,15 @@ public class damageCalc : UdonSharpBehaviour
                     break;
             }
             Dictionaries.setStat(dict.self, targetName, "Ailment", ail);
+            return (ail);
         } 
+        else{return ("");}
     }
 
     // calculates the damage dealt to one specific opponent //
     // loop call the function if hitting multiple //
-    public static int damageTurn(Dictionaries mainDict, string userName, string targetName, DataDictionary skillInfo){
+    ///
+    public static int damageTurn(Dictionaries mainDict, string userName, string targetName, DataDictionary skillInfo, networking network, VRCPlayerApi player){
         // determine if the skill is going to hit //
         bool hit = determineHit(skillInfo, "Accuracy");
         if (hit){
@@ -116,7 +120,10 @@ public class damageCalc : UdonSharpBehaviour
             // Determine if the move will apply an ailment //
             string ailment = targetStats["Ailment"].String;
             if (ailment.Equals("")){ // cant get a different ailment
-                determineAilment(mainDict, skillInfo, targetName);
+                var ail = determineAilment(mainDict, skillInfo, targetName);
+                if (!ail.Equals("")){
+                    network.statFromArrayIndexO(mainDict, targetName, "Ailment", 0, ail, player)
+                }
             }
             // Determind if the move is physical or magical //
             float power = 0;

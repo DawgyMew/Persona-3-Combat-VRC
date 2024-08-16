@@ -17,15 +17,15 @@ https://megamitensei.fandom.com/wiki/Status_Changes_in_Persona_3
     Down - knocked down and cannot evade, defence decreased
     Dizzy - same as down but they lose a turn
 
-BEFORE TURNS:
+BEFORE BATTLE:
     determine turn order, compare all agility stats and create a list containing who goes when
     activate auto passive skills (unsure if the counter should go down on the first turn)
 
 START
 
     Before Turn:
-        if buff/debuff counter = 0, remove the buff/debuff
-        stand up if applicable
+        --if buff/debuff counter = 0, remove the buff/debuff
+        --stand up if applicable
         if regenerate or invigorate: restore hp and/or sp
         roll if charm/fear will skip turn
             charm - lose turn, attack teammate, or heal opponent
@@ -35,16 +35,16 @@ START
             hi
     
     
-    Selecting Skill:
-        select attack that the user has enough hp/sp to use
-        select target for the skill 
+    --Selecting Skill:
+        --select attack that the user has enough hp/sp to use
+        --select target for the skill 
 
-    Skill Use:
-        hit the target with the skill
-        deal the damage to the target if the skill hits and cost the user hp/sp
+    --Skill Use:
+        --hit the target with the skill
+        --deal the damage to the target if the skill hits and cost the user hp/sp
         if enemy health = 0: remove them from the board
         if enemy is hit by a light/dark spell: remove them from the board
-        determine if the enemies will be afflicted with any ailments
+        --determine if the enemies will be afflicted with any ailments
 
         if enemy becomes downed: JUMP to Selecting Skill (1 more)
 
