@@ -104,6 +104,7 @@ public class shoot : UdonSharpBehaviour
         //Debug.Log("Enemy Targetted: " + enemy);
         string skill = getMove(playerName, skillSel, dictionary);
         var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill, ne, player);
+        ds.showAilment(Dictionaries.getStat(dictionary.self, playerName, "Ailment"));
         //Debug.Log(statUsed);
         if (statUsed != null){ // always hp or sp or null
             // updates the bars on the evoker //

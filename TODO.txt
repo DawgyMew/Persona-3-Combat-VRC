@@ -6,7 +6,7 @@ Known Bugs:
 
 General:
     add to the dictionary of preset personas and enemies
-    code ailments
+    code ailment functionality
     implement downed system
     finish passive skills
     code turn order based on agility (started)
@@ -32,10 +32,6 @@ Unity Reliant:
                 change the name of a child object of the evoker to indicate the name?
                     gameobject.name = "player name"
         allow the player to summon their persona
-        show what ailments the player has
-            show a small icon to the left/right(opposite side to the evoker) of what ailment they have
-            include a like side pannel that also shows the stat changes 
-                atk^ 
         
         _Check current persona's stats
         _check status of other players
@@ -48,6 +44,9 @@ Unity Reliant:
     Enemies:
         Create spawning systems for the enemies
         remove the enemies when they die
+        Create a system for enemies to be able to attack players
+            gonna need something to refresh the specific evoker of the player attacked
+        show when an enemy has an ailment
     UX:
         improve circle that appears over the enemy you are selecting
         _show stat changes of the enemy you are targeting

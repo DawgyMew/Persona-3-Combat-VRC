@@ -24,12 +24,14 @@ public class Dictionaries : UdonSharpBehaviour
     public networking network;
     public damageCalc damage;
 
-    public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"};
+    public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"}; // ID: 1
     
     public string[] statChanges = {"Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats"};
-    // Place to Reference for the IDs of the stats that sync
+    // Place to Reference for the IDs of the stats that sync 
     public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes"};
-    public string[] patraAil = {"Panic", "Fear", "Distress"};
+    public string[] AILMENTS = {"Fear", "Panic", "Distress", "Poison", "Charm", "Rage", "Freeze", "Shock", "Dizzy"}; // ID: 0
+    public string[] PATRA = {"Panic", "Fear", "Distress"};
+
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -94,7 +96,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
+            {"Stat Changes", "atk+3,df-1,ev+2,crit+3"}, // atk+3,df-1,ev+2,crit+3
         }},
         
         // other players //
@@ -2915,11 +2917,8 @@ public class Dictionaries : UdonSharpBehaviour
         string[] empty = new string[3];
         if (statArr.Length != 0){
             foreach(string statChange in statArr){
-                string change = statChange[statChange.Length - 2].ToString();
-                string time = statChange[statChange.Length - 1].ToString();
-                string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
-                if (status.Equals(stat)){
-                    string[] statChangeArr = {status, change, time};
+                var statChangeArr = parseStatChange(statChange);
+                if (statChangeArr[0].Equals(stat)){
                     return (statChangeArr); // [stat, change]
                 }
             }
@@ -2928,6 +2927,14 @@ public class Dictionaries : UdonSharpBehaviour
         else{
             return (null);
         }
+    }
+
+    public static string[] parseStatChange(string statChange){
+        string change = statChange[statChange.Length - 2].ToString();
+        string time = statChange[statChange.Length - 1].ToString();
+        string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
+        string[] statChangeArr = {status, change, time};
+        return statChangeArr;
     }
 
     // decreases all of the timers on one entries stat changes and repackages them //

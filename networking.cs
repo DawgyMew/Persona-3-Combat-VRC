@@ -25,9 +25,9 @@ public class networking : UdonSharpBehaviour
         0 - The Instruction:
             0 - Nothing
             1 - Change Stat by Amount
-            2 - Unassigned ?Set Stat?
+            2 - Unassigned ?Set Stat to num?
             3 - Unassigned ?Set Preset?
-            4 - Unassigned
+            4 - Change stat to index in array
             5 - Unassigned
             6 - Unassigned
             7 - Unassigned
@@ -61,6 +61,9 @@ public class networking : UdonSharpBehaviour
                     sharedInfo[i + 1] = info[i];
                 }
                 break;
+            case "statFromArrayIndex": // could combine these cases, id just have to change how changeNum works ^
+                sharedInfo = info;
+                break;
             case "test":
                 sharedInfo[0] = 255;
                 break;
@@ -80,11 +83,15 @@ public class networking : UdonSharpBehaviour
         displayInfo(syncedTB);
         var packetLength = sharedInfo.Length;
         var instruction = sharedInfo[0];
+        Debug.Log(instruction);
         switch (instruction){
             case 0:
                 break;
             case 1:
                 changeNumI(dictionary, sharedInfo);
+                break;
+            case 4:
+                statFromArrayIndexI(dictionary, sharedInfo);
                 break;
             case 255:
                 dictionary.displayPlayers();
@@ -94,7 +101,11 @@ public class networking : UdonSharpBehaviour
         
     }
 
-    // prepares a packet to instruct others to change an entities stat //
+
+    /// -- OUTPUT -- ///
+    
+    
+    // 1 [OUT] - prepares a packet to instruct others to change an entities stat //
     /*
         0 - Target ID
         1 - Stat ID
@@ -118,16 +129,67 @@ public class networking : UdonSharpBehaviour
 
         KSCNE("changeNum", data, player);
     }
-    // extracts packet to change an entities stat //
+
+    // 4 [OUT] - Create a packet to set a stat to a specific index 
+    public void statFromArrayIndexO(Dictionaries dict, string target, string statToChange, byte arrayID, string statSave, VRCPlayerApi player){
+        byte[] data = new byte[10];
+        string[] array = arrayFromID(dict, arrayID);
+        byte targetID = (byte)Dictionaries.findID(dict.self, target);
+        byte statName = (byte)Array.IndexOf(dict.syncStats, statToChange);
+        byte statIndex = (byte)Array.IndexOf(array, statSave);
+
+        data[0] = 4; // instruction
+        data[1] = targetID; // target 
+        data[2] = statName; // stat to change
+        data[3] = arrayID; // id of the array to draw from
+        data[4] = statIndex; //index of the string to draw
+
+        KSCNE("statFromArrayIndex", data, player);
+    }
+
+    //// -- INPUT -- ////
+    
+
+    // 1 [IN] - extracts packet to change an entities stat //
+    /*
+        0 - Instruction
+        1 - Target ID
+        2 - Index of Stat to change
+        3, 4, 5 - Amount to Change
+        6 - display (unused)
+        7 - cant go under 0
+    */
     private static void changeNumI(Dictionaries dict, byte[] data){
         string target = Dictionaries.getStat(dict.self, data[1], "Name");
         string statToChange = dict.syncStats[data[2]];
         byte[] byteNum = {data[3], data[4], data[5]};
         var changeAmt = convertBytes(byteNum);
-        bool display = (data[5] == 1);
-        bool cantGoUnder = (data[6] == 1);
+        bool display = (data[6] == 1);
+        bool cantGoUnder = (data[7] == 1);
         dict.changeNum(target, statToChange, changeAmt, dict.self, cantGoUnder);
     }
+
+
+    // 4 [IN] - Changes a stat on a target to a specific index in a specific array //
+    /*
+        0 - Instruction
+        1 - Target
+        2 - Stat to change
+        3 - Array to get from (i doubt ill need more than 255 public arrays)
+            0 - Ailments
+            1 - Offensive Elements
+        4 - Index of item 
+    */
+    private static void statFromArrayIndexI(Dictionaries dict, byte[] data){
+        string target = Dictionaries.getStat(dict.self, data[1], "Name");
+        string statToChange = dict.syncStats[data[2]];
+        var index = data[4];
+        var newStat = arrayFromID(dict, data[3], data[4]);
+        Debug.Log("Set stat on " + target + " to " + newStat + " on " + statToChange);
+        Dictionaries.setStat(dict.self, target, statToChange, newStat);
+    }
+
+
 
     // converting numbers to and from bytes //
     private static byte[] convertBytes(int num){
@@ -146,6 +208,29 @@ public class networking : UdonSharpBehaviour
         else{sign = -1;}
         return (((bytes[0] * 256) + bytes[1]) * sign); 
     }
+
+    // unique and stupid way to pull info from an array! //
+    public static string arrayFromID(Dictionaries dict, byte id, byte index){
+        string newStat;
+        var arr = arrayFromID(dict, id);
+        if (arr != null){
+            return (arr[index]);
+        }
+        else{
+            return "";
+        }
+    }
+
+    public static string[] arrayFromID(Dictionaries dict, byte id){
+        switch (id){
+            case 0:
+                return (dict.AILMENTS);
+            case 1:
+                return (dict.offensiveElements);
+            default:
+                return null;
+        }
+    }
     //
 
 
@@ -159,6 +244,7 @@ public class networking : UdonSharpBehaviour
     public void Update(){
         displayInfo(currentTB);
     }
+    // 255 - test that displays the list of players on the wall // 
     public void displayInfo(TextMeshPro textBox){
         string displayText = "";
         foreach (var num in sharedInfo){
@@ -166,5 +252,7 @@ public class networking : UdonSharpBehaviour
         }
         textBox.text = displayText;
     }
+
+    
 }
 

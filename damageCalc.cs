@@ -9,8 +9,6 @@ using System.Linq;
 public class damageCalc : UdonSharpBehaviour
 {
     public Dictionaries statDict;
-
-    
     // determines a number for the damage to be multiplied by
     public static float determineAmp(DataDictionary enemyStats, string attackElement, bool isDown, double skillAmp, Dictionaries mainDict){
         string[] defences = {"Strengths", "Nullifies", "Absorb", "Reflect", "Weak"};
@@ -75,30 +73,51 @@ public class damageCalc : UdonSharpBehaviour
     }
 
     // true if hit, false if miss
-    public static bool determineHit(DataDictionary skill, bool acc=true){
-        string stat;
-        if (acc){
-            stat = "Accuracy";           
-        }
-        else{
-            stat = "Critical";
-        }
+    // accepts Accuracy, Critical, and Ailment Chance
+    public static bool determineHit(DataDictionary skill, string stat){
         var accuracy = skill[stat].Double;
         int randNum = Random.Range(0, 100); // could add a luck thing here but thatd be some work
         return (randNum <= accuracy * 100); // this probably isnt the greatest way to do it but here we are
+    }
+
+    public static void determineAilment(Dictionaries dict, DataDictionary skill, string targetName){
+        if (determineHit(skill, "Ailment Chance")){ // run if the ailment chance hits
+            string ail;
+            switch (skill["Element"].String){
+                case "Ice":
+                    ail = "Freeze";
+                    break;
+                case "Elec":
+                    ail = "Shock";
+                    break;
+                case "Pierce": // need to make it so Poison arrow works
+                    ail = "Charm";
+                    break;
+                default:
+                    ail = skill["Element"].String;
+                    break;
+            }
+            Dictionaries.setStat(dict.self, targetName, "Ailment", ail);
+        } 
     }
 
     // calculates the damage dealt to one specific opponent //
     // loop call the function if hitting multiple //
     public static int damageTurn(Dictionaries mainDict, string userName, string targetName, DataDictionary skillInfo){
         // determine if the skill is going to hit //
-        bool hit = determineHit(skillInfo);
+        bool hit = determineHit(skillInfo, "Accuracy");
         if (hit){
             // get the dictionaries for the user and enemies stats //
             int userId = Dictionaries.findID(mainDict.self, userName); // call the general for the static method and pull the nonstatic dictionary 
             DataDictionary userStats = Dictionaries.getDict(mainDict.self, userId);
             int targetId = Dictionaries.findID(mainDict.self, targetName); 
             DataDictionary targetStats = Dictionaries.getDict(mainDict.self, targetId);
+
+            // Determine if the move will apply an ailment //
+            string ailment = targetStats["Ailment"].String;
+            if (ailment.Equals("")){ // cant get a different ailment
+                determineAilment(mainDict, skillInfo, targetName);
+            }
             // Determind if the move is physical or magical //
             float power = 0;
             if (Dictionaries.determineSkillType(skillInfo).Equals("Physical")){
@@ -137,7 +156,7 @@ public class damageCalc : UdonSharpBehaviour
             // calculate damage
             var amplifier = determineAmp(targetStats, skillInfo["Element"].String, false, 1, mainDict);
             // check if crit 
-            if (determineHit(skillInfo, false)){
+            if (determineHit(skillInfo, "Critical")){
                 updateText.enemyHitText(targetName, "Crit");
                 amplifier *= 1.50f;
             }

@@ -1,6 +1,7 @@
 ﻿
 using UdonSharp;
 using UnityEngine;
+using UnityEngine.UI;
 using VRC.SDKBase;
 using VRC.Udon;
 using TMPro;
@@ -9,21 +10,37 @@ using System;
 public class displaySkills : UdonSharpBehaviour
 {
     public Dictionaries dictionary;
-    public TextMeshProUGUI txtBox;
+    // Skill Displaying //
+    public TextMeshProUGUI txtBox; // the textbox that the skills are put onto
+    public RectTransform skillBack; // scrolling
+    public int currentStartY = 69; // the y value of the scrolling
+    public string leftText; // the text that is displayed
+    public TextMeshProUGUI description; // textbox where the skill description is held
 
-    public RectTransform skillBack;
+    /// Status Displaying ///
+    public Image ailmentBox; // the image that will have the ailment put onto it
+    public TextMeshProUGUI statChangeTxt; // where the change of stats will be reflected
 
-    public int currentStartY = 69;
-    public string leftText;
+    // Materials //
+    public Material charm;
+    public Material distress;
+    public Material dizzy;
+    public Material fear;
+    public Material freeze;
+    public Material panic;
+    public Material shock;
+    public Material rage;
+    public Material poison;
 
-    public TextMeshProUGUI description;
+    public Material plink;
+
     public override void OnPickup(){
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
             var dictionaryGO = GameObject.Find("Dictionary");
             dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
             
-            //Debug.Log(playerName);
+            // Display the List of Skills //
             var playerSkills = Dictionaries.getArray(dictionary.self, playerName, "Skills", "Name"); // get the array of skills the player has
             int i = 1;
             leftText = "|\n"; // the line indicates the top and bottom of the list of skills
@@ -42,10 +59,14 @@ public class displaySkills : UdonSharpBehaviour
             }
             leftText += "|";
             txtBox.text = leftText;
+
+            // Display the Status of the player //
+            showAilment(playerName);
+            showStatChanges(Dictionaries.getArray(dictionary.self, playerName, "Stat Changes", "Name"));
         }
     }
     public override void OnDrop(){
-        Debug.Log(leftText);
+        //Debug.Log(leftText);
     }
     // changes the gui highlighting the skill the user is selecting //
     public void changeSel(int change){
@@ -136,7 +157,7 @@ public class displaySkills : UdonSharpBehaviour
                 return (description);
             case "Patra":
                 description += "Dispels ";
-                foreach (string ailment in dictionary.patraAil){
+                foreach (string ailment in dictionary.PATRA){
                     description += ailment + ", ";
                 }
                 description += "(" + targets + ")";
@@ -210,5 +231,69 @@ public class displaySkills : UdonSharpBehaviour
             returnText = Math.Round((double)maxHP * cost) + " HP";
         }
         return returnText;
+    }
+    // Display an icon for what ailment the user is inflicted with
+    public void showAilment(string playerName){
+        var ailment = Dictionaries.getStat(dictionary.self, playerName, "Ailment");
+        if (!ailment.Equals("")){
+            Material newIcon; // material to change into
+            switch (ailment){
+                case "Charm":
+                    newIcon = charm;
+                    break;
+                case "Distress":
+                    newIcon = distress;
+                    break;
+                case "Dizzy":
+                    newIcon = dizzy;
+                    break;
+                case "Fear":
+                    newIcon = fear;
+                    break;
+                case "Freeze":
+                    newIcon = freeze;
+                    break;
+                case "Panic":
+                    newIcon = panic;
+                    break;
+                case "Shock":
+                    newIcon = shock;
+                    break;
+                /*
+                case "Rage":
+                    newIcon = rage;
+                    break;
+                */
+                case "Poison":
+                    newIcon = poison;
+                    break;
+                default:
+                    newIcon = plink;
+                    break;
+            }
+            ailmentBox.material = newIcon;
+            ailmentBox.enabled = true; 
+        }
+        else{
+            ailmentBox.enabled = false;
+        }
+    }
+
+    public void showStatChanges(string[] statChanges){
+        string text = "";
+        foreach (string statChange in statChanges){
+            string[] statInfo = Dictionaries.parseStatChange(statChange);
+            if (!statInfo[0].Equals("crit")){
+                text += statInfo[0];
+                if (statInfo[1].Equals("+")){
+                    text += " ↑";
+                }
+                else{
+                    text += " ↓";
+                }
+                text += "\n";
+            }
+        }
+        statChangeTxt.text = text;
     }
 }
