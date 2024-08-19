@@ -103,7 +103,7 @@ public class shoot : UdonSharpBehaviour
         string enemy = Dictionaries.getStat(dictionary.self, enemySel + 4, "Name");
         //Debug.Log("Enemy Targetted: " + enemy);
         string skill = getMove(playerName, skillSel, dictionary);
-        var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill, ne, player);
+        var statUsed = Dictionaries.calculateDamage(dictionary, playerName, enemy, skill, player);
         ds.showAilment(Dictionaries.getStat(dictionary.self, playerName, "Ailment"));
         //Debug.Log(statUsed);
         if (statUsed != null){ // always hp or sp or null
@@ -127,7 +127,7 @@ public class shoot : UdonSharpBehaviour
     }
     // Returns the number of skills the holder has //
     private static int getMoveCount(string user, Dictionaries dictionary){
-        return (Dictionaries.getArray(dictionary.self, user, "Skills", "Name").Length - 1);
+        return (Dictionaries.getArray(dictionary.self, user, "Skills", "Name").Length - 1); // for some reason this throws an error on the actual vrchat client
     }
     
     private void changeSelMove(VRCPlayerApi player, int change, Dictionaries dictionary){

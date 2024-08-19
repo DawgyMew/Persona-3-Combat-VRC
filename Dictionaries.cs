@@ -5,7 +5,7 @@ using VRC.SDKBase;
 using VRC.SDK3.Data;
 using VRC.Udon;
 using TMPro;
-
+using System;
 // have to store things in a data dictionary because udon hates OOP :D
 // This is a central hub for scripts to access other scripts 
 // it aint a good way to do it but its a way 
@@ -23,6 +23,7 @@ public class Dictionaries : UdonSharpBehaviour
     public updateText textUpdater;
     public networking network;
     public damageCalc damage;
+    public battleLog log;
 
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"}; // ID: 1
     
@@ -46,6 +47,7 @@ public class Dictionaries : UdonSharpBehaviour
             SP, Max SP: Current Spirit Point and Max Spirit Points
                 HP and SP will change while Max HP and Max SP will always remain the same
             LVL: The Current level of the character
+            Tag: What type of entity is taking up this slot.
             pName: The name of the persona or shadow that the holder has, usually used for pulling a model
             St, Mg, En, Ag, Lu: The Persona's stats
                 Strength, Magic, Endurance, Agility, Luck
@@ -117,7 +119,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"St", 29},
             {"Mg", 31},
             {"En", 25},
-            {"Ag", 27},
+            {"Ag", 21},
             {"Lu", 36},
             
             // persona type affinities //
@@ -232,7 +234,7 @@ public class Dictionaries : UdonSharpBehaviour
         {5, new DataDictionary(){
             // currently just a clone of enemy1
             {"Name", "enemy2"}, // unique identifier
-            {"HP", 242},
+            {"HP", 150},
             {"Max HP", 242},
             {"SP", 138},
             {"Max SP", 138},
@@ -243,7 +245,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"St", 19},
             {"Mg", 31},
             {"En", 19},
-            {"Ag", 22},
+            {"Ag", 99},
             {"Lu", 21},
             // persona type affinities //
             {"Strengths", ""},
@@ -1178,6 +1180,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Cost", 16},
                 {"Targets", "Party"},
                 {"Times Hit", 1},
+                {"Critical", 0}, // i somehow forgot crit on this one
                 {"Ailment Chance", 0.00}
             }},
             {"Diarahan", new DataDictionary(){
@@ -1830,7 +1833,7 @@ public class Dictionaries : UdonSharpBehaviour
             }}
         }
     }
-    }
+    };
     public DataDictionary passiveSkills = new DataDictionary(){
             // Passive Skills //
             /* 
@@ -2872,6 +2875,22 @@ public class Dictionaries : UdonSharpBehaviour
         return (count);
     }
 
+    // returns the unique names for everyone that falls under the tag //
+    public static string[] getActiveArray(Dictionaries mainDict, DataDictionary dict, string tag="*"){
+        string[] returnArr = new string[countActive(mainDict, dict, tag)];
+        int count = 0;
+        for (int i = 0; i < dict.Count; i++){
+            var name = getStat(dict, i, "Name");
+            var tags = getStat(dict, i, "Tag");
+            if (tag == "*" || tags == tag){
+                if (name != "" && name != "_"){
+                    returnArr[count] = name;
+                    count++;
+                }
+            }
+        }
+        return (returnArr);
+    }
     
     ////////
 
@@ -2934,7 +2953,7 @@ public class Dictionaries : UdonSharpBehaviour
     }
 
     public static void removeEnemy(){
-        // add this
+        // TODO: add this
     }
     public static string determineSkillType(Dictionaries mainDict, string skill){
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
@@ -2984,6 +3003,8 @@ public class Dictionaries : UdonSharpBehaviour
         }
     }
 
+
+    /// <returns>Returns an array with the information about the stat change</returns>
     public static string[] parseStatChange(string statChange){
         string change = statChange[statChange.Length - 2].ToString();
         string time = statChange[statChange.Length - 1].ToString();
@@ -2993,9 +3014,9 @@ public class Dictionaries : UdonSharpBehaviour
     }
     // change - false + true
     // 
-    public string packStatChange(string stat, bool change, int timer=3){
+    public static string packStatChange(Dictionaries dict, string stat, bool change, int timer=3){
         string packStat = "";
-        string shortStat = shortStatChanges[Array.IndexOf(dict.statChanges, stat)]; // get abbreviated form of the stat change
+        string shortStat = dict.shortStatChanges[Array.IndexOf(dict.statChanges, stat)]; // get abbreviated form of the stat change
         packStat += shortStat;
         if (change){packStat += "+";}
         else {packStat += "-";}
@@ -3006,7 +3027,7 @@ public class Dictionaries : UdonSharpBehaviour
     public static void applyStatChange(Dictionaries dict, string target, string stat, bool change){
         var shortStat = dict.shortStatChanges[Array.IndexOf(dict.statChanges, stat)];
         var statChanges = getStatChanges(getDict(dict.self, findID(dict.self, target)));
-        string packet = packStatChange(stat, change) + ",";
+        string packet = packStatChange(dict, stat, change) + ",";
         string allStats = "";
         if (statChanges.Length > 0){
             foreach (var stats in statChanges){
@@ -3064,9 +3085,9 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, networking ne, VRCPlayerApi player){
+    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, VRCPlayerApi player){
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary; // this will error if a bad spell is sent thru, i count check if the spell is in the list but that would be costly
-        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
+        var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
         var skillType = Dictionaries.determineSkillType(skillInfo);
         var skillTarget = skillInfo["Targets"].String;
         bool canUse;
@@ -3084,19 +3105,22 @@ public class Dictionaries : UdonSharpBehaviour
         }
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
-            
+            string logMessage = user + " used " + skill + " on ";
             if (skillTarget.Equals("One")){
                 // could make this into its own function but i dont want to do that yet -.-
-                var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
+                var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
                 if (damageDealt != -1){
-                    ne.changeNumO(mainDict, target, "HP", damageDealt, true, player);
+                    mainDict.network.changeNumO(mainDict, target, "HP", damageDealt, true, player);
                     mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self);
                     updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    logMessage += target + " dealing " + damageDealt + " damage.";
                 }
                 else{
                     updateText.changeEnemyText(target, "" + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     updateText.enemyHitText(target, "Miss");
+                    logMessage += target + " and missed.";
                 }
+                mainDict.log.addToLog(logMessage);
                 return (strReturn);
             }
             else if (skillTarget.Equals("Ally")){
@@ -3104,24 +3128,36 @@ public class Dictionaries : UdonSharpBehaviour
                 // Skills that heal //
                 if (amtHeal != 0){
                     mainDict.changeNum(target, "HP", amtHeal, mainDict.self); // gonna have to change this one when adding syncing
+                    updateText.changeEnemyText(target, "+" + skillInfo["Power"].Int + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    logMessage += target + " healing " + skillInfo["Power"].Int + " health.";
                 }
+                mainDict.log.addToLog(logMessage);
                 return (strReturn);
             }
             else if (skillTarget.Equals("All")){
-                var enemyCount = Dictionaries.countActive(mainDict, mainDict.self, "enemy");
-                for (int i = 1; i <= enemyCount; i++){
+                string targetTeam;
+                if (getStat(mainDict.self, user, "Tag", "Name").Equals("player") && skillTarget.Equals("All")){targetTeam = "enemy";}
+                else{targetTeam = "player";} 
+                var enemyCount = Dictionaries.countActive(mainDict, mainDict.self, targetTeam); // too lazy to change the name
+                logMessage += "all " + targetTeam + "s: ";
+                string[] targetNames = getActiveArray(mainDict, mainDict.self, targetTeam);
+                for (int i = 0; i < enemyCount; i++){
                     // calculate damage for the enemy
-                    var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, ne, player);
+                    var loopTarget = targetNames[i];
+                    var damageDealt = damageCalc.damageTurn(mainDict, user, loopTarget, skillInfo, mainDict.network, player);
                     // this part could probably be its own function v
                     if (damageDealt != -1){
-                        mainDict.changeNum("enemy" + i, "HP", damageDealt * -1, mainDict.self);
-                        updateText.changeEnemyText("enemy" + i, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
+                        mainDict.changeNum(loopTarget, "HP", damageDealt * -1, mainDict.self);
+                        updateText.changeEnemyText(loopTarget, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
+                        logMessage += "[" + loopTarget + ", " + damageDealt + " damage], ";
                         }
                     else{
-                        updateText.changeEnemyText("enemy" + i, "" + "\n" + Dictionaries.getStat(mainDict.self, "enemy" + i, "HP") + "/" + Dictionaries.getStat(mainDict.self, "enemy" + i, "Max HP"));
-                        updateText.enemyHitText(target, "Miss");
+                        updateText.changeEnemyText(loopTarget, "" + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
+                        updateText.enemyHitText(loopTarget, "Miss");
+                        logMessage += "[" + loopTarget + ", Missed], ";
                     }   
                 }
+                mainDict.log.addToLog(logMessage + ".");
                 return (strReturn);
             }
             else{ // if the skills target hasnt been added yet 

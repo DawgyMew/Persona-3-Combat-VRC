@@ -18,7 +18,7 @@ https://megamitensei.fandom.com/wiki/Status_Changes_in_Persona_3
     Dizzy - same as down but they lose a turn
 
 BEFORE BATTLE:
-    determine turn order, compare all agility stats and create a list containing who goes when
+    --determine turn order, compare all agility stats and create a list containing who goes when
     activate auto passive skills (unsure if the counter should go down on the first turn)
 
 START
@@ -57,3 +57,9 @@ END
 AFTER BATLLE:
     cure all ailments.
     check and apply cool breeze/victory cry
+
+NOTE:
+    members of your party can join late but idk the way the game determines this and its a bit too specific of a question to find online :3
+
+    Late joiners will be added to the turn order but skipped if they would go before the current turn.
+        compare the index of the new player and if its lower than the active player add one to it

@@ -76,7 +76,8 @@ public class damageCalc : UdonSharpBehaviour
     // true if hit, false if miss
     // accepts Accuracy, Critical, and Ailment Chance
     public static bool determineHit(DataDictionary skill, string stat){
-        var accuracy = skill[stat].Double;
+        Debug.Log(stat);
+        var accuracy = skill[stat].Number;
         int randNum = Random.Range(0, 100); // could add a luck thing here but thatd be some work
         return (randNum <= accuracy * 100); // this probably isnt the greatest way to do it but here we are
     }
@@ -122,7 +123,7 @@ public class damageCalc : UdonSharpBehaviour
             if (ailment.Equals("")){ // cant get a different ailment
                 var ail = determineAilment(mainDict, skillInfo, targetName);
                 if (!ail.Equals("")){
-                    network.statFromArrayIndexO(mainDict, targetName, "Ailment", 0, ail, player)
+                    network.statFromArrayIndexO(mainDict, targetName, "Ailment", 0, ail, player);
                 }
             }
             // Determind if the move is physical or magical //

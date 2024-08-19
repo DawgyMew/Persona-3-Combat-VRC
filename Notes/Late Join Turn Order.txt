@@ -1,0 +1,18 @@
+Persona 3 Portable Remaster, Monad Depths
+
+Agility:
+	Makoto (Lucifer) - 63
+	Yukari - 41
+	Aigis - 44
+
+Enemy Agility:
+	Eternal Sand - 53
+	Hallowed Turret - 30
+
+3 Eternal Sands (Neutral Start): Party Goes first Makoto -> Aigis -> Yukari -> Enemies
+3 Eternal Sands (Enemy Advantage): Enemies -> Makoto -> Eternal Sand -> Eternal Sand -> Aigis -> Yukari -> Makoto
+
+2 Hallowed Turrent (Makoto Start | Enemy Advantage): Hallowed Turret -> Makoto -> both turrets -> Makoto (yukari shows up) (then aigis shows up) -> yukari -> hallowed turret -> makoto -> aigis
+
+calculate them into the turn order if their turn hadnt been passed up yet
+if it is pass their turn and they arrive they have to wait for the next cycle

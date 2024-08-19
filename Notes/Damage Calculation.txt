@@ -53,3 +53,9 @@ A 400 power weapon with high critical coupled with the weapon master for it doub
 
 God hand 600 power 20% crit with Apt Pupil
 High Critical sword 800 power with 1h Sword Master 40% crit with Apt Pupil
+
+
+figure out enemy ai
+        https://gamefaqs.gamespot.com/boards/937269-shin-megami-tensei-persona-3-fes/56726166
+        generally try to knock down your teammates by exploiting weaknesses to continue the '1 more' chain
+        might try to target the protagonist but that doesnt matter here :>

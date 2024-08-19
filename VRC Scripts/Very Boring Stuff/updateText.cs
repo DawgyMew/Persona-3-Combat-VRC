@@ -7,6 +7,9 @@ using TMPro;
 
 public class updateText : UdonSharpBehaviour
 {
+
+    // TODO: Set something up for when players are attacked
+
     // change the textbox above the enemy //
     public static void changeEnemyText(string enemyName, string text){
         GameObject enemy = GameObject.Find(enemyName);
@@ -22,9 +25,11 @@ public class updateText : UdonSharpBehaviour
     // its close enough
     public static void enemyHitText(string enemyName, string text){
         GameObject enemy = GameObject.Find(enemyName);
-        var particle = enemy.transform.GetChild(1).gameObject;
-        if (particle != null){
-            particle.GetComponent<hitText>().sendText(text);
+        if (enemy != null){
+            var particle = enemy.transform.GetChild(1).gameObject;
+            if (particle != null){
+                particle.GetComponent<hitText>().sendText(text);
+            }
         }
     }
 }
