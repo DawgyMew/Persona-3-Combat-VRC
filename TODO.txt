@@ -2,7 +2,7 @@
 * _ means the feature is not as essential
 
 Known Bugs:
-    therell be some soon enough :3
+    i pushed a bug with multi healing spells to vrchat, its already been fixed here i just need to reupload to vrchat.
 
 General:
     add to the dictionary of preset personas and enemies
