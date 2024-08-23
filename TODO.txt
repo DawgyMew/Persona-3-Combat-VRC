@@ -3,6 +3,7 @@
 
 Known Bugs:
     i pushed a bug with multi healing spells to vrchat, its already been fixed here i just need to reupload to vrchat.
+    the mesh on the evokers broke with the transfer
 
 General:
     add to the dictionary of preset personas and enemies
