@@ -5,6 +5,17 @@ Known Bugs:
     i pushed a bug with multi healing spells to vrchat, its already been fixed here i just need to reupload to vrchat.
     the mesh on the evokers broke with the transfer
 
+Notes from testing:
+    p3vr the display for the scroll doesnt work but the move can be changed 
+    turn text is not sync
+    only the master of the instance can scroll on skills
+    add check if local player on line 65 of shoot.cs??
+    on join the dictionaries might not be synced up correctly
+    the dictionary doesnt exactly copy from the master 
+    make a functiont that requests a copy of the self dictionary from the master
+    get what preset the player/shadow has
+    getdictfrommaster()
+
 General:
     add to the dictionary of preset personas and enemies
     code ailment functionality
