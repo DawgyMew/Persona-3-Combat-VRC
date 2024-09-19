@@ -1,4 +1,4 @@
-# He'll never see this coming
+# Persona 3 Portable VRChat
 
 WIP Remake of the Persona 3 Portable combat system to work inside of VRChat.
 

@@ -23,7 +23,7 @@ public class Presets : MonoBehaviour
             {"Reflect", ""},
             {"Weak", "Fire"},
             // skills //
-            {"Skills", "Bufu,Pulinpa,Re Patra,Sonic Punch,Ice Boost,Mabufu"},
+            {"Skills", "Bufu,Pulinpa,Re Patra,Sonic Punch,Ice Boost,Mabufu,Guard"},
         }},
         {"Black Frost", new DataDictionary(){
             // persona stats //
@@ -41,16 +41,36 @@ public class Presets : MonoBehaviour
             {"Reflect", ""},
             {"Weak", "Light"},
             // skills //
-            {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri"},
+            {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri,Guard"},
         }},
+        {"Blank", new DataDictionary(){ // use to clear stats
+            // persona stats //
+            {"pName", ""},
+            {"St", 0},
+            {"Mg", 0},
+            {"En", 0},
+            {"Ag", 0},
+            {"Lu", 0},
+            
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", "Wait"},
+        }},
+        {"Personal Blank", new DataDictionary(){
+            {"Max HP", 1},
+            {"Max SP", 1},
+            {"LVL", 1},
+        }}
     };
     // Preset of Enemies //
     public DataDictionary enemies = new DataDictionary(){
         {"Shouting Tiara", new DataDictionary(){
-            {"Name", ""}, // unique identifier
-            {"HP", 242},
             {"Max HP", 242},
-            {"SP", 138},
             {"Max SP", 138},
             {"LVL", 35},
             // persona stats //
@@ -70,10 +90,7 @@ public class Presets : MonoBehaviour
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
         }},
         {"Amorous Snake", new DataDictionary(){
-            {"Name", ""}, // unique identifier
-            {"HP", 470},
             {"Max HP", 470},
-            {"SP", 230},
             {"Max SP", 230},
             {"LVL", 93},
             // persona stats //
@@ -92,5 +109,40 @@ public class Presets : MonoBehaviour
             // skills //
             {"Skills", "Agidyne,Maragidyne,Mahama,Mahamaon,Diarama,Mediarahan,Sexy Dance,Virus Breath,Re Patra"},
         }},
+        {"Blank", new DataDictionary(){ // use to clear stats
+            {"Max HP", 1},
+            {"Max SP", 1},
+            {"LVL", 1},
+            // persona stats //
+            {"pName", ""},
+            {"St", 0},
+            {"Mg", 0},
+            {"En", 0},
+            {"Ag", 0},
+            {"Lu", 0},
+            
+            // persona type affinities //
+            {"Strengths", ""},
+            {"Nullifies", ""},
+            {"Absorb", ""},
+            {"Reflect", ""},
+            {"Weak", ""},
+            // skills //
+            {"Skills", "Wait"},
+        }},
+        
     };
+
+    public static DataDictionary getDict(DataDictionary dict, string presetName){
+        if (dict.TryGetValue(presetName, TokenType.DataDictionary, out DataToken value)){
+            return (value.DataDictionary);
+        }
+        else{return null;}
+    }
+    // returns the names of the presets from the specified dictionary //
+    public static DataList getPresetList(DataDictionary dict){
+        DataList keys = dict.GetKeys();
+        keys.Sort();
+        return (keys);
+    }
 }

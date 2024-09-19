@@ -40,15 +40,20 @@ public class Capsule : UdonSharpBehaviour
 
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Plink");
     }
-
+    public override void OnPlayerJoined(VRCPlayerApi player){
+        showNetworkInfo();
+    }
     // this needed to be public .-.
     public void Plink(){
         textShown = !textShown;
-        syncText.SetActive(textShown);
-        syncText2.SetActive(textShown);
+        showNetworkInfo();
         dictionaries.displayPlayers();
     }
     public override void OnDeserialization(){
+        showNetworkInfo();
+    }
+
+    private void showNetworkInfo(){
         syncText.SetActive(textShown);
         syncText2.SetActive(textShown);
     }

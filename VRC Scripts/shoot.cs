@@ -63,7 +63,7 @@ public class shoot : UdonSharpBehaviour
         var change = 0;
         var player = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer;
         if (player != null){
-            if (true){
+            if (player.isLocal){ // i think this might always be true in this case?
                 //plonk.text = (Networking.GetServerTimeInMilliseconds() - timeToWait) + " - " + moveTimeUsed; 
                 if ((Networking.GetServerTimeInMilliseconds() - timeToWait) > moveTimeUsed){ // create a buffer to make selection easier?
                     moveTimeUsed = Networking.GetServerTimeInMilliseconds(); 

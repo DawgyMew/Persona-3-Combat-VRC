@@ -6,14 +6,17 @@ Known Bugs:
     the mesh on the evokers broke with the transfer
 
 Notes from testing:
-    p3vr the display for the scroll doesnt work but the move can be changed 
-    turn text is not sync
-    only the master of the instance can scroll on skills
-    add check if local player on line 65 of shoot.cs??
+            p3vr the display for the scroll doesnt work but the move can be changed 
+            turn text is not sync
+            only the initial master of the instance can scroll on skills
+                i think something in displaySkills.cs is broken for the other players
+
+    
     on join the dictionaries might not be synced up correctly
     the dictionary doesnt exactly copy from the master 
     make a functiont that requests a copy of the self dictionary from the master
     get what preset the player/shadow has
+        get the stats/ailments that have changed from the preset
     getdictfrommaster()
 
 General:

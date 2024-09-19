@@ -34,29 +34,48 @@ public class displaySkills : UdonSharpBehaviour
 
     public Material plink;
 
+    /* 
+        If the skill menu stops responding and it leaves an ailment these are what they mean:
+        - most likely -
+        None - uh
+        plink - the script started but did not make it past that
+        Charm - Dictionary is null
+        Shock - something went wrong in showing the stat changes
+     */
+
     public override void OnPickup(){
         if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
             var dictionaryGO = GameObject.Find("Dictionary");
             dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
             
+            ailmentBox.enabled = true; 
+            ailmentBox.material = plink; // if shows plink it got here
+            
+
             // Display the List of Skills //
-            var playerSkills = Dictionaries.getArray(dictionary.self, playerName, "Skills", "Name"); // get the array of skills the player has
-            int i = 1;
-            leftText = "|\n"; // the line indicates the top and bottom of the list of skills
-            foreach (var skill in playerSkills){
-                // check if the skill is passive or not //
-                var skillInfo = Dictionaries.getSkillInfo(dictionary, skill);
-                var cost = skillInfo["Cost"].Number; // this one checks if its 0 or -1
-                var displayCost = determineCost(dictionary, skillInfo, playerName); // this is the amount of hp or sp will be taken
-                    if (cost != -1){
-                        leftText += skill + " \t" + displayCost + "\n";
-                    }
-                    else{
-                        leftText += "null\n";
-                    }
-                    i++;
+            if (dictionary != null){
+                var playerSkills = Dictionaries.getArray(dictionary.self, playerName, "Skills", "Name"); // get the array of skills the player has
+                int i = 1;
+                leftText = "|\n"; // the line indicates the top and bottom of the list of skills
+                foreach (var skill in playerSkills){
+                    // check if the skill is passive or not //
+                        var skillInfo = Dictionaries.getSkillInfo(dictionary, skill);
+                        var cost = skillInfo["Cost"].Number; // this one checks if its 0 or -1
+                        var displayCost = determineCost(dictionary, skillInfo, playerName); // this is the amount of hp or sp will be taken
+                            if (cost != -1){
+                                leftText += skill + " \t" + displayCost + "\n";
+                            }
+                            else{
+                                leftText += "null\n";
+                            }
+                            i++;
+                }
             }
+            else{
+                    ailmentBox.material = charm; // show charm if the dictionary is null 
+                } // idk why it would be null but im just testing a bunch of possibilites
+
             leftText += "|";
             txtBox.text = leftText;
 
@@ -64,13 +83,16 @@ public class displaySkills : UdonSharpBehaviour
             showAilment(playerName);
             showStatChanges(Dictionaries.getArray(dictionary.self, playerName, "Stat Changes", "Name"));
         }
+        ailmentBox.enabled = false;
     }
-    public override void OnDrop(){
+    /*public override void OnDrop(){
         //Debug.Log(leftText);
     }
+    */
     // changes the gui highlighting the skill the user is selecting //
     public void changeSel(int change){
         //direction.text = change + " DS";
+        ailmentBox.material = poison
         var newY = skillBack.anchoredPosition.y + (change * -70);
         if (newY < 70 && newY > -104){
             skillBack.anchoredPosition = new Vector2(0, newY);
@@ -280,6 +302,7 @@ public class displaySkills : UdonSharpBehaviour
     }
 
     public void showStatChanges(string[] statChanges){
+        ailmentBox.material = shock;
         string text = "";
         foreach (string statChange in statChanges){
             string[] statInfo = Dictionaries.parseStatChange(statChange);

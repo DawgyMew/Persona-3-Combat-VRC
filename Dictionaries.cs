@@ -24,7 +24,9 @@ public class Dictionaries : UdonSharpBehaviour
     public networking network;
     public damageCalc damage;
     public battleLog log;
+    public Presets presetList;
 
+    // CONSTANTS //
     public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"}; // ID: 1
     
     public string[] statChanges = {"Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats"};
@@ -71,6 +73,7 @@ public class Dictionaries : UdonSharpBehaviour
                 crit: critical hit chance, changes the likelyhood of hitting a critical hit with a physical skill
         */      
         {0, new DataDictionary(){ 
+            // personal stats //
             {"Name", ""},
             {"HP", 354},
             {"Max HP", 354},
@@ -321,8 +324,7 @@ public class Dictionaries : UdonSharpBehaviour
         }},
     };
 
-    // im gonna  scream why do i have to put this in here //
-    // i wanted to have these dictionaries in seperate files but udon and unity are throwing a fit so here we are 1000 liunes added to dictionaries.cs
+    // all the skill s//
     public DataDictionary skillDict = new DataDictionary(){
         /*
             Element: The Type of Skill
@@ -2781,6 +2783,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public override void OnPlayerLeft(VRCPlayerApi player){
         if (!player.isLocal){ // i dont need to remove the local player from the dictionary because thats not the local players problem anymore :->
+            clearEntry(player.displayName, true);
             setStat(self, player.displayName, "Name", "");
         }
     }
@@ -2894,6 +2897,7 @@ public class Dictionaries : UdonSharpBehaviour
     
     ////////
 
+    // displays the stats from the entire dictionary //
     public void displayPlayers(){
         string displayText = "";
         /*
@@ -2918,6 +2922,35 @@ public class Dictionaries : UdonSharpBehaviour
             displayText += "\n";
         }
         board.text = displayText;
+    }
+
+    private void copyPreset(string name, string presetName){
+        var tag = getStat(self, name, "Tag");
+        var id = findID(self, name);
+        DataDictionary preset; // get the preset dictionary 
+        if (tag.Equals("player")){
+            preset = presetList.getDict(presetList.personas, "presetName");
+        }
+        else{
+            preset = presetList.getDict(presetList.personas, "presetName");
+        }
+        if (preset != null){
+            DataList keys = preset.GetKeys();
+            keys.Sort();
+            for (int i = 0; i < keys.Count; i++){
+                setStat(self, name, keys[i].ToString(), preset[keys[i]].ToString()) // i think making them strings should be fine
+                if (keys[i].Equals("Max HP") || keys[i].Equals("Max SP")){ // its been a while since ive touched a lot of this code _._
+                    setStat(self, name, keys[i].ToString().Substring(2), preset[keys[i]].ToString())  // set the hp/sp to max on preset change
+                }
+            }
+        }
+    }
+    // sets all the stats in a segment to defaults
+    public void clearEntry(string name, bool removePersonal=false){
+        copyPreset(name, "Blank");
+        if (removePersonal){
+            copyPreset(name, "Personal Blank");
+        }
     }
 
     public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder=false){
@@ -2952,8 +2985,9 @@ public class Dictionaries : UdonSharpBehaviour
         }
     }
 
-    public static void removeEnemy(){
+    public static void removeEnemy(string name){
         // TODO: add this
+        clearEntry(name);
     }
     public static string determineSkillType(Dictionaries mainDict, string skill){
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
