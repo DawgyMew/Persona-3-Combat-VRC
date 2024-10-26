@@ -20,6 +20,7 @@ public class displaySkills : UdonSharpBehaviour
     /// Status Displaying ///
     public Image ailmentBox; // the image that will have the ailment put onto it
     public TextMeshProUGUI statChangeTxt; // where the change of stats will be reflected
+    public TextMeshProUGUI testname; // where the change of stats will be reflected
 
     // Materials //
     public Material charm;
@@ -37,20 +38,22 @@ public class displaySkills : UdonSharpBehaviour
     /* 
         If the skill menu stops responding and it leaves an ailment these are what they mean:
         - most likely -
-        None - uh
+        None - it probably worked
         plink - the script started but did not make it past that
         Charm - Dictionary is null
         Shock - something went wrong in showing the stat changes
      */
 
     public override void OnPickup(){
-        if (GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal){
+        if (/*GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal*/true){
+            //Debug.Log("gheuawighewuighuoiwahgn");
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
+            testname.text = playerName;
             var dictionaryGO = GameObject.Find("Dictionary");
             dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
             
-            ailmentBox.enabled = true; 
-            ailmentBox.material = plink; // if shows plink it got here
+            //ailmentBox.enabled = true; 
+            //ailmentBox.material = plink; // if shows plink it got here
             
 
             // Display the List of Skills //
@@ -71,9 +74,10 @@ public class displaySkills : UdonSharpBehaviour
                             }
                             i++;
                 }
+                //ailmentBox.material = null;
             }
             else{
-                    ailmentBox.material = charm; // show charm if the dictionary is null 
+                    //ailmentBox.material = charm; // show charm if the dictionary is null 
                 } // idk why it would be null but im just testing a bunch of possibilites
 
             leftText += "|";
@@ -83,7 +87,9 @@ public class displaySkills : UdonSharpBehaviour
             showAilment(playerName);
             showStatChanges(Dictionaries.getArray(dictionary.self, playerName, "Stat Changes", "Name"));
         }
-        ailmentBox.enabled = false;
+        else{
+            ailmentBox.enabled = false;
+        }
     }
     /*public override void OnDrop(){
         //Debug.Log(leftText);
@@ -92,7 +98,7 @@ public class displaySkills : UdonSharpBehaviour
     // changes the gui highlighting the skill the user is selecting //
     public void changeSel(int change){
         //direction.text = change + " DS";
-        ailmentBox.material = poison
+        //ailmentBox.material = poison;
         var newY = skillBack.anchoredPosition.y + (change * -70);
         if (newY < 70 && newY > -104){
             skillBack.anchoredPosition = new Vector2(0, newY);
@@ -256,7 +262,9 @@ public class displaySkills : UdonSharpBehaviour
     }
     // Display an icon for what ailment the user is inflicted with
     public void showAilment(string playerName){
+        Debug.Log("gjuiowaehjguoiewahnjgeuawoighjoiui " + playerName);
         var ailment = Dictionaries.getStat(dictionary.self, playerName, "Ailment");
+        //testname.text = ailment;
         if (!ailment.Equals("")){
             Material newIcon; // material to change into
             switch (ailment){
@@ -302,7 +310,7 @@ public class displaySkills : UdonSharpBehaviour
     }
 
     public void showStatChanges(string[] statChanges){
-        ailmentBox.material = shock;
+        //ailmentBox.material = shock;
         string text = "";
         foreach (string statChange in statChanges){
             string[] statInfo = Dictionaries.parseStatChange(statChange);
@@ -318,5 +326,15 @@ public class displaySkills : UdonSharpBehaviour
             }
         }
         statChangeTxt.text = text;
+    }
+
+    // easy way to refresh the players menu //
+    public void refreshMenu(){
+        var pickup = GetComponent<VRC.SDKBase.VRC_Pickup>();
+        if (pickup != null){ // make sure the evoker is being held
+            string playerName = pickup.currentPlayer.displayName;
+            testname.text = playerName;
+            //showAilment(playerName);
+        }
     }
 }

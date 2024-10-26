@@ -31,6 +31,7 @@ public class turnLogic : UdonSharpBehaviour
 
     // returns if the target will be able to do their turn //
     private bool beforeTurn(Dictionaries dict, string name, DataDictionary stats){
+        Dictionaries.refreshMenu();
         // decrease stat change timers
         if (stats["isDown"].Boolean){
             Dictionaries.setStat(dict.self, name, "isDown", false);
@@ -66,6 +67,7 @@ public class turnLogic : UdonSharpBehaviour
         // poison the player if applicable
         // check if the player downed an enemy and return true if so
         // if they dont move on to next turn
+        Dictionaries.refreshMenu();
         return (false);
     }
     // Increase the active turn number by one //

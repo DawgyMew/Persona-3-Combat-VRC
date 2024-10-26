@@ -74,6 +74,7 @@ Networking:
     implement network events for more parts of the project
     create function that copies information from the preset list into a slot of the dictionary
     add functions that affect stat changes
+    **create function that gets the current dictionary status from the instance master
 
 Ideas:
     Display a set of cards that will affect the players stats or give them a new persona.

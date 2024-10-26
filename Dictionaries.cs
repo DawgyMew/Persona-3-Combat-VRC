@@ -62,6 +62,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             Skills: The skills that they are able to use.
             Passive: The skills that affect the player but they cannot cast.
+            Preset Base: The UID of the preset used to generate the persona. * at the end denotes a change from the original preset.
             Ailment: The current negative ailment
             IsDown: Whether or not they are down and will take more damage from attacks
             Stat Changes: How certain stats have been changed.
@@ -98,6 +99,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Mediarama,Wait,Guard"},
             {"Passive", "Ice Boost"},
+            {"Preset Base", ""},
         
             // other //
             {"Ailment", ""},
@@ -134,6 +136,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
             {"Passive", "Ice Boost"},
+            {"Preset Base", ""},
         
             // other //
             {"Ailment", ""},
@@ -165,6 +168,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
             {"Passive", "Ice Boost"},
+            {"Preset Base", ""},
         
             // other //
             {"Ailment", ""},
@@ -196,7 +200,8 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Bufula,Gale Slash,Mudo,Agilao,Marakunda,Re Patra,Rakukaja,Wait"},
             {"Passive", "Ice Boost"},
-        
+            {"Preset Base", ""},
+
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -229,6 +234,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
             {"Passive", ""},
+            {"Preset Base", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -259,6 +265,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
             {"Passive", ""},
+            {"Preset Base", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -288,6 +295,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Wait"},
             {"Passive", ""},
+            {"Preset Base", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -317,6 +325,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills //
             {"Skills", "Wait"},
             {"Passive", ""},
+            {"Preset Base", ""},
             // other //
             {"Ailment", ""},
             {"isDown", false},
@@ -2803,7 +2812,7 @@ public class Dictionaries : UdonSharpBehaviour
                 }
             }
         }
-        Debug.LogWarning("Could not Find " + strToFind + " under " + keyToSrch + " Dictionary");
+        Debug.LogWarning("Could not Find " + strToFind + " under " + keyToSrch + " in Dictionary");
         return (-1);
     } 
 
@@ -2927,20 +2936,20 @@ public class Dictionaries : UdonSharpBehaviour
     private void copyPreset(string name, string presetName){
         var tag = getStat(self, name, "Tag");
         var id = findID(self, name);
-        DataDictionary preset; // get the preset dictionary 
+        DataDictionary preset = null; // get the preset dictionary 
         if (tag.Equals("player")){
-            preset = presetList.getDict(presetList.personas, "presetName");
+            preset = Presets.getDict(presetList.personas, "presetName");
         }
         else{
-            preset = presetList.getDict(presetList.personas, "presetName");
+            preset = Presets.getDict(presetList.personas, "presetName");
         }
         if (preset != null){
             DataList keys = preset.GetKeys();
             keys.Sort();
             for (int i = 0; i < keys.Count; i++){
-                setStat(self, name, keys[i].ToString(), preset[keys[i]].ToString()) // i think making them strings should be fine
+                setStat(self, name, keys[i].ToString(), preset[keys[i]].ToString()); // i think making them strings should be fine
                 if (keys[i].Equals("Max HP") || keys[i].Equals("Max SP")){ // its been a while since ive touched a lot of this code _._
-                    setStat(self, name, keys[i].ToString().Substring(2), preset[keys[i]].ToString())  // set the hp/sp to max on preset change
+                    setStat(self, name, keys[i].ToString().Substring(2), preset[keys[i]].ToString());  // set the hp/sp to max on preset change
                 }
             }
         }
@@ -2987,7 +2996,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public static void removeEnemy(string name){
         // TODO: add this
-        clearEntry(name);
+        //clearEntry(name);
     }
     public static string determineSkillType(Dictionaries mainDict, string skill){
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
@@ -3115,6 +3124,18 @@ public class Dictionaries : UdonSharpBehaviour
         }
         else{return new Vector3(0, 0, 0);}
         
+    }
+
+    public static void refreshMenu(){
+        var evokerParent = GameObject.Find("evokerHolder"); // the parent go that holds all the evokers
+        // put all the children in a box
+        // GameObject[] evokers = GameObject[10];
+        var numEvokers = evokerParent.transform.childCount;
+        for (int i = 0; i < numEvokers; i++){
+            var evoker = evokerParent.transform.GetChild(i).gameObject; // get the iterations funny
+            var DPscript = (displaySkills)evoker.GetComponent(typeof(UdonBehaviour));
+            DPscript.refreshMenu();
+        }
     }
 
     // pass on to the damage calc script //

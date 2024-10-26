@@ -1,9 +1,9 @@
-using UdonSharp;
+﻿using UdonSharp;
 using UnityEngine;
 using VRC.SDKBase;
 using VRC.SDK3.Data;
 
-public class Presets : MonoBehaviour
+public class Presets : UdonSharpBehaviour
 {
     // Presets of Personas players can use //
     public DataDictionary personas = new DataDictionary(){
@@ -24,6 +24,8 @@ public class Presets : MonoBehaviour
             {"Weak", "Fire"},
             // skills //
             {"Skills", "Bufu,Pulinpa,Re Patra,Sonic Punch,Ice Boost,Mabufu,Guard"},
+            {"Passive", ""},
+            {"Preset Base", "P02"}, // tag should make it easier to track and transfer data | maybe a * after to denote if its been edited somehow?
         }},
         {"Black Frost", new DataDictionary(){
             // persona stats //
@@ -42,6 +44,8 @@ public class Presets : MonoBehaviour
             {"Weak", "Light"},
             // skills //
             {"Skills", "Mudo,Agilao,Bufula,Marakunda,Re Patra,Ice Boost,Rakukaja,Trafuri,Guard"},
+            {"Passive", ""},
+            {"Preset Base", "P01"},
         }},
         {"Blank", new DataDictionary(){ // use to clear stats
             // persona stats //
@@ -60,6 +64,8 @@ public class Presets : MonoBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", "Wait"},
+            {"Passive", ""},
+            {"Preset Base", "P00"},
         }},
         {"Personal Blank", new DataDictionary(){
             {"Max HP", 1},
@@ -88,6 +94,8 @@ public class Presets : MonoBehaviour
             {"Weak", "Ice,Dark"},
             // skills //
             {"Skills", "Maragi,Agilao,Maragion,Mahama,Media"},
+            {"Passive", ""},
+            {"Preset Base", "E01"},
         }},
         {"Amorous Snake", new DataDictionary(){
             {"Max HP", 470},
@@ -108,6 +116,8 @@ public class Presets : MonoBehaviour
             {"Weak", "Ice,Dark"},
             // skills //
             {"Skills", "Agidyne,Maragidyne,Mahama,Mahamaon,Diarama,Mediarahan,Sexy Dance,Virus Breath,Re Patra"},
+            {"Passive", ""},
+            {"Preset Base", "E02"},
         }},
         {"Blank", new DataDictionary(){ // use to clear stats
             {"Max HP", 1},
@@ -129,6 +139,8 @@ public class Presets : MonoBehaviour
             {"Weak", ""},
             // skills //
             {"Skills", "Wait"},
+            {"Passive", ""},
+            {"Preset Base", "E00"},
         }},
         
     };

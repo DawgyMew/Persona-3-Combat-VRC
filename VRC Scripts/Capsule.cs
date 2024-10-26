@@ -39,6 +39,7 @@ public class Capsule : UdonSharpBehaviour
         Dictionaries.setStat(dictionaries.self, player.displayName, "Ailment", ailment);
 
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Plink");
+        SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "refreshScreen");
     }
     public override void OnPlayerJoined(VRCPlayerApi player){
         showNetworkInfo();
@@ -49,6 +50,10 @@ public class Capsule : UdonSharpBehaviour
         showNetworkInfo();
         dictionaries.displayPlayers();
     }
+    public void refreshScreen(){
+        Dictionaries.refreshMenu();
+    }
+
     public override void OnDeserialization(){
         showNetworkInfo();
     }
