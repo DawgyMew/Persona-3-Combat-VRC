@@ -2,8 +2,7 @@
 * _ means the feature is not as essential
 
 Known Bugs:
-    i pushed a bug with multi healing spells to vrchat, its already been fixed here i just need to reupload to vrchat.
-    the mesh on the evokers broke with the transfer
+    spidr, caterpliler
 
 Notes from testing:
             p3vr the display for the scroll doesnt work but the move can be changed 
@@ -26,18 +25,21 @@ General:
     finish passive skills
     code evasion effects on dodging and hitting
     complete the turn logic, turn.txt (made a lot of progress on this one)
-        make players not be able to act when its not their turn
-            add timer to skip turn of afk players?
-                make them wait and pass their turn
-        implement one more! when hitting a weaknesses
+        --make players not be able to act when its not their turn
+        
+        --implement one more! when hitting a weaknesses
         use port priority to handle speed ties.
-    implement ability to guard and wait (or just wait if im feeling lazy)
+    add timer to skip turn of afk players?
+        make them wait and pass their tur
+    --implement ability to guard and wait (or just wait if im feeling lazy)
         guarding prevents you from being knocked for one hit
         enemies are only able to wait.
     finish the skill descriptions
     
 
 Unity Reliant:
+    add test button to toggle requiring turn order to attack :3
+
     Evoker:
         allow the player to select teamates for helpful moves
             if using a move that affects your teamate have a different counter when you are hovering over the spell

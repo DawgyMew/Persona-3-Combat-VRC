@@ -21,7 +21,7 @@ public class damageCalc : UdonSharpBehaviour
                     resistance = i;
                     break;
                 }
-            }
+            } 
             if (resistance != 0){break;}
         }
         double amplifier = 1;

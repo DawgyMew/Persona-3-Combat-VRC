@@ -2970,7 +2970,7 @@ public class Dictionaries : UdonSharpBehaviour
             // prevent the number from going over the max if HP or SP
             if (numKey.Equals("HP") || numKey.Equals("SP")){
                 string max = getStat(dictToChange, uName, "Max " + numKey);
-                int.TryParse(max, out int maxNum);
+                int.TryParse(max, out int maxNum); 
                 if (intNum > maxNum){
                     intNum = maxNum;
                 }

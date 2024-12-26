@@ -21,7 +21,9 @@ public class turnLogic : UdonSharpBehaviour
     */
     [UdonSynced]public string[] turnOrder = new string[10]; // <-- important to keep synced
     [UdonSynced]public int currentTurn = 0;
+    [UdonSynced]public string turnOwner = "";
 
+    [UdonSynced]public bool requireTurnToAttack = false; // debug variable that if disabled allows any player to attack at any time.
     private void beforeBattle(){
         turnOrder = determineTurnOrder(dict);
         SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
@@ -31,6 +33,7 @@ public class turnLogic : UdonSharpBehaviour
 
     // returns if the target will be able to do their turn //
     private bool beforeTurn(Dictionaries dict, string name, DataDictionary stats){
+        turnOwner = turnOrder[currentTurn];
         Dictionaries.refreshMenu();
         // decrease stat change timers
         if (stats["isDown"].Boolean){
@@ -45,9 +48,9 @@ public class turnLogic : UdonSharpBehaviour
     }
     // activate when the current player value changes //
     public void turn(){
-        if (!Dictionaries.getStat(dict.self, turnOrder[currentTurn], "Tag").Equals("enemy")){
-            if (Networking.LocalPlayer.displayName.Equals(turnOrder[currentTurn])){
-                // allow the player to use a skill
+        if (!Dictionaries.getStat(dict.self, turnOwner, "Tag").Equals("enemy")){
+            if (Networking.LocalPlayer.displayName.Equals(turnOwner)){
+                //SendCustomEventDelayedSeconds();
                 // set a delayed function to wait 15 seconds or so to force the player to pass their turn if they take too long
                     // but make the function be able to be interupted or something when the player activates their skill so players wont have to wait every time.
             }
@@ -55,27 +58,17 @@ public class turnLogic : UdonSharpBehaviour
         else{
             // if its an enemy turn put it up to the instance masters machine
             if (Networking.IsMaster){
-                // TODO: enemy ai :plink:
+                // TODO: enemy ai :plinK:
                 // temp just heal self
-                Dictionaries.calculateDamage(dict, turnOrder[currentTurn], turnOrder[currentTurn], "Dia", Networking.LocalPlayer);
+                Dictionaries.calculateDamage(dict, turnOwner, turnOwner, "Dia", Networking.LocalPlayer);
                 nextTurn();
             }
         }
     }
-    
-    public bool afterTurn(){
-        // poison the player if applicable
-        // check if the player downed an enemy and return true if so
-        // if they dont move on to next turn
-        Dictionaries.refreshMenu();
-        return (false);
-    }
-    // Increase the active turn number by one //
     public void nextTurn(){
         var oneMore = afterTurn();
 
         // TODO: Check if the player made the last enemy downed -> choice to all out attack
-
         // check if all players or enemies are dead 
         int actEnemies = Dictionaries.countActive(dict, dict.self, "enemy");
         int actPlayers = Dictionaries.countActive(dict, dict.self, "player");
@@ -84,12 +77,29 @@ public class turnLogic : UdonSharpBehaviour
                 currentTurn = (currentTurn + 1) % turnOrder.Length;
                 showActivePlayer();
             }
-            turn(); // recursive loop :3
+            SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
+            // should sync the turns to everyone??
         }
         else{
+            
             // something something end of battle
         }
     }
+    public bool afterTurn(){
+        if (Dictionaries.getStat(dict.self, turnOwner, "Ailment").Equals("Poison")){
+            int healthLost = (int)(dict.getStat(dict.self, turnOwner, "Max HP") * .3) * -1;
+            dict.changeNum(turnOwner, "HP", healthLost, dict.self, true);
+            dict.changeNum(turnOwner, "HP", 1, dict.self, true); // increase by one because poison cant kill :3
+        }
+        // poison the player if applicable
+        // check if the player downed an enemy and return true if so
+        // if they dont move on to next turn
+        SendCustomNetworkEvent(NetworkEventTarget.All, "runescape"); // serialize something to the other players dont know yet lmao
+        Dictionaries.refreshMenu();
+        return (false);
+    }
+    // Increase the active turn number by one //
+    
     // Determine the order of who will go when //
     // Run at the start of the battle, when a new player joins the battle, and whenever the agility changes //
     // i dont think increased agility affects the turn order until everyone else has gone?
@@ -142,8 +152,25 @@ public class turnLogic : UdonSharpBehaviour
         return (arr);
     }
 
+    public bool isPlayerTurn(string playerName){
+        if (requireTurnToAttack){
+            if (playerName.Equals(turnOrder[currentTurn])){
+                return true;
+            }
+            else{return false;}
+        }
+        // if requireTurnToAttack is disabled; allow anyone to attack at any time.
+        else{return true;}
+    }
     // i have to remember that functions called by SCNE have to be public
-    public void showActivePlayer(){activePlayer.text = turnOrder[currentTurn] + " its your turn :3";}
+    public void showActivePlayer(){
+        if (Dictionaries.countActive(dict, dict.self, "player") != 0){
+            activePlayer.text = turnOrder[currentTurn] + " its your turn :3";
+        }
+        else{
+            activePlayer.text = "you died womp womp";
+        }
+    }
     // networking //
     public void runescape(){RequestSerialization();}
     public override void OnDeserialization(){showTurnOrder();}

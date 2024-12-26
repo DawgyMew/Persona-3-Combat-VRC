@@ -14,6 +14,7 @@ public class shoot : UdonSharpBehaviour
     public displaySkills ds;
     public selectEnemy se;
     public networking ne;
+    public turnLogic tl;
     public barManager manager;
     public int skillSel = 0; // the current index of the skill to select
     public int enemySel = 0; // the current enemy to target
@@ -45,14 +46,19 @@ public class shoot : UdonSharpBehaviour
             obj  = GameObject.Find("Networking");
             ne = (networking)obj.GetComponent(typeof(UdonBehaviour));
 
+            obj  = GameObject.Find("turnLogic");
+            tl = (networking)obj.GetComponent(typeof(UdonBehaviour));
+
             Networking.SetOwner(player, this.gameObject); // set the owner of the evoker to the one holding it
             moveTimeUsed = Networking.GetServerTimeInMilliseconds(); // add this so if the server time is in the negatives (for some reason) it should still work!
         }
     }
     // acts when the holder "shoots" the gun //
     public override void OnPickupUseDown(){
-        fire(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer); //player holding the evoker
-        GetComponent<VRC.SDKBase.VRC_Pickup>().PlayHaptics();
+        if (tl.isPlayerTurn(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.playerName)){
+            fire(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer); //player holding the evoker
+            GetComponent<VRC.SDKBase.VRC_Pickup>().PlayHaptics();
+        }
     }
     
     /// Move Choosing ///
