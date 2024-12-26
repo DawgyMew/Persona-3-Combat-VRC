@@ -78,3 +78,22 @@ Networking:
 
 Ideas:
     Display a set of cards that will affect the players stats or give them a new persona.
+
+
+Complete:
+    code turn order based on agility
+    complete turn logic turn.txt
+    refresh evoker screens i think
+    show what ailments the player has
+        show a small icon to the left/right(opposite side to the evoker) of what ailment they have
+        include a like side pannel that also shows the stat changes 
+            atk^ 
+    add icons to show how to interact with the world
+    Allow players to select enemy
+    code healing spells functionality
+    code stat changes
+    allow the player to select a skill
+    code accuracy on moves
+    Display the menu of skills
+    Display current hp and sp
+    Damage Calculation :3
