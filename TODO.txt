@@ -18,6 +18,16 @@ Notes from testing:
         get the stats/ailments that have changed from the preset
     getdictfrommaster()
 
+    |
+    V
+
+    create a function that is called out exclusively to the master of the instance
+    the instance master will create a json containing each players/enemies base presets and how they differ 
+    the master will then run a function that syncs this new json over the network and alerts all the other clients
+    the initial getdictfrommaster() function will set a non-synced variable to true and this ensures the correct target
+    the new client parses the json and creates a caught up dictionary to the master (hopefully)
+    the non-synced variable is set to false at the end of this :3
+
 General:
     add to the dictionary of preset personas and enemies
     code ailment functionality
