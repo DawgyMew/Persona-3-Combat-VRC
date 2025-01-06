@@ -49,7 +49,7 @@ START
         if enemy becomes downed: JUMP to Selecting Skill (1 more)
 
     After Turn:
-        deal damage to self if poisoned.
+        --deal damage to self if poisoned.
 
     Sync Changes 
 END

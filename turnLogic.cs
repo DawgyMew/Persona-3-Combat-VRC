@@ -15,42 +15,65 @@ public class turnLogic : UdonSharpBehaviour
     public networking network;
     public TextMeshPro turnText;
     public TextMeshPro activePlayer;
-    /*
-    Future Turn Logic or something
-    its mostly empty for now
-    */
+    
     [UdonSynced]public string[] turnOrder = new string[10]; // <-- important to keep synced
     [UdonSynced]public int currentTurn = 0;
     [UdonSynced]public string turnOwner = "";
+    [UdonSynced]public bool turnTaken = false; // this is going to cause problems in the future i have a feeling
 
     [UdonSynced]public bool requireTurnToAttack = false; // debug variable that if disabled allows any player to attack at any time.
-    private void beforeBattle(){
+    public void beforeBattle(){
         turnOrder = determineTurnOrder(dict);
         SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
 
         // !activate automatic skills for everyone
+
+        beforeTurn();
     }
 
     // returns if the target will be able to do their turn //
-    private bool beforeTurn(Dictionaries dict, string name, DataDictionary stats){
+    public void beforeTurn(){
         turnOwner = turnOrder[currentTurn];
         Dictionaries.refreshMenu();
+        dict.getDict(dict.self, dict.findID(dict.self, turnOwner));
         // decrease stat change timers
         if (stats["isDown"].Boolean){
-            Dictionaries.setStat(dict.self, name, "isDown", false);
+            Dictionaries.setStat(dict.self, turnOwner, "isDown", false);
         }
-        Dictionaries.decreaseStatTimer(dict, name);
+        Dictionaries.decreaseStatTimer(dict, turnOwner);
         // !regen if they have the passive skills
-        // !roll if ailment will skip turn
+        // roll if ailment will skip turn
+        int randNum = Random.Range(0, 100);
+
+        // alments :3 //
+        switch (stats["Ailment"]){
+            case "Freeze":
+            case "Shocked":
+                Dictionaries.setStat(dict.self, turnOwner, "Ailment", "");
+                skipTurn();
+                break;
+            case "Charm":
+            case "Fear":
+                if (randNum <= 80){
+                    skipTurn();
+                }
+                break;
+            default:
+                break;
+        }
+        
         // it will skip their turn on the first turn they are dizzy
         //      could base it off of whether or not they are down
-        return (true);
+        
+        // roll to heal some ailment
+        SendCustomNetworkEvent(NetworkEventTarget.All, "turn");
     }
     // activate when the current player value changes //
     public void turn(){
+        turnTaken = false;
         if (!Dictionaries.getStat(dict.self, turnOwner, "Tag").Equals("enemy")){
             if (Networking.LocalPlayer.displayName.Equals(turnOwner)){
-                //SendCustomEventDelayedSeconds();
+                SendCustomEventDelayedSeconds("nextTurn", 15);
                 // set a delayed function to wait 15 seconds or so to force the player to pass their turn if they take too long
                     // but make the function be able to be interupted or something when the player activates their skill so players wont have to wait every time.
             }
@@ -66,23 +89,28 @@ public class turnLogic : UdonSharpBehaviour
         }
     }
     public void nextTurn(){
-        var oneMore = afterTurn();
+        if (!turnTaken){
+            turnTaken = true; // should make it so that it doesnt do the end of turn logic twice for one player
+            var oneMore = afterTurn();
 
-        // TODO: Check if the player made the last enemy downed -> choice to all out attack
-        // check if all players or enemies are dead 
-        int actEnemies = Dictionaries.countActive(dict, dict.self, "enemy");
-        int actPlayers = Dictionaries.countActive(dict, dict.self, "player");
-        if (actEnemies > 0 && actPlayers > 0){
-            if (!oneMore){
-                currentTurn = (currentTurn + 1) % turnOrder.Length;
-                showActivePlayer();
+            // TODO: Check if the player made the last enemy downed -> choice to all out attack
+            // check if all players or enemies are dead 
+            int actEnemies = Dictionaries.countActive(dict, dict.self, "enemy");
+            int actPlayers = Dictionaries.countActive(dict, dict.self, "player");
+            if (actEnemies > 0 && actPlayers > 0){
+                if (!oneMore){
+                    currentTurn = (currentTurn + 1) % turnOrder.Length;
+                    SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer")
+                    //showActivePlayer();
+
+                }
+                SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
+                // should sync the turns to everyone??
             }
-            SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
-            // should sync the turns to everyone??
+            else{
+                SendCustomNetworkEvent(NetworkEventTarget.All, "afterBattle");
+                
         }
-        else{
-            
-            // something something end of battle
         }
     }
     public bool afterTurn(){
@@ -98,8 +126,15 @@ public class turnLogic : UdonSharpBehaviour
         Dictionaries.refreshMenu();
         return (false);
     }
-    // Increase the active turn number by one //
+
+    // something something end of battle
+    public void afterBattle(){
+        activePlayer.text = "you're winner !";
+    }
     
+    public void skipTurn(){
+        SendCustomNetworkEvent(NetworkEventTarget.All "nextTurn");
+    }
     // Determine the order of who will go when //
     // Run at the start of the battle, when a new player joins the battle, and whenever the agility changes //
     // i dont think increased agility affects the turn order until everyone else has gone?

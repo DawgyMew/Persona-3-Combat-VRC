@@ -23,6 +23,7 @@ Notes from testing:
 
     create a function that is called out exclusively to the master of the instance
     the instance master will create a json containing each players/enemies base presets and how they differ 
+    ## i can have the master send a json plinK and set the new clients dictionary to that :3
     the master will then run a function that syncs this new json over the network and alerts all the other clients
     the initial getdictfrommaster() function will set a non-synced variable to true and this ensures the correct target
     the new client parses the json and creates a caught up dictionary to the master (hopefully)
@@ -31,6 +32,17 @@ Notes from testing:
 General:
     add to the dictionary of preset personas and enemies
     code ailment functionality
+        -Fear
+        Panic
+        Distress
+        --Poison
+        -Charm
+        Rage
+        -Freeze
+        -Shock
+
+        Down
+        Dizzy
     implement downed system
     finish passive skills
     code evasion effects on dodging and hitting
@@ -39,13 +51,14 @@ General:
         
         --implement one more! when hitting a weaknesses
         use port priority to handle speed ties.
-    add timer to skip turn of afk players?
+    --add timer to skip turn of afk players?
         make them wait and pass their tur
     --implement ability to guard and wait (or just wait if im feeling lazy)
         guarding prevents you from being knocked for one hit
         enemies are only able to wait.
     finish the skill descriptions
     
+    add mele weapon 
 
 Unity Reliant:
     add test button to toggle requiring turn order to attack :3
@@ -57,6 +70,7 @@ Unity Reliant:
                 assign the playername to the evoker they are holding and find the location from there?
                 change the name of a child object of the evoker to indicate the name?
                     gameobject.name = "player name"
+                or have in the dictionary give the player an evoker id
         allow the player to summon their persona
         
         _Check current persona's stats
@@ -71,11 +85,13 @@ Unity Reliant:
         Create spawning systems for the enemies
         remove the enemies when they die
         Write enemy ai (something other than just use dia on self)
-            gonna need something to refresh the specific evoker of the player attacked
+            create a new script for this :3
+            --gonna need something to refresh the specific evoker of the player attacked
             assign the enemies to the instance master
-                have the turns be ran on the master's machine and sync to the others
+                --have the turns be ran on the master's machine and sync to the others
+        show enemy name?
         show when an enemy has an ailment
-        preform an all out attack when all the enemies are downed
+        perform an all out attack when all the enemies are downed
     UX:
         improve circle that appears over the enemy you are selecting
         _show stat changes of the enemy you are targeting
