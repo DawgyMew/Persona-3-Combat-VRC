@@ -3049,11 +3049,16 @@ public class Dictionaries : UdonSharpBehaviour
 
     /// <returns>Returns an array with the information about the stat change</returns>
     public static string[] parseStatChange(string statChange){
-        string change = statChange[statChange.Length - 2].ToString();
-        string time = statChange[statChange.Length - 1].ToString();
-        string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
-        string[] statChangeArr = {status, change, time};
-        return statChangeArr;
+        if (statChange.Length != 0){
+            string change = statChange[statChange.Length - 2].ToString();
+            string time = statChange[statChange.Length - 1].ToString();
+            string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
+            string[] statChangeArr = {status, change, time};
+            return statChangeArr;
+        }
+        else{
+            return new string[] {"", "", ""};
+        }   
     }
     // change - false + true
     // 
@@ -3099,22 +3104,27 @@ public class Dictionaries : UdonSharpBehaviour
         string[] statChanges = Dictionaries.getArray(mainDict.self, uStr, "Stat Changes", "Name");
         string[] newStats = new string[4];
         int count = 0;
-        for (int i = 0; i < statChanges.Length; i++){
-            string timeStr = statChanges[i][statChanges[i].Length - 1].ToString(); // get the number
-            int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
-            
-            // only add if theres time left on the timer
-            // stats are removed at the start of the turn
-            if (time > 0){
-                newStats[i] = (statChanges[i].Remove(statChanges[i].Length - 1) + time);
-                count += 1; 
-            }
+        //Debug.Log(statChanges.Length +" " + statChanges[0].Length);
+        if (statChanges.Length > 0){
+                for (int i = 0; i < statChanges.Length; i++){
+                    if (statChanges[i].Length > 0){
+                        string timeStr = statChanges[i][statChanges[i].Length - 1].ToString(); // get the number
+                        int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
+                        
+                        // only add if theres time left on the timer
+                        // stats are removed at the start of the turn
+                        if (time > 0){
+                            newStats[i] = (statChanges[i].Remove(statChanges[i].Length - 1) + time);
+                            count += 1; 
+                        }
+                    }
+                }
+                string newStr = "";
+                if (newStats.Length != 0){
+                    newStr = string.Join(",", newStats);
+                }
+                Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
         }
-        string newStr = "";
-        if (newStats.Length != 0){
-            newStr = string.Join(",", newStats);
-        }
-        Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
     }
 
     public static Vector3 getLocation(string name){

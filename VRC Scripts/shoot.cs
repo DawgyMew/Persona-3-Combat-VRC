@@ -46,8 +46,8 @@ public class shoot : UdonSharpBehaviour
             obj  = GameObject.Find("Networking");
             ne = (networking)obj.GetComponent(typeof(UdonBehaviour));
 
-            obj  = GameObject.Find("turnLogic");
-            tl = (networking)obj.GetComponent(typeof(UdonBehaviour));
+            obj  = GameObject.Find("Turn Logic");
+            tl = (turnLogic)obj.GetComponent(typeof(UdonBehaviour));
 
             Networking.SetOwner(player, this.gameObject); // set the owner of the evoker to the one holding it
             moveTimeUsed = Networking.GetServerTimeInMilliseconds(); // add this so if the server time is in the negatives (for some reason) it should still work!
@@ -55,9 +55,13 @@ public class shoot : UdonSharpBehaviour
     }
     // acts when the holder "shoots" the gun //
     public override void OnPickupUseDown(){
-        if (tl.isPlayerTurn(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.playerName)){
+        if (tl.isPlayerTurn(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName)){
             fire(GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer); //player holding the evoker
             GetComponent<VRC.SDKBase.VRC_Pickup>().PlayHaptics();
+            tl.nextTurn();
+        }
+        else{
+            plonk.text = "Not your turn";
         }
     }
     

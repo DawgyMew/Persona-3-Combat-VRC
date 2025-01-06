@@ -21,7 +21,7 @@ public class turnLogic : UdonSharpBehaviour
     [UdonSynced]public string turnOwner = "";
     [UdonSynced]public bool turnTaken = false; // this is going to cause problems in the future i have a feeling
 
-    [UdonSynced]public bool requireTurnToAttack = false; // debug variable that if disabled allows any player to attack at any time.
+    [UdonSynced]public bool requireTurnToAttack = true; // debug variable that if disabled allows any player to attack at any time.
     public void beforeBattle(){
         turnOrder = determineTurnOrder(dict);
         SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
@@ -35,7 +35,7 @@ public class turnLogic : UdonSharpBehaviour
     public void beforeTurn(){
         turnOwner = turnOrder[currentTurn];
         Dictionaries.refreshMenu();
-        dict.getDict(dict.self, dict.findID(dict.self, turnOwner));
+        var stats = Dictionaries.getDict(dict.self, Dictionaries.findID(dict.self, turnOwner));
         // decrease stat change timers
         if (stats["isDown"].Boolean){
             Dictionaries.setStat(dict.self, turnOwner, "isDown", false);
@@ -44,9 +44,9 @@ public class turnLogic : UdonSharpBehaviour
         // !regen if they have the passive skills
         // roll if ailment will skip turn
         int randNum = Random.Range(0, 100);
-
+        string ailment = stats["Ailment"].String;
         // alments :3 //
-        switch (stats["Ailment"]){
+        switch (ailment){
             case "Freeze":
             case "Shocked":
                 Dictionaries.setStat(dict.self, turnOwner, "Ailment", "");
@@ -84,7 +84,8 @@ public class turnLogic : UdonSharpBehaviour
                 // TODO: enemy ai :plinK:
                 // temp just heal self
                 Dictionaries.calculateDamage(dict, turnOwner, turnOwner, "Dia", Networking.LocalPlayer);
-                nextTurn();
+                SendCustomEventDelayedSeconds("nextTurn", 2);
+                // nextTurn();
             }
         }
     }
@@ -100,22 +101,26 @@ public class turnLogic : UdonSharpBehaviour
             if (actEnemies > 0 && actPlayers > 0){
                 if (!oneMore){
                     currentTurn = (currentTurn + 1) % turnOrder.Length;
-                    SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer")
+                    SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer");
+                    SendCustomNetworkEvent(NetworkEventTarget.All, "beforeTurn");
+                    
                     //showActivePlayer();
 
                 }
-                SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
+                else{
+                    SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
+                }
                 // should sync the turns to everyone??
             }
             else{
                 SendCustomNetworkEvent(NetworkEventTarget.All, "afterBattle");
                 
-        }
+            }
         }
     }
     public bool afterTurn(){
         if (Dictionaries.getStat(dict.self, turnOwner, "Ailment").Equals("Poison")){
-            int healthLost = (int)(dict.getStat(dict.self, turnOwner, "Max HP") * .3) * -1;
+            int healthLost = (int)((int.Parse(Dictionaries.getStat(dict.self, turnOwner, "Max HP")) * .3) * -1);
             dict.changeNum(turnOwner, "HP", healthLost, dict.self, true);
             dict.changeNum(turnOwner, "HP", 1, dict.self, true); // increase by one because poison cant kill :3
         }
@@ -133,7 +138,7 @@ public class turnLogic : UdonSharpBehaviour
     }
     
     public void skipTurn(){
-        SendCustomNetworkEvent(NetworkEventTarget.All "nextTurn");
+        SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
     }
     // Determine the order of who will go when //
     // Run at the start of the battle, when a new player joins the battle, and whenever the agility changes //
@@ -209,7 +214,7 @@ public class turnLogic : UdonSharpBehaviour
     // networking //
     public void runescape(){RequestSerialization();}
     public override void OnDeserialization(){showTurnOrder();}
-    public void startBattle(){SendCustomNetworkEvent(NetworkEventTarget.All, "turn");}
+    public void startBattle(){SendCustomNetworkEvent(NetworkEventTarget.All, "beforeBattle");}
 
     // recalculate the turn order whenever someone joins
     public override void OnPlayerJoined(VRCPlayerApi player){
