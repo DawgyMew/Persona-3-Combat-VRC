@@ -82,6 +82,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 165},
             {"LVL", 34},
             {"Tag", "player"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -119,6 +120,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 165},
             {"LVL", 34},
             {"Tag", "player"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -151,6 +153,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 165},
             {"LVL", 34},
             {"Tag", "player"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -183,6 +186,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 165},
             {"LVL", 34},
             {"Tag", "player"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Plink plonk Black Frost"},
             {"St", 29},
@@ -218,6 +222,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 138},
             {"LVL", 35},
             {"Tag", "enemy"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Shouting Tiara"},
             {"St", 19},
@@ -249,6 +254,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 138},
             {"LVL", 35},
             {"Tag", "enemy"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", "Shouting Tiara"},
             {"St", 19},
@@ -279,6 +285,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 2},
             {"LVL", 2},
             {"Tag", "enemy"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", ""},
             {"St", 2},
@@ -309,6 +316,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"Max SP", 2},
             {"LVL", 2},
             {"Tag", "enemy"},
+            {"Weapon", ""},
             // persona stats //
             {"pName", ""},
             {"St", 2},
@@ -2962,7 +2970,9 @@ public class Dictionaries : UdonSharpBehaviour
         }
     }
 
-    public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder=false){
+    public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder, bool sync=true){
+        network.changeNumO(this, uName, numKey, changeInNum, true, Networking.GetOwner(hi));
+        textUpdater.changeEnemyText();
         string num = getStat(dictToChange, uName, numKey);
         bool result = int.TryParse(num, out int intNum);
         if (result){
@@ -3175,8 +3185,8 @@ public class Dictionaries : UdonSharpBehaviour
                 // could make this into its own function but i dont want to do that yet -.-
                 var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
                 if (damageDealt != -1){
-                    mainDict.network.changeNumO(mainDict, target, "HP", damageDealt, true, player);
-                    mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self);
+                    //mainDict.network.changeNumO(mainDict, target, "HP", damageDealt, true, player);
+                    mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self, false);
                     updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " dealing " + damageDealt + " damage.";
                 }
@@ -3192,7 +3202,7 @@ public class Dictionaries : UdonSharpBehaviour
                 int amtHeal = skillInfo["Power"].Int;
                 // Skills that heal //
                 if (amtHeal != 0){
-                    mainDict.changeNum(target, "HP", amtHeal, mainDict.self); // gonna have to change this one when adding syncing
+                    mainDict.changeNum(target, "HP", amtHeal, mainDict.self, false); // gonna have to change this one when adding syncing
                     updateText.changeEnemyText(target, "+" + skillInfo["Power"].Int + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " healing " + skillInfo["Power"].Int + " health.";
                 }
@@ -3212,7 +3222,7 @@ public class Dictionaries : UdonSharpBehaviour
                     var damageDealt = damageCalc.damageTurn(mainDict, user, loopTarget, skillInfo, mainDict.network, player);
                     // this part could probably be its own function v
                     if (damageDealt != -1){
-                        mainDict.changeNum(loopTarget, "HP", damageDealt * -1, mainDict.self);
+                        mainDict.changeNum(loopTarget, "HP", damageDealt * -1, mainDict.self, false);
                         updateText.changeEnemyText(loopTarget, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
                         logMessage += "[" + loopTarget + ", " + damageDealt + " damage], ";
                         }

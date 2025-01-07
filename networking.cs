@@ -163,7 +163,7 @@ public class networking : UdonSharpBehaviour
         var changeAmt = convertBytes(byteNum);
         bool display = (data[6] == 1);
         bool cantGoUnder = (data[7] == 1);
-        dict.changeNum(target, statToChange, changeAmt, dict.self, cantGoUnder);
+        dict.changeNum(target, statToChange, changeAmt, dict.self, cantGoUnder, false); // false at the end to prevent infinite loop 
     }
 
 
@@ -189,7 +189,7 @@ public class networking : UdonSharpBehaviour
 
 
     // converting numbers to and from bytes //
-    private static byte[] convertBytes(int num){
+    public static byte[] convertBytes(int num){
         int absol = Mathf.Abs(num);
         byte[] bytes = new byte[3];
         bytes[0] = (byte)(absol / 256); // nothing to handle numbers bigger than 65k lel 
@@ -199,7 +199,7 @@ public class networking : UdonSharpBehaviour
 
         return bytes;
     }
-    private static int convertBytes(byte[] bytes){
+    public static int convertBytes(byte[] bytes){
         int sign;
         if(bytes[2] == 0){sign = 1;}
         else{sign = -1;}

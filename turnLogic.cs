@@ -80,14 +80,21 @@ public class turnLogic : UdonSharpBehaviour
         }   
         else{
             // if its an enemy turn put it up to the instance masters machine
+
+            //!! currently desynced because this code only runs on the master's client
             if (Networking.IsMaster){
                 // TODO: enemy ai :plinK:
                 // temp just heal self
                 Dictionaries.calculateDamage(dict, turnOwner, turnOwner, "Dia", Networking.LocalPlayer);
-                SendCustomEventDelayedSeconds("nextTurn", 2);
+                SendCustomNetworkEvent(NetworkEventTarget.All, "bufferNextTurn");
                 // nextTurn();
             }
         }
+    }
+
+    // able to be called by SCNE while and then run the desired function after a certain amount of time
+    public void bufferNextTurn(){
+        SendCustomEventDelayedSeconds("nextTurn", 2);
     }
     public void nextTurn(){
         if (!turnTaken){
