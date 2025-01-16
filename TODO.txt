@@ -43,7 +43,6 @@ General:
 
         Down
         Dizzy
-    ailment healing
     implement downed system
     finish passive skills
     code evasion effects on dodging and hitting
@@ -60,7 +59,6 @@ General:
     finish the skill descriptions
     
     add mele weapon 
-        add tripping :3
 
 Unity Reliant:
     add test button to toggle requiring turn order to attack :3
@@ -88,7 +86,7 @@ Unity Reliant:
         remove the enemies when they die
         Write enemy ai (something other than just use dia on self)
             create a new script for this :3
-            
+            --gonna need something to refresh the specific evoker of the player attacked
             assign the enemies to the instance master
                 --have the turns be ran on the master's machine and sync to the others
         show enemy name?
@@ -111,9 +109,6 @@ Ideas:
 
 
 Complete:
-    Ailment: Poison
-    enemy turns are handled by the instance master
-    function to refresh evoker screens
     code turn order based on agility
     complete turn logic turn.txt
     refresh evoker screens i think

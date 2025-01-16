@@ -2925,6 +2925,7 @@ public class Dictionaries : UdonSharpBehaviour
         }
         displayText += "\n";
         */
+        //displayText = "requireTurnForAttack: " + tl.requireTurnToAttack;
         DataList keys = self.GetKeys();
         keys.Sort();
 
@@ -2972,7 +2973,7 @@ public class Dictionaries : UdonSharpBehaviour
 
     public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder, bool sync=true){
         network.changeNumO(this, uName, numKey, changeInNum, true, Networking.GetOwner(hi));
-        textUpdater.changeEnemyText();
+        updateText.changeEnemyText(this);
         string num = getStat(dictToChange, uName, numKey);
         bool result = int.TryParse(num, out int intNum);
         if (result){
@@ -3187,7 +3188,7 @@ public class Dictionaries : UdonSharpBehaviour
                 if (damageDealt != -1){
                     //mainDict.network.changeNumO(mainDict, target, "HP", damageDealt, true, player);
                     mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self, false);
-                    updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    //updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " dealing " + damageDealt + " damage.";
                 }
                 else{
@@ -3203,7 +3204,7 @@ public class Dictionaries : UdonSharpBehaviour
                 // Skills that heal //
                 if (amtHeal != 0){
                     mainDict.changeNum(target, "HP", amtHeal, mainDict.self, false); // gonna have to change this one when adding syncing
-                    updateText.changeEnemyText(target, "+" + skillInfo["Power"].Int + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
+                    //updateText.changeEnemyText(target, "+" + skillInfo["Power"].Int + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " healing " + skillInfo["Power"].Int + " health.";
                 }
                 mainDict.log.addToLog(logMessage);
@@ -3223,11 +3224,11 @@ public class Dictionaries : UdonSharpBehaviour
                     // this part could probably be its own function v
                     if (damageDealt != -1){
                         mainDict.changeNum(loopTarget, "HP", damageDealt * -1, mainDict.self, false);
-                        updateText.changeEnemyText(loopTarget, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
+                        //updateText.changeEnemyText(loopTarget, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
                         logMessage += "[" + loopTarget + ", " + damageDealt + " damage], ";
                         }
                     else{
-                        updateText.changeEnemyText(loopTarget, "" + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
+                        //updateText.changeEnemyText(loopTarget, "" + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
                         updateText.enemyHitText(loopTarget, "Miss");
                         logMessage += "[" + loopTarget + ", Missed], ";
                     }   

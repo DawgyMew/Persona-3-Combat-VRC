@@ -200,6 +200,7 @@ public class turnLogic : UdonSharpBehaviour
     }
 
     public bool isPlayerTurn(string playerName){
+        Debug.Log(requireTurnToAttack + " " + turnOrder[currentTurn] + " " + playerName);
         if (requireTurnToAttack){
             if (playerName.Equals(turnOrder[currentTurn])){
                 return true;
