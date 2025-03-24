@@ -12,6 +12,7 @@ using VRC.Udon.Common.Enums;
 public class turnLogic : UdonSharpBehaviour
 {
     public Dictionaries dict;
+    //public enemyAI eai;
     public networking network;
     public TextMeshPro turnText;
     public TextMeshPro activePlayer;
@@ -52,7 +53,7 @@ public class turnLogic : UdonSharpBehaviour
                 Dictionaries.setStat(dict.self, turnOwner, "Ailment", "");
                 skipTurn();
                 break;
-            case "Charm":
+            case "Charm": // should write to potentially harm teamates but that sounds hard right now its been like 6 months
             case "Fear":
                 if (randNum <= 80){
                     skipTurn();
@@ -83,8 +84,10 @@ public class turnLogic : UdonSharpBehaviour
 
             //!! currently desynced because this code only runs on the master's client
             if (Networking.IsMaster){
-                // TODO: enemy ai :plinK:
-                // temp just heal self
+                // get move to use
+                string[] move = enemyAI.determineMove(dict, turnOwner);
+                // check target and call the move 
+
                 Dictionaries.calculateDamage(dict, turnOwner, turnOwner, "Dia", Networking.LocalPlayer);
                 SendCustomNetworkEvent(NetworkEventTarget.All, "bufferNextTurn");
                 // nextTurn();

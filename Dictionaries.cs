@@ -12,9 +12,11 @@ using System;
 
 /*
     Local Info:
-        self: Information on the local player (you!) and the active enemies and also basic information on the other players.
+        self: Information on all players and enemies on the field.
     Skills: 
         skills: Full Dictionary containing every skill in persona 3
+        passiveSkills: Skills that the player can't select in persona 3
+
 */
 public class Dictionaries : UdonSharpBehaviour
 {

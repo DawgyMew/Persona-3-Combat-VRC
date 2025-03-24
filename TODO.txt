@@ -46,7 +46,7 @@ General:
     implement downed system
     finish passive skills
     code evasion effects on dodging and hitting
-    complete the turn logic, turn.txt (made a lot of progress on this one)
+    complete the turn logic, turn.txt
         --make players not be able to act when its not their turn
         
         --implement one more! when hitting a weaknesses
@@ -57,6 +57,7 @@ General:
         guarding prevents you from being knocked for one hit
         enemies are only able to wait.
     finish the skill descriptions
+    remove enemy on defeat
     
     add mele weapon 
 
