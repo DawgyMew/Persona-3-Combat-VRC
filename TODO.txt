@@ -4,6 +4,8 @@
 Known Bugs:
     spidr, caterpliler
 
+
+
 Notes from testing:
             p3vr the display for the scroll doesnt work but the move can be changed 
             turn text is not sync
@@ -61,8 +63,16 @@ General:
     
     add mele weapon 
 
+Enemy AI:
+    check if allies need healing.
+    check if allies have ailements.
+    check if allies are debuffed.
+    check for any reflectors
+
+
+
 Unity Reliant:
-    add test button to toggle requiring turn order to attack :3
+    -- add test button to toggle requiring turn order to attack :3
 
     Evoker:
         allow the player to select teamates for helpful moves
@@ -107,6 +117,11 @@ Networking:
 
 Ideas:
     Display a set of cards that will affect the players stats or give them a new persona.
+
+    Could load the skills into a dictionary in the self dictionary instead of refering to them by name
+        would save processing power if assigned at entity creation instead of pulling the information every time the enemy attacks
+    Make the Dictionaries class static?
+    change constants in dictionary to static 
 
 
 Complete:

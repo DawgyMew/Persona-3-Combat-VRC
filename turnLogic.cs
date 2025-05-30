@@ -66,7 +66,7 @@ public class turnLogic : UdonSharpBehaviour
         // it will skip their turn on the first turn they are dizzy
         //      could base it off of whether or not they are down
         
-        // roll to heal some ailment
+        // TODO: roll to heal some ailments
         SendCustomNetworkEvent(NetworkEventTarget.All, "turn");
     }
     // activate when the current player value changes //
@@ -74,6 +74,7 @@ public class turnLogic : UdonSharpBehaviour
         turnTaken = false;
         if (!Dictionaries.getStat(dict.self, turnOwner, "Tag").Equals("enemy")){
             if (Networking.LocalPlayer.displayName.Equals(turnOwner)){
+                int turnNum = currentTurn;
                 SendCustomEventDelayedSeconds("nextTurn", 15);
                 // set a delayed function to wait 15 seconds or so to force the player to pass their turn if they take too long
                     // but make the function be able to be interupted or something when the player activates their skill so players wont have to wait every time.
@@ -82,7 +83,7 @@ public class turnLogic : UdonSharpBehaviour
         else{
             // if its an enemy turn put it up to the instance masters machine
 
-            //!! currently desynced because this code only runs on the master's client
+            //
             if (Networking.IsMaster){
                 // get move to use
                 string[] move = enemyAI.determineMove(dict, turnOwner);

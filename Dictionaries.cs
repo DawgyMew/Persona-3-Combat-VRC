@@ -2842,7 +2842,7 @@ public class Dictionaries : UdonSharpBehaviour
         return (getStat(dict, id, statToShow));
     }
     // return a string array //
-    public static string[] getArray(DataDictionary dict, string uStr, string statToShow, string key){
+    public static string[] getArray(DataDictionary dict, string uStr, string statToShow, string key = "Name"){
         var strStat = getStat(dict, uStr, statToShow, key);
         return (strStat.Split(','));
     }
@@ -3184,7 +3184,7 @@ public class Dictionaries : UdonSharpBehaviour
         // deal the damage to the target //
         if (canUse){ // can only use if the user has enough hp/sp
             string logMessage = user + " used " + skill + " on ";
-            if (skillTarget.Equals("One")){
+            if (skillTarget.Equals("One") || skillTarget.Equals("Self")){
                 // could make this into its own function but i dont want to do that yet -.-
                 var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
                 if (damageDealt != -1){
