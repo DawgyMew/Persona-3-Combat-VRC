@@ -124,6 +124,7 @@ Ideas:
     change constants in dictionary to static 
 
 
+
 Complete:
     code turn order based on agility
     complete turn logic turn.txt
