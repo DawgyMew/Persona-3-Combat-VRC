@@ -9,6 +9,7 @@ using TMPro;
 using System.Collections;
 using VRC.Udon.Common.Enums;
 
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class turnLogic : UdonSharpBehaviour
 {
     public Dictionaries dict;
@@ -16,14 +17,31 @@ public class turnLogic : UdonSharpBehaviour
     public networking network;
     public TextMeshPro turnText;
     public TextMeshPro activePlayer;
-    
-    [UdonSynced]public string[] turnOrder = new string[10]; // <-- important to keep synced
-    [UdonSynced]public int currentTurn = 0;
-    [UdonSynced]public string turnOwner = "";
-    [UdonSynced]public bool turnTaken = false; // this is going to cause problems in the future i have a feeling
+    public TextMeshPro timer;
+    public battleLog bl;
 
-    [UdonSynced]public bool requireTurnToAttack = true; // debug variable that if disabled allows any player to attack at any time.
-    public void beforeBattle(){
+    [UdonSynced] public string[] turnOrder = new string[10]; // <-- important to keep synced
+    [UdonSynced, FieldChangeCallback(nameof(PlayerUp))] public int _playerUp = 0;
+
+    public int PlayerUp
+    {
+        get => _playerUp;
+        set
+        {
+            _playerUp = value;
+            showActivePlayer();
+            beforeTurn();
+        }
+    }
+    [UdonSynced] public int turnNum = 0;
+    [UdonSynced] public string turnOwner = "";
+    [UdonSynced] public bool turnTaken = false; // this is going to cause problems in the future i have a feeling
+
+    [UdonSynced] public bool requireTurnToAttack = true; // debug variable that if disabled allows any player to attack at any time.
+
+
+    public void beforeBattle()
+    {
         turnOrder = determineTurnOrder(dict);
         SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
 
@@ -33,12 +51,17 @@ public class turnLogic : UdonSharpBehaviour
     }
 
     // returns if the target will be able to do their turn //
-    public void beforeTurn(){
-        turnOwner = turnOrder[currentTurn];
+    [RecursiveMethod]
+    public void beforeTurn()
+    {
+        turnNum++;
+        bl.addToLog("Turn #" + turnNum + ":");
+        turnOwner = turnOrder[PlayerUp];
         Dictionaries.refreshMenu();
         var stats = Dictionaries.getDict(dict.self, Dictionaries.findID(dict.self, turnOwner));
         // decrease stat change timers
-        if (stats["isDown"].Boolean){
+        if (stats["isDown"].Boolean)
+        {
             Dictionaries.setStat(dict.self, turnOwner, "isDown", false);
         }
         Dictionaries.decreaseStatTimer(dict, turnOwner);
@@ -47,7 +70,8 @@ public class turnLogic : UdonSharpBehaviour
         int randNum = Random.Range(0, 100);
         string ailment = stats["Ailment"].String;
         // alments :3 //
-        switch (ailment){
+        switch (ailment)
+        {
             case "Freeze":
             case "Shocked":
                 Dictionaries.setStat(dict.self, turnOwner, "Ailment", "");
@@ -55,82 +79,110 @@ public class turnLogic : UdonSharpBehaviour
                 break;
             case "Charm": // should write to potentially harm teamates but that sounds hard right now its been like 6 months
             case "Fear":
-                if (randNum <= 80){
+                if (randNum <= 80)
+                {
                     skipTurn();
                 }
                 break;
             default:
                 break;
         }
-        
+
         // it will skip their turn on the first turn they are dizzy
         //      could base it off of whether or not they are down
-        
+
         // TODO: roll to heal some ailments
         SendCustomNetworkEvent(NetworkEventTarget.All, "turn");
     }
     // activate when the current player value changes //
-    public void turn(){
-        turnTaken = false;
-        if (!Dictionaries.getStat(dict.self, turnOwner, "Tag").Equals("enemy")){
-            if (Networking.LocalPlayer.displayName.Equals(turnOwner)){
-                int turnNum = currentTurn;
-                SendCustomEventDelayedSeconds("nextTurn", 15);
-                // set a delayed function to wait 15 seconds or so to force the player to pass their turn if they take too long
-                    // but make the function be able to be interupted or something when the player activates their skill so players wont have to wait every time.
+    [RecursiveMethod]
+    public void turn()
+    {
+        isActive = true;
+        timerCount = 0;
+        if (!Dictionaries.getStat(dict.self, turnOwner, "Tag").Equals("enemy"))
+        {
+            if (Networking.LocalPlayer.displayName.Equals(turnOwner))
+            {
+
+
+                isActive = true;
+                timerCount = 0;
+
             }
-        }   
-        else{
+        }
+        else
+        {
             // if its an enemy turn put it up to the instance masters machine
 
             //
-            if (Networking.IsMaster){
+            if (Networking.IsMaster)
+            {
                 // get move to use
                 string[] move = enemyAI.determineMove(dict, turnOwner);
                 // check target and call the move 
-
-                Dictionaries.calculateDamage(dict, turnOwner, turnOwner, "Dia", Networking.LocalPlayer);
-                SendCustomNetworkEvent(NetworkEventTarget.All, "bufferNextTurn");
+                if (move != null)
+                {
+                    Dictionaries.calculateDamage(dict, turnOwner, move[1], move[0], Networking.LocalPlayer);
+                }
+                else
+                {
+                    bl.addToLog(turnOwner + " is dead."); // easier than removing them from the order rn
+                }
+                SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
                 // nextTurn();
             }
         }
     }
 
     // able to be called by SCNE while and then run the desired function after a certain amount of time
-    public void bufferNextTurn(){
+    public void bufferNextTurn()
+    {
         SendCustomEventDelayedSeconds("nextTurn", 2);
     }
-    public void nextTurn(){
-        if (!turnTaken){
+    public void nextTurn()
+    {
+
+
+        if (true)
+        {
             turnTaken = true; // should make it so that it doesnt do the end of turn logic twice for one player
-            var oneMore = afterTurn();
+            bool oneMore = afterTurn();
 
             // TODO: Check if the player made the last enemy downed -> choice to all out attack
             // check if all players or enemies are dead 
             int actEnemies = Dictionaries.countActive(dict, dict.self, "enemy");
             int actPlayers = Dictionaries.countActive(dict, dict.self, "player");
-            if (actEnemies > 0 && actPlayers > 0){
-                if (!oneMore){
-                    currentTurn = (currentTurn + 1) % turnOrder.Length;
-                    SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer");
-                    SendCustomNetworkEvent(NetworkEventTarget.All, "beforeTurn");
-                    
+            if (actEnemies > 0 && actPlayers > 0)
+            {
+                if (!oneMore)
+                {
+                    PlayerUp = (PlayerUp + 1) % turnOrder.Length;
+                    RequestSerialization();
+                    // SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer");
+                    // SendCustomNetworkEvent(NetworkEventTarget.All, "beforeTurn");
+
                     //showActivePlayer();
 
                 }
-                else{
+                else
+                {
                     SendCustomNetworkEvent(NetworkEventTarget.All, "turn"); // recursive loop :3
                 }
                 // should sync the turns to everyone??
             }
-            else{
+            else
+            {
                 SendCustomNetworkEvent(NetworkEventTarget.All, "afterBattle");
-                
+
             }
         }
+
     }
-    public bool afterTurn(){
-        if (Dictionaries.getStat(dict.self, turnOwner, "Ailment").Equals("Poison")){
+    public bool afterTurn()
+    {
+        if (Dictionaries.getStat(dict.self, turnOwner, "Ailment").Equals("Poison"))
+        {
             int healthLost = (int)((int.Parse(Dictionaries.getStat(dict.self, turnOwner, "Max HP")) * .3) * -1);
             dict.changeNum(turnOwner, "HP", healthLost, dict.self, true);
             dict.changeNum(turnOwner, "HP", 1, dict.self, true); // increase by one because poison cant kill :3
@@ -144,11 +196,13 @@ public class turnLogic : UdonSharpBehaviour
     }
 
     // something something end of battle
-    public void afterBattle(){
+    public void afterBattle()
+    {
         activePlayer.text = "you're winner !";
     }
-    
-    public void skipTurn(){
+
+    public void skipTurn()
+    {
         SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
     }
     // Determine the order of who will go when //
@@ -156,22 +210,26 @@ public class turnLogic : UdonSharpBehaviour
     // i dont think increased agility affects the turn order until everyone else has gone?
     // no baton pass
     // udon only allows jagged arrays
-    public string[] determineTurnOrder(Dictionaries dictionary){
+    public string[] determineTurnOrder(Dictionaries dictionary)
+    {
         var amtActive = Dictionaries.countActive(dictionary, dictionary.self);
         var totalNum = dictionary.self.Count;
         var count = 0;
         int[][] speeds = new int[amtActive][];
-        for (int i = 0; i < totalNum; i++){
+        for (int i = 0; i < totalNum; i++)
+        {
             var name = Dictionaries.getStat(dictionary.self, i, "Name");
-            if (!name.Equals("_") && !name.Equals("")){
-                speeds[count] = new int[] {i, int.Parse(Dictionaries.getStat(dictionary.self, i, "Ag"))};
+            if (!name.Equals("_") && !name.Equals(""))
+            {
+                speeds[count] = new int[] { i, int.Parse(Dictionaries.getStat(dictionary.self, i, "Ag")) };
                 count++;
             }
         }
         var sortArr = sort2D(speeds, 1);
         string[] returnArr = new string[sortArr.Length];
         // make an array of the names in the order of speed 
-        for (int i = 0; i < sortArr.Length; i++){
+        for (int i = 0; i < sortArr.Length; i++)
+        {
             returnArr[i] = Dictionaries.getStat(dictionary.self, sortArr[i][0], "Name");
         }
         turnOrder = returnArr;
@@ -181,55 +239,66 @@ public class turnLogic : UdonSharpBehaviour
 
     /// <param name="arr">2D Array to sort</param>
     /// <param name="col">Colomn to base the sort off of</param>
-    private static int[][] sort2D(int[][] arr, int col){
+    private static int[][] sort2D(int[][] arr, int col)
+    {
         // plink
         // bubble sort
         // the yacht dice project really came in handy here :P
         int[] temp;
         int length = arr.Length;
         bool swapped;
-        for (int i = 0; i < length - 1; i++){
+        for (int i = 0; i < length - 1; i++)
+        {
             swapped = false;
-            for (int j = 0; j < length - i - 1; j++){
-                if (arr[j][col] < arr[j + 1][col]){
+            for (int j = 0; j < length - i - 1; j++)
+            {
+                if (arr[j][col] < arr[j + 1][col])
+                {
                     temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
                     swapped = true;
                 }
             }
-            if (!swapped){break;}
+            if (!swapped) { break; }
         }
         return (arr);
     }
 
-    public bool isPlayerTurn(string playerName){
-        Debug.Log(requireTurnToAttack + " " + turnOrder[currentTurn] + " " + playerName);
-        if (requireTurnToAttack){
-            if (playerName.Equals(turnOrder[currentTurn])){
+    public bool isPlayerTurn(string playerName)
+    {
+        Debug.Log(requireTurnToAttack + " " + turnOrder[PlayerUp] + " " + playerName);
+        if (requireTurnToAttack)
+        {
+            if (playerName.Equals(turnOrder[PlayerUp]))
+            {
                 return true;
             }
-            else{return false;}
+            else { return false; }
         }
         // if requireTurnToAttack is disabled; allow anyone to attack at any time.
-        else{return true;}
+        else { return true; }
     }
     // i have to remember that functions called by SCNE have to be public
-    public void showActivePlayer(){
-        if (Dictionaries.countActive(dict, dict.self, "player") != 0){
-            activePlayer.text = turnOrder[currentTurn] + " its your turn :3";
+    public void showActivePlayer()
+    {
+        if (Dictionaries.countActive(dict, dict.self, "player") != 0)
+        {
+            activePlayer.text = turnOrder[PlayerUp] + " its your turn :3";
         }
-        else{
+        else
+        {
             activePlayer.text = "you died womp womp";
         }
     }
     // networking //
-    public void runescape(){RequestSerialization();}
-    public override void OnDeserialization(){showTurnOrder();}
-    public void startBattle(){SendCustomNetworkEvent(NetworkEventTarget.All, "beforeBattle");}
+    public void runescape() { RequestSerialization(); }
+    public override void OnDeserialization() { showTurnOrder(); }
+    public void startBattle() { SendCustomNetworkEvent(NetworkEventTarget.All, "beforeBattle"); }
 
     // recalculate the turn order whenever someone joins
-    public override void OnPlayerJoined(VRCPlayerApi player){
+    public override void OnPlayerJoined(VRCPlayerApi player)
+    {
         // TODO: assign player a persona immediately
         SendCustomEventDelayedSeconds("displayTurns", 1, EventTiming.Update); // sets a delay to send the event
         // SCEDS doesnt stop the events under it from happening
@@ -237,17 +306,44 @@ public class turnLogic : UdonSharpBehaviour
         SendCustomEventDelayedSeconds("showActivePlayer", 1.1f, EventTiming.Update);
     }
 
-    public void displayTurns(){
+    public void displayTurns()
+    {
         determineTurnOrder(dict);
         showTurnOrder();
     }
-    public void showTurnOrder(){
+    public void showTurnOrder()
+    {
         string dt = "Turn Order: \n";
-        foreach (var turn in turnOrder){
+        foreach (var turn in turnOrder)
+        {
             dt += turn + ", ";
         }
         turnText.text = dt;
     }
 
-    
+    // TIMER
+    public float TIMERLENGTH = 15;
+    [UdonSynced] public float timerCount = 0;
+
+    private bool isActive = false;
+    public void Update()
+    {
+        if (isActive)
+        {
+            if (timerCount >= TIMERLENGTH)
+            {
+                isActive = false;
+                timerCount = 0.0f;
+                bl.addToLog(turnOwner + " passed.");
+                SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
+            }
+            else
+            {
+                timerCount += Time.deltaTime;
+                timer.text = timerCount + "";
+            }
+        }
+
+    }
+
 }

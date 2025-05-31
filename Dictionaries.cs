@@ -18,6 +18,7 @@ using System;
         passiveSkills: Skills that the player can't select in persona 3
 
 */
+[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
 public class Dictionaries : UdonSharpBehaviour
 {
     public TextMeshPro board;
@@ -29,18 +30,19 @@ public class Dictionaries : UdonSharpBehaviour
     public Presets presetList;
 
     // CONSTANTS //
-    public string[] offensiveElements = {"Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty"}; // ID: 1
-    
-    public string[] statChanges = {"Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats"};
-    public string[] shortStatChanges = {"atk", "df", "ev", "crit", "ail", "all"};
+    public string[] offensiveElements = { "Slash", "Strike", "Pierce", "Fire", "Ice", "Elec", "Wind", "Almighty" }; // ID: 1
+
+    public string[] statChanges = { "Attack", "Defense", "Evasion", "Crit Rate", "Ailment Sus", "All Stats" };
+    public string[] shortStatChanges = { "atk", "df", "ev", "crit", "ail", "all" };
     // Place to Reference for the IDs of the stats that sync 
-    public string[] syncStats = {"Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes"};
-    public string[] AILMENTS = {"Fear", "Panic", "Distress", "Poison", "Charm", "Rage", "Freeze", "Shock", "Dizzy"}; // ID: 0
-    public string[] PATRA = {"Panic", "Fear", "Distress"};
+    public string[] syncStats = { "Name", "HP", "Max HP", "SP", "Max SP", "LVL", "pName", "Ag", "Ailment", "isDown", "Stat Changes" };
+    public string[] AILMENTS = { "Fear", "Panic", "Distress", "Poison", "Charm", "Rage", "Freeze", "Shock", "Dizzy" }; // ID: 0
+    public string[] PATRA = { "Panic", "Fear", "Distress" };
 
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
+    [UdonSynced]
     public DataDictionary self = new DataDictionary(){
         // hard code the options and apply the information from that //
 
@@ -114,7 +116,7 @@ public class Dictionaries : UdonSharpBehaviour
         // i think that it downloads a copy of the instance owners funny thing so it should get all the past information
         // so the players cannot have their own personal thing
 
-        {1, new DataDictionary(){ 
+        {1, new DataDictionary(){
             {"Name", ""},
             {"HP", 354},
             {"Max HP", 354},
@@ -147,7 +149,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"isDown", false},
             {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
-        {2, new DataDictionary(){ 
+        {2, new DataDictionary(){
             {"Name", ""},
             {"HP", 354},
             {"Max HP", 354},
@@ -180,7 +182,7 @@ public class Dictionaries : UdonSharpBehaviour
             {"isDown", false},
             {"Stat Changes", ""}, // atk+3,df-1,ev+2,crit+3
         }},
-        {3, new DataDictionary(){ 
+        {3, new DataDictionary(){
             {"Name", ""},
             {"HP", 354},
             {"Max HP", 354},
@@ -245,7 +247,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}, 
+            {"Stat Changes", ""},
         }},
         {5, new DataDictionary(){
             // currently just a clone of enemy1
@@ -277,7 +279,7 @@ public class Dictionaries : UdonSharpBehaviour
             // other //
             {"Ailment", ""},
             {"isDown", false},
-            {"Stat Changes", ""}, 
+            {"Stat Changes", ""},
         }},
         {6, new DataDictionary(){
             {"Name", "_"}, // empty placehilder 
@@ -1166,7 +1168,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             {"Dia", new DataDictionary(){
                 {"Element", "Recovery"},
-                {"Power", 50}, 
+                {"Power", 50},
                 {"Accuracy", 1.00},
                 {"Cost", 4},
                 {"Targets", "Ally"},
@@ -1251,7 +1253,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             // !!! Not properly filled out yet !!
             {"Patra", new DataDictionary(){
-                {"Element", "Patra"}, 
+                {"Element", "Patra"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 3},
@@ -1261,7 +1263,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Re Patra", new DataDictionary(){
-                {"Element", "Down"}, 
+                {"Element", "Down"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 3},
@@ -1271,7 +1273,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Me Patra", new DataDictionary(){
-                {"Element", "Patra"}, 
+                {"Element", "Patra"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 6},
@@ -1284,7 +1286,7 @@ public class Dictionaries : UdonSharpBehaviour
             ///
 
             {"Posumudi", new DataDictionary(){
-                {"Element", "Poison"}, 
+                {"Element", "Poison"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1294,7 +1296,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Charmdi", new DataDictionary(){
-                {"Element", "Charm"}, 
+                {"Element", "Charm"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1304,7 +1306,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Enradi", new DataDictionary(){
-                {"Element", "Rage"}, 
+                {"Element", "Rage"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1314,7 +1316,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Amrita", new DataDictionary(){
-                {"Element", "Ailments"}, 
+                {"Element", "Ailments"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 25},
@@ -1324,7 +1326,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 1.00}
             }},
             {"Salvation", new DataDictionary(){
-                {"Element", "Poison"}, 
+                {"Element", "Poison"},
                 {"Power", 999},
                 {"Accuracy", 1.00},
                 {"Cost", 60},
@@ -1450,7 +1452,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Masukunda", new DataDictionary(){
-                {"Element", "Evasion"}, 
+                {"Element", "Evasion"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 12},
@@ -1461,7 +1463,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Dekunda", new DataDictionary(){
-                {"Element", "All Stats"}, 
+                {"Element", "All Stats"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1471,7 +1473,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Dekaja", new DataDictionary(){
-                {"Element", "All Stats"}, 
+                {"Element", "All Stats"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1482,7 +1484,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Rebellion", new DataDictionary(){
-                {"Element", "Crit Rate"}, 
+                {"Element", "Crit Rate"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 12},
@@ -1492,7 +1494,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Revolution", new DataDictionary(){
-                {"Element", "Crit Rate"}, 
+                {"Element", "Crit Rate"},
                 {"Power", 1},
                 {"Accuracy", 1.00},
                 {"Cost", 12},
@@ -1503,7 +1505,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Power Charge", new DataDictionary(){
-                {"Element", "Power"}, 
+                {"Element", "Power"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1513,7 +1515,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Mind Charge", new DataDictionary(){
-                {"Element", "Mind"}, 
+                {"Element", "Mind"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1534,7 +1536,7 @@ public class Dictionaries : UdonSharpBehaviour
             */
             // !!These arent done yet they just have entries so the ui stuff doesnt throw a fit in the future!! //
             {"Fire Break", new DataDictionary(){
-                {"Element", "Break"}, 
+                {"Element", "Break"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 40},
@@ -1544,7 +1546,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Ice Break", new DataDictionary(){
-                {"Element", "Break"}, 
+                {"Element", "Break"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 40},
@@ -1554,7 +1556,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Elec Break", new DataDictionary(){
-                {"Element", "Break"}, 
+                {"Element", "Break"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 40},
@@ -1564,7 +1566,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Wind Break", new DataDictionary(){
-                {"Element", "Break"}, 
+                {"Element", "Break"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 40},
@@ -1576,7 +1578,7 @@ public class Dictionaries : UdonSharpBehaviour
             ///// 
             
             {"Tetrakarn", new DataDictionary(){
-                {"Element", "Reflect Phys"}, 
+                {"Element", "Reflect Phys"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 55},
@@ -1586,7 +1588,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Makarakarn", new DataDictionary(){
-                {"Element", "Reflect Magic"}, 
+                {"Element", "Reflect Magic"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 55},
@@ -1599,7 +1601,7 @@ public class Dictionaries : UdonSharpBehaviour
             // Ailment Skills //
 
             {"Evil Touch", new DataDictionary(){
-                {"Element", "Fear"}, 
+                {"Element", "Fear"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1609,7 +1611,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Evil Smile", new DataDictionary(){
-                {"Element", "Fear"}, 
+                {"Element", "Fear"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1619,7 +1621,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Ghastly Wail", new DataDictionary(){ //instant kill if fearful
-                {"Element", "Fear"}, 
+                {"Element", "Fear"},
                 {"Power", 1},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1630,7 +1632,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Pulinpa", new DataDictionary(){
-                {"Element", "Panic"}, 
+                {"Element", "Panic"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1640,7 +1642,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Tentarafoo", new DataDictionary(){
-                {"Element", "Panic"}, 
+                {"Element", "Panic"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1649,9 +1651,9 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.40}
             }},
-            
+
             {"Bewilder", new DataDictionary(){
-                {"Element", "Distress"}, 
+                {"Element", "Distress"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1661,7 +1663,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Eerie Sound", new DataDictionary(){
-                {"Element", "Distress"}, 
+                {"Element", "Distress"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1672,7 +1674,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Poisma", new DataDictionary(){
-                {"Element", "Poison"}, 
+                {"Element", "Poison"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1682,7 +1684,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Poison Mist", new DataDictionary(){
-                {"Element", "Poison"}, 
+                {"Element", "Poison"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1694,7 +1696,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skipping virus breath for now:)
 
             {"Marin Karin", new DataDictionary(){
-                {"Element", "Charm"}, 
+                {"Element", "Charm"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1704,7 +1706,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Sexy Dance", new DataDictionary(){
-                {"Element", "Charm"}, 
+                {"Element", "Charm"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1715,7 +1717,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Provoke", new DataDictionary(){
-                {"Element", "Rage"}, 
+                {"Element", "Rage"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1725,7 +1727,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.40}
             }},
             {"Infuriate", new DataDictionary(){
-                {"Element", "Rage"}, 
+                {"Element", "Rage"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 10},
@@ -1737,7 +1739,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Almighty Skills :> //
             {"Life Drain", new DataDictionary(){
-                {"Element", "HP Drain"}, 
+                {"Element", "HP Drain"},
                 {"Power", 35},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1747,7 +1749,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Spirit Drain", new DataDictionary(){
-                {"Element", "SP Drain"}, 
+                {"Element", "SP Drain"},
                 {"Power", 20},
                 {"Accuracy", 1.00},
                 {"Cost", 5},
@@ -1757,7 +1759,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Foul Breath", new DataDictionary(){
-                {"Element", "Ailment Sus"}, 
+                {"Element", "Ailment Sus"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1767,7 +1769,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Stagnant Air", new DataDictionary(){
-                {"Element", "Ailment Sus"}, 
+                {"Element", "Ailment Sus"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 15},
@@ -1778,7 +1780,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Megido", new DataDictionary(){
-                {"Element", "Almighty"}, 
+                {"Element", "Almighty"},
                 {"Power", 180},
                 {"Accuracy", 0.95},
                 {"Cost", 45},
@@ -1788,7 +1790,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Megidola", new DataDictionary(){
-                {"Element", "Almighty"}, 
+                {"Element", "Almighty"},
                 {"Power", 320},
                 {"Accuracy", 0.95},
                 {"Cost", 65},
@@ -1798,7 +1800,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Megidolaon", new DataDictionary(){
-                {"Element", "Almighty"}, 
+                {"Element", "Almighty"},
                 {"Power", 650},
                 {"Accuracy", 0.95},
                 {"Cost", 85},
@@ -1808,7 +1810,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Black Viper", new DataDictionary(){
-                {"Element", "Almighty"}, 
+                {"Element", "Almighty"},
                 {"Power", 950},
                 {"Accuracy", 1.00},
                 {"Cost", 60},
@@ -1818,7 +1820,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Morning Star", new DataDictionary(){
-                {"Element", "Almighty"}, 
+                {"Element", "Almighty"},
                 {"Power", 800},
                 {"Accuracy", 1.00},
                 {"Cost", 80},
@@ -1840,7 +1842,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Guard", new DataDictionary(){
-                {"Element", "Pass"}, 
+                {"Element", "Pass"},
                 {"Power", 1},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1849,7 +1851,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Critical", 0},
                 {"Ailment Chance", 0.00}
             }},
-            {"Error", new DataDictionary(){ 
+            {"Error", new DataDictionary(){
                 {"Cost", -1}
             }}
         }
@@ -1874,7 +1876,7 @@ public class Dictionaries : UdonSharpBehaviour
             /// Defence ///
             // slash //
             {"Dodge Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1884,7 +1886,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1895,7 +1897,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1905,7 +1907,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1915,7 +1917,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1925,7 +1927,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Slash", new DataDictionary(){
-                {"Element", "Slash"}, 
+                {"Element", "Slash"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1937,7 +1939,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Strike //
             {"Dodge Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1947,7 +1949,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1958,7 +1960,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1968,7 +1970,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1978,7 +1980,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -1988,7 +1990,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Strike", new DataDictionary(){
-                {"Element", "Strike"}, 
+                {"Element", "Strike"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2000,7 +2002,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Pierce //
             {"Dodge Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2010,7 +2012,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2021,7 +2023,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2031,7 +2033,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2041,7 +2043,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2051,7 +2053,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Pierce", new DataDictionary(){
-                {"Element", "Pierce"}, 
+                {"Element", "Pierce"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2063,7 +2065,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             // Fire //
             {"Dodge Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2073,7 +2075,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2084,7 +2086,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2094,7 +2096,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2104,7 +2106,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2114,7 +2116,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Fire", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2126,7 +2128,7 @@ public class Dictionaries : UdonSharpBehaviour
             
             // Ice //
             {"Dodge Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2136,7 +2138,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2147,7 +2149,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2157,7 +2159,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2167,7 +2169,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2177,7 +2179,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Ice", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2189,7 +2191,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Elec //
             {"Dodge Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2199,7 +2201,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2210,7 +2212,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2220,7 +2222,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2230,7 +2232,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2240,7 +2242,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Elec", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2252,7 +2254,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Wind //
             {"Dodge Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", -2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2262,7 +2264,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Evade Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", -3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2273,7 +2275,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2283,7 +2285,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2293,7 +2295,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2303,7 +2305,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Absorb Wind", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2315,7 +2317,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Light //
             {" Light", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 0.50},
                 {"Cost", 0},
@@ -2325,7 +2327,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Endure Light", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2336,7 +2338,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Light", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2346,7 +2348,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Light", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2356,7 +2358,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Light", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2368,7 +2370,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Darkness //
             {"Survive Dark", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 0.50},
                 {"Cost", 0},
@@ -2378,7 +2380,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Endure Dark", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2389,7 +2391,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Resist Dark", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2399,7 +2401,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Null Dark", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2409,7 +2411,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Repel Dark", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2422,7 +2424,7 @@ public class Dictionaries : UdonSharpBehaviour
             /// Offensive ///
             // Fire //
             {"Fire Boost", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 1.25},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2432,7 +2434,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Fire Amp", new DataDictionary(){
-                {"Element", "Fire"}, 
+                {"Element", "Fire"},
                 {"Power", 1.50},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2444,7 +2446,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Ice //
             {"Ice Boost", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 1.25f},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2454,7 +2456,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Ice Amp", new DataDictionary(){
-                {"Element", "Ice"}, 
+                {"Element", "Ice"},
                 {"Power", 1.50},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2466,7 +2468,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Elec //
             {"Elec Boost", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 1.25},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2476,7 +2478,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Elec Amp", new DataDictionary(){
-                {"Element", "Elec"}, 
+                {"Element", "Elec"},
                 {"Power", 1.50},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2488,7 +2490,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Wind //
             {"Wind Boost", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 1.25},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2498,7 +2500,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Wind Amp", new DataDictionary(){
-                {"Element", "Wind"}, 
+                {"Element", "Wind"},
                 {"Power", 1.50},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2512,7 +2514,7 @@ public class Dictionaries : UdonSharpBehaviour
             // increases the success rate of hama and mudo skills
             // the way im doing this rn doesnt make the most sense but im tired
             {"Hama Boost", new DataDictionary(){
-                {"Element", "Light"}, 
+                {"Element", "Light"},
                 {"Power", 0},
                 {"Accuracy", 1.50},
                 {"Cost", 0},
@@ -2522,7 +2524,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Mudo Boost", new DataDictionary(){
-                {"Element", "Darkness"}, 
+                {"Element", "Darkness"},
                 {"Power", 0},
                 {"Accuracy", 1.50},
                 {"Cost", 0},
@@ -2534,7 +2536,7 @@ public class Dictionaries : UdonSharpBehaviour
 
             // Ailments //
             {"Fear Boost", new DataDictionary(){
-                {"Element", "Fear"}, 
+                {"Element", "Fear"},
                 {"Power", 0},
                 {"Accuracy", 1.50},
                 {"Cost", 0},
@@ -2544,7 +2546,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Panic Boost", new DataDictionary(){
-                {"Element", "Panic"}, 
+                {"Element", "Panic"},
                 {"Power", 0},
                 {"Accuracy", 1.50},
                 {"Cost", 0},
@@ -2570,7 +2572,7 @@ public class Dictionaries : UdonSharpBehaviour
             // skills that activate at the start of the battle //
             
             {"Auto-Tarukaja", new DataDictionary(){
-                {"Element", "Attack"}, 
+                {"Element", "Attack"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2580,7 +2582,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Auto-Tarunda", new DataDictionary(){
-                {"Element", "Attack"}, 
+                {"Element", "Attack"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2591,7 +2593,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Auto-Rakukaja", new DataDictionary(){
-                {"Element", "Defense"}, 
+                {"Element", "Defense"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2601,7 +2603,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Auto-Maraku", new DataDictionary(){
-                {"Element", "Defense"}, 
+                {"Element", "Defense"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2612,7 +2614,7 @@ public class Dictionaries : UdonSharpBehaviour
             }},
 
             {"Auto-Sukukaja", new DataDictionary(){
-                {"Element", "Evasion"}, 
+                {"Element", "Evasion"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2622,7 +2624,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Auto-Masuku", new DataDictionary(){
-                {"Element", "Evasion"}, 
+                {"Element", "Evasion"},
                 {"Power", 0},
                 {"Accuracy", 1},
                 {"Cost", 0},
@@ -2634,7 +2636,7 @@ public class Dictionaries : UdonSharpBehaviour
             /// Recovery ///
             // strengrthens recovery magic by 100% 
             {"Divine Grace", new DataDictionary(){
-                {"Element", "Recovery"}, 
+                {"Element", "Recovery"},
                 {"Power", 2},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2647,7 +2649,7 @@ public class Dictionaries : UdonSharpBehaviour
             // regen hp //
             // these do stack :)
             {"Regenerate 1", new DataDictionary(){
-                {"Element", "Recovery"}, 
+                {"Element", "Recovery"},
                 {"Power", 0.02},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2657,7 +2659,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Regenerate 2", new DataDictionary(){
-                {"Element", "Recovery"}, 
+                {"Element", "Recovery"},
                 {"Power", 0.04},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2667,7 +2669,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Regenerate 3", new DataDictionary(){
-                {"Element", "Recovery"}, 
+                {"Element", "Recovery"},
                 {"Power", 0.06},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2677,7 +2679,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Spring of Life", new DataDictionary(){ // trismegistus exclusive
-                {"Element", "Recovery"}, 
+                {"Element", "Recovery"},
                 {"Power", 0.08},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2690,7 +2692,7 @@ public class Dictionaries : UdonSharpBehaviour
             // regen sp each turn //
             // these also stack :)
             {"Invigorate 1", new DataDictionary(){
-                {"Element", "SP Recovery"}, 
+                {"Element", "SP Recovery"},
                 {"Power", 3},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2700,7 +2702,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Invigorate 2", new DataDictionary(){
-                {"Element", "SP Recovery"}, 
+                {"Element", "SP Recovery"},
                 {"Power", 5},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2710,7 +2712,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Invigorate 3", new DataDictionary(){
-                {"Element", "SP Recovery"}, 
+                {"Element", "SP Recovery"},
                 {"Power", 7},
                 {"Accuracy", 1.00},
                 {"Cost", 0},
@@ -2734,7 +2736,7 @@ public class Dictionaries : UdonSharpBehaviour
             */
             // Counter Skills //
             {"Counter", new DataDictionary(){
-                {"Element", "Counter"}, 
+                {"Element", "Counter"},
                 {"Power", 0},
                 {"Accuracy", 0.15},
                 {"Cost", 0},
@@ -2744,7 +2746,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"Counterstrike", new DataDictionary(){
-                {"Element", "Counter"}, 
+                {"Element", "Counter"},
                 {"Power", 0},
                 {"Accuracy", 0.30},
                 {"Cost", 0},
@@ -2754,7 +2756,7 @@ public class Dictionaries : UdonSharpBehaviour
                 {"Ailment Chance", 0.00}
             }},
             {"High Counter", new DataDictionary(){
-                {"Element", "Counter"}, 
+                {"Element", "Counter"},
                 {"Power", 0},
                 {"Accuracy", 0.50},
                 {"Cost", 0},
@@ -2783,52 +2785,64 @@ public class Dictionaries : UdonSharpBehaviour
             // no Alertness, Fast Retreat, Growth 1-3, trafuri
 
             // return this if the skill cannot be found //
-        }}};    
+        }}};
 
-    public override void OnPlayerJoined(VRCPlayerApi player){
-        if (player.isLocal){
+    public override void OnPlayerJoined(VRCPlayerApi player)
+    {
+        if (player.isLocal)
+        {
             setStat(self, "", "Name", player.displayName);
             //setStat(others, "", "Name", player.displayName);
         }
-        else{
+        else
+        {
             bool space = setStat(self, "", "Name", player.displayName); // was different when there was a seperate dictionary for others
-            if (!space){
+            if (!space)
+            {
                 Debug.Log("Haha " + player.displayName + " cant fit in the dictionary haha");
             }
         }
         // add the player to the dictionary when they join //
-        
+
     }
 
-    public override void OnPlayerLeft(VRCPlayerApi player){
-        if (!player.isLocal){ // i dont need to remove the local player from the dictionary because thats not the local players problem anymore :->
+    public override void OnPlayerLeft(VRCPlayerApi player)
+    {
+        if (!player.isLocal)
+        { // i dont need to remove the local player from the dictionary because thats not the local players problem anymore :->
             clearEntry(player.displayName, true);
             setStat(self, player.displayName, "Name", "");
         }
     }
 
     /// METHODS TO INTERACT WITH THE DICTIONARY ///
-    
+
     // Goes through the list of keys to find out which id stores the value //
     // defaults to "Name" because thats the most likely to need to find an id of //
 
-    public static int findID(DataDictionary dict, string strToFind, string keyToSrch = "Name"){
+    public static int findID(DataDictionary dict, string strToFind, string keyToSrch = "Name")
+    {
         DataList keys = dict.GetKeys();
         keys.Sort();
-        for (int i = 0; i < keys.Count; i++){
-            if (dict.TryGetValue(keys[i], TokenType.DataDictionary, out DataToken value)){
-                if (value.DataDictionary[keyToSrch] == strToFind){
+        for (int i = 0; i < keys.Count; i++)
+        {
+            if (dict.TryGetValue(keys[i], TokenType.DataDictionary, out DataToken value))
+            {
+                if (value.DataDictionary[keyToSrch] == strToFind)
+                {
                     return i;
                 }
             }
         }
         Debug.LogWarning("Could not Find " + strToFind + " under " + keyToSrch + " in Dictionary");
         return (-1);
-    } 
+    }
 
     // Get Stat for if you know the id //
-    public static string getStat(DataDictionary dict, int id, string key){
-        if (id != -1){
+    public static string getStat(DataDictionary dict, int id, string key)
+    {
+        if (id != -1)
+        {
             var stat = (dict[id].DataDictionary[key]);
             //Debug.Log($"getStat returns {stat}");
             return (stat.ToString());
@@ -2837,60 +2851,84 @@ public class Dictionaries : UdonSharpBehaviour
     }
     // get stat for if you don't know the id //
     // Requires the Dictionary, the key to search for, the unique string, and the stat to show //
-    public static string getStat(DataDictionary dict, string uStr, string statToShow, string key = "Name"){
+    public static string getStat(DataDictionary dict, string uStr, string statToShow, string key = "Name")
+    {
         var id = findID(dict, uStr, key);
         return (getStat(dict, id, statToShow));
     }
     // return a string array //
-    public static string[] getArray(DataDictionary dict, string uStr, string statToShow, string key = "Name"){
+    public static string[] getArray(DataDictionary dict, string uStr, string statToShow, string key = "Name")
+    {
         var strStat = getStat(dict, uStr, statToShow, key);
         return (strStat.Split(','));
     }
 
     // replaces the current stat with a new string //
-    public static bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat){
+    public static bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat)
+    {
         var id = findID(dict, uStr);
         //Debug.Log($"{newStat} replacing {statToChange} at id {id}");
-        if (id != -1){
+        if (id != -1)
+        {
             dict[id].DataDictionary[statToChange] = newStat;
+            RequestSerialization();
             return true;
         }
-        else{return false;}
+        else { return false; }
     }
 
     // changes the boolean //
-    public static void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat){
+    public static void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat)
+    {
         var id = findID(dict, uStr);
         dict[id].DataDictionary[statToChange] = newStat;
+        RequestSerialization();
     }
+    // changes the number
+    public static void setStat(DataDictionary dict, string uStr, string statToChange, int newStat)
+    {
+        var id = findID(dict, uStr);
+        dict[id].DataDictionary[statToChange] = newStat;
+        RequestSerialization();
+    }
+
     // returns an entire data dictionary segment //
-    public static DataDictionary getDict(DataDictionary dict, int id){
-        if (dict.TryGetValue(id, TokenType.DataDictionary, out DataToken value)){
+    public static DataDictionary getDict(DataDictionary dict, int id)
+    {
+        if (dict.TryGetValue(id, TokenType.DataDictionary, out DataToken value))
+        {
             return (value.DataDictionary);
         }
-        else{return null;}
+        else { return null; }
     }
     // simple way to get back a specific skill's information //
-    public static DataDictionary getSkillInfo(Dictionaries mainDict, string skill){
+    public static DataDictionary getSkillInfo(Dictionaries mainDict, string skill)
+    {
         var dict = Dictionaries.getDict(mainDict.skillDict, 0);
-        if (dict.TryGetValue(skill, TokenType.DataDictionary, out DataToken value)){
+        if (dict.TryGetValue(skill, TokenType.DataDictionary, out DataToken value))
+        {
             return (value.DataDictionary);
         }
-        else{
+        else
+        {
             return (dict["Error"].DataDictionary);
         }
     }
     // returns the number of active entities in the self dicitonary //
     // check which ones have names
     // i can maybe update this one for the other players for when they attack the entire party
-    public static int countActive(Dictionaries mainDict, DataDictionary dict, string tag="*"){
+    public static int countActive(Dictionaries mainDict, DataDictionary dict, string tag = "*")
+    {
         var count = 0;
-        for (int i = 0; i < dict.Count; i++){
+        for (int i = 0; i < dict.Count; i++)
+        {
             var name = Dictionaries.getStat(dict, i, "Name");
             var tags = Dictionaries.getStat(dict, i, "Tag");
-            if (tag == "*" || tags == tag){ // allow any options if tag is left as *
-                if (name != "" && name != "_"){
-                count++;
+            if (tag == "*" || tags == tag)
+            { // allow any options if tag is left as *
+                if (name != "" && name != "_")
+                {
+                    count++;
                 }
             }
         }
@@ -2898,14 +2936,18 @@ public class Dictionaries : UdonSharpBehaviour
     }
 
     // returns the unique names for everyone that falls under the tag //
-    public static string[] getActiveArray(Dictionaries mainDict, DataDictionary dict, string tag="*"){
+    public static string[] getActiveArray(Dictionaries mainDict, DataDictionary dict, string tag = "*")
+    {
         string[] returnArr = new string[countActive(mainDict, dict, tag)];
         int count = 0;
-        for (int i = 0; i < dict.Count; i++){
+        for (int i = 0; i < dict.Count; i++)
+        {
             var name = getStat(dict, i, "Name");
             var tags = getStat(dict, i, "Tag");
-            if (tag == "*" || tags == tag){
-                if (name != "" && name != "_"){
+            if (tag == "*" || tags == tag)
+            {
+                if (name != "" && name != "_")
+                {
                     returnArr[count] = name;
                     count++;
                 }
@@ -2913,11 +2955,12 @@ public class Dictionaries : UdonSharpBehaviour
         }
         return (returnArr);
     }
-    
+
     ////////
 
     // displays the stats from the entire dictionary //
-    public void displayPlayers(){
+    public void displayPlayers()
+    {
         string displayText = "";
         /*
         var selfDict = getDict(self, 0);
@@ -2931,11 +2974,14 @@ public class Dictionaries : UdonSharpBehaviour
         DataList keys = self.GetKeys();
         keys.Sort();
 
-        for (int i = 0; i < keys.Count; i++){
+        for (int i = 0; i < keys.Count; i++)
+        {
             displayText += i + ". ";
-            if (self.TryGetValue(i, TokenType.DataDictionary, out DataToken dict)){
+            if (self.TryGetValue(i, TokenType.DataDictionary, out DataToken dict))
+            {
                 DataList newKeys = dict.DataDictionary.GetKeys();
-                for (int j = 0; j < newKeys.Count; j++){
+                for (int j = 0; j < newKeys.Count; j++)
+                {
                     displayText += newKeys[j].String + ": " + getStat(self, i, newKeys[j].String) + " ";
                 }
             }
@@ -2944,217 +2990,270 @@ public class Dictionaries : UdonSharpBehaviour
         board.text = displayText;
     }
 
-    private void copyPreset(string name, string presetName){
+    private void copyPreset(string name, string presetName)
+    {
         var tag = getStat(self, name, "Tag");
         var id = findID(self, name);
         DataDictionary preset = null; // get the preset dictionary 
-        if (tag.Equals("player")){
+        if (tag.Equals("player"))
+        {
             preset = Presets.getDict(presetList.personas, "presetName");
         }
-        else{
+        else
+        {
             preset = Presets.getDict(presetList.personas, "presetName");
         }
-        if (preset != null){
+        if (preset != null)
+        {
             DataList keys = preset.GetKeys();
             keys.Sort();
-            for (int i = 0; i < keys.Count; i++){
+            for (int i = 0; i < keys.Count; i++)
+            {
                 setStat(self, name, keys[i].ToString(), preset[keys[i]].ToString()); // i think making them strings should be fine
-                if (keys[i].Equals("Max HP") || keys[i].Equals("Max SP")){ // its been a while since ive touched a lot of this code _._
+                if (keys[i].Equals("Max HP") || keys[i].Equals("Max SP"))
+                { // its been a while since ive touched a lot of this code _._
                     setStat(self, name, keys[i].ToString().Substring(2), preset[keys[i]].ToString());  // set the hp/sp to max on preset change
                 }
             }
         }
     }
     // sets all the stats in a segment to defaults
-    public void clearEntry(string name, bool removePersonal=false){
+    public void clearEntry(string name, bool removePersonal = false)
+    {
         copyPreset(name, "Blank");
-        if (removePersonal){
+        if (removePersonal)
+        {
             copyPreset(name, "Personal Blank");
         }
     }
 
-    public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder, bool sync=true){
+    public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder, bool sync = true)
+    {
         network.changeNumO(this, uName, numKey, changeInNum, true, Networking.GetOwner(hi));
         updateText.changeEnemyText(this);
         string num = getStat(dictToChange, uName, numKey);
         bool result = int.TryParse(num, out int intNum);
-        if (result){
+        if (result)
+        {
             intNum += changeInNum;
             // prevent the number from going over the max if HP or SP
-            if (numKey.Equals("HP") || numKey.Equals("SP")){
+            if (numKey.Equals("HP") || numKey.Equals("SP"))
+            {
                 string max = getStat(dictToChange, uName, "Max " + numKey);
-                int.TryParse(max, out int maxNum); 
-                if (intNum > maxNum){
+                int.TryParse(max, out int maxNum);
+                if (intNum > maxNum)
+                {
                     intNum = maxNum;
                 }
             }
-            if (intNum < 0){
-                if (cantGoUnder){
+            if (intNum < 0)
+            {
+                if (cantGoUnder)
+                {
                     return (false);
                 }
-                else{ // the numbers dont need to go into the negatives
+                else
+                { // the numbers dont need to go into the negatives
                     intNum = 0;
                 }
             }
-            num = intNum.ToString(); // convert back to string :>
-            setStat(dictToChange, uName, numKey, num); // change contents of dict
+            // num = intNum.ToString(); // convert back to string :>
+            setStat(dictToChange, uName, numKey, intNum); // change contents of dict
             Debug.Log("Changed " + numKey + "!");
             displayPlayers(); // update board
             return (true);
         }
-        else{
+        else
+        {
             return (false);
         }
     }
 
-    public static void removeEnemy(string name){
+    public static void removeEnemy(string name)
+    {
         // TODO: add this
         //clearEntry(name);
     }
-    public static string determineSkillType(Dictionaries mainDict, string skill){
+    public static string determineSkillType(Dictionaries mainDict, string skill)
+    {
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
-        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
+        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike"))
+        {
             return ("Physical");
         }
-        else{
-           return ("Magic");
+        else
+        {
+            return ("Magic");
         }
     }
-    public static string determineSkillType(DataDictionary skillInfo){
-        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike")){ 
+    public static string determineSkillType(DataDictionary skillInfo)
+    {
+        if (skillInfo["Element"].String.Equals("Slash") || skillInfo["Element"].String.Equals("Pierce") || skillInfo["Element"].String.Equals("Strike"))
+        {
             return ("Physical");
         }
-        else{
-           return ("Magic");
+        else
+        {
+            return ("Magic");
         }
     }
 
     // returns all stat changes 
-    public static string[] getStatChanges(DataDictionary entityStats){
+    public static string[] getStatChanges(DataDictionary entityStats)
+    {
         string statChangeStr = entityStats["Stat Changes"].String;
-        if (statChangeStr.Length != 0){
+        if (statChangeStr.Length != 0)
+        {
             string[] statChanges = statChangeStr.Split(',');
             return (statChanges);
         }
-        else{
-            string[] arr = {}; // empty array
+        else
+        {
+            string[] arr = { }; // empty array
             return (arr);
         }
     }
     // returns specific stat changes as an array //
-    public static string[] getStatChanges(DataDictionary entityStats, string stat){
+    public static string[] getStatChanges(DataDictionary entityStats, string stat)
+    {
         var statArr = getStatChanges(entityStats);
         string[] empty = new string[3];
-        if (statArr.Length != 0){
-            foreach(string statChange in statArr){
+        if (statArr.Length != 0)
+        {
+            foreach (string statChange in statArr)
+            {
                 var statChangeArr = parseStatChange(statChange);
-                if (statChangeArr[0].Equals(stat)){
+                if (statChangeArr[0].Equals(stat))
+                {
                     return (statChangeArr); // [stat, change]
                 }
             }
             return (null);
         }
-        else{
+        else
+        {
             return (null);
         }
     }
 
 
     /// <returns>Returns an array with the information about the stat change</returns>
-    public static string[] parseStatChange(string statChange){
-        if (statChange.Length != 0){
+    public static string[] parseStatChange(string statChange)
+    {
+        if (statChange.Length != 0)
+        {
             string change = statChange[statChange.Length - 2].ToString();
             string time = statChange[statChange.Length - 1].ToString();
             string status = statChange.Substring(0, statChange.Length - 2); // saves the substring starting 2 positions off the end // basically [0:-2] :)
-            string[] statChangeArr = {status, change, time};
+            string[] statChangeArr = { status, change, time };
             return statChangeArr;
         }
-        else{
-            return new string[] {"", "", ""};
-        }   
+        else
+        {
+            return new string[] { "", "", "" };
+        }
     }
     // change - false + true
     // 
-    public static string packStatChange(Dictionaries dict, string stat, bool change, int timer=3){
+    public static string packStatChange(Dictionaries dict, string stat, bool change, int timer = 3)
+    {
         string packStat = "";
         string shortStat = dict.shortStatChanges[Array.IndexOf(dict.statChanges, stat)]; // get abbreviated form of the stat change
         packStat += shortStat;
-        if (change){packStat += "+";}
-        else {packStat += "-";}
+        if (change) { packStat += "+"; }
+        else { packStat += "-"; }
         packStat += timer + "";
         return (packStat);
     }
 
-    public static void applyStatChange(Dictionaries dict, string target, string stat, bool change){
+    public static void applyStatChange(Dictionaries dict, string target, string stat, bool change)
+    {
         var shortStat = dict.shortStatChanges[Array.IndexOf(dict.statChanges, stat)];
         var statChanges = getStatChanges(getDict(dict.self, findID(dict.self, target)));
         string packet = packStatChange(dict, stat, change) + ",";
         string allStats = "";
-        if (statChanges.Length > 0){
-            foreach (var stats in statChanges){
+        if (statChanges.Length > 0)
+        {
+            foreach (var stats in statChanges)
+            {
                 string[] checkStats = parseStatChange(stats);
-                if (checkStats[0].Equals(shortStat)){
-                    if (checkStats[1].Equals("+") == change){ // if the existing stat is the same as the new stat
+                if (checkStats[0].Equals(shortStat))
+                {
+                    if (checkStats[1].Equals("+") == change)
+                    { // if the existing stat is the same as the new stat
                         allStats += stats;
                     }
-                    else{ // replace it if the stat on there is opposite of what it will be
+                    else
+                    { // replace it if the stat on there is opposite of what it will be
                         allStats += packet;
                     }
                 }
-                else{
+                else
+                {
                     allStats += stat;
                 }
                 allStats += ",";
             }
             setStat(dict.self, target, "Stat Changes", allStats);
         }
-        else{
+        else
+        {
             setStat(dict.self, target, "Stat Changes", packet);
         }
     }
     // decreases all of the timers on one entries stat changes and repackages them //
-    public static void decreaseStatTimer(Dictionaries mainDict, string uStr){
+    public static void decreaseStatTimer(Dictionaries mainDict, string uStr)
+    {
         string[] statChanges = Dictionaries.getArray(mainDict.self, uStr, "Stat Changes", "Name");
         string[] newStats = new string[4];
         int count = 0;
         //Debug.Log(statChanges.Length +" " + statChanges[0].Length);
-        if (statChanges.Length > 0){
-                for (int i = 0; i < statChanges.Length; i++){
-                    if (statChanges[i].Length > 0){
-                        string timeStr = statChanges[i][statChanges[i].Length - 1].ToString(); // get the number
-                        int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
-                        
-                        // only add if theres time left on the timer
-                        // stats are removed at the start of the turn
-                        if (time > 0){
-                            newStats[i] = (statChanges[i].Remove(statChanges[i].Length - 1) + time);
-                            count += 1; 
-                        }
+        if (statChanges.Length > 0)
+        {
+            for (int i = 0; i < statChanges.Length; i++)
+            {
+                if (statChanges[i].Length > 0)
+                {
+                    string timeStr = statChanges[i][statChanges[i].Length - 1].ToString(); // get the number
+                    int time = int.Parse(timeStr) - 1; // decrease the timer by one :)
+
+                    // only add if theres time left on the timer
+                    // stats are removed at the start of the turn
+                    if (time > 0)
+                    {
+                        newStats[i] = (statChanges[i].Remove(statChanges[i].Length - 1) + time);
+                        count += 1;
                     }
                 }
-                string newStr = "";
-                if (newStats.Length != 0){
-                    newStr = string.Join(",", newStats);
-                }
-                Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
+            }
+            string newStr = "";
+            if (newStats.Length != 0)
+            {
+                newStr = string.Join(",", newStats);
+            }
+            Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
         }
     }
 
-    public static Vector3 getLocation(string name){
+    public static Vector3 getLocation(string name)
+    {
         GameObject creature = GameObject.Find(name);
-        if (creature != null){
+        if (creature != null)
+        {
             return creature.transform.position;
         }
-        else{return new Vector3(0, 0, 0);}
-        
+        else { return new Vector3(0, 0, 0); }
+
     }
 
-    public static void refreshMenu(){
+    public static void refreshMenu()
+    {
         var evokerParent = GameObject.Find("evokerHolder"); // the parent go that holds all the evokers
         // put all the children in a box
         // GameObject[] evokers = GameObject[10];
         var numEvokers = evokerParent.transform.childCount;
-        for (int i = 0; i < numEvokers; i++){
+        for (int i = 0; i < numEvokers; i++)
+        {
             var evoker = evokerParent.transform.GetChild(i).gameObject; // get the iterations funny
             var DPscript = (displaySkills)evoker.GetComponent(typeof(UdonBehaviour));
             DPscript.refreshMenu();
@@ -3163,7 +3262,8 @@ public class Dictionaries : UdonSharpBehaviour
 
     // pass on to the damage calc script //
     // returns the value spent (hp/sp) //
-    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, VRCPlayerApi player){
+    public static string calculateDamage(Dictionaries mainDict, string user, string target, string skill, VRCPlayerApi player)
+    {
         DataDictionary skillInfo = Dictionaries.getDict(mainDict.skillDict, 0)[skill].DataDictionary; // this will error if a bad spell is sent thru, i count check if the spell is in the list but that would be costly
         var damage = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
         var skillType = Dictionaries.determineSkillType(skillInfo);
@@ -3171,29 +3271,35 @@ public class Dictionaries : UdonSharpBehaviour
         bool canUse;
         string strReturn = "";
         // Cost the user HP/SP for the skill //
-        if (skillType.Equals("Magic")){
-            canUse = mainDict.changeNum(user, "SP", (int) (skillInfo["Cost"].Float * -1), mainDict.self, true);
+        if (skillType.Equals("Magic"))
+        {
+            canUse = mainDict.changeNum(user, "SP", (int)(skillInfo["Cost"].Float * -1), mainDict.self, true);
             strReturn = "SP";
         }
-        else{
+        else
+        {
             var maxHP = Dictionaries.getStat(mainDict.self, user, "Max HP");
-            var cost = (int) (((float.Parse(maxHP)) * skillInfo["Cost"].Double) * -1); 
+            var cost = (int)(((float.Parse(maxHP)) * skillInfo["Cost"].Double) * -1);
             canUse = mainDict.changeNum(user, "HP", cost, mainDict.self, true);
             strReturn = "HP";
         }
         // deal the damage to the target //
-        if (canUse){ // can only use if the user has enough hp/sp
+        if (canUse)
+        { // can only use if the user has enough hp/sp
             string logMessage = user + " used " + skill + " on ";
-            if (skillTarget.Equals("One") || skillTarget.Equals("Self")){
+            if (skillTarget.Equals("One") || skillTarget.Equals("Self"))
+            {
                 // could make this into its own function but i dont want to do that yet -.-
                 var damageDealt = damageCalc.damageTurn(mainDict, user, target, skillInfo, mainDict.network, player);
-                if (damageDealt != -1){
+                if (damageDealt != -1)
+                {
                     //mainDict.network.changeNumO(mainDict, target, "HP", damageDealt, true, player);
                     mainDict.changeNum(target, "HP", damageDealt * -1, mainDict.self, false);
                     //updateText.changeEnemyText(target, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " dealing " + damageDealt + " damage.";
                 }
-                else{
+                else
+                {
                     updateText.changeEnemyText(target, "" + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     updateText.enemyHitText(target, "Miss");
                     logMessage += target + " and missed.";
@@ -3201,10 +3307,12 @@ public class Dictionaries : UdonSharpBehaviour
                 mainDict.log.addToLog(logMessage);
                 return (strReturn);
             }
-            else if (skillTarget.Equals("Ally")){
+            else if (skillTarget.Equals("Ally"))
+            {
                 int amtHeal = skillInfo["Power"].Int;
                 // Skills that heal //
-                if (amtHeal != 0){
+                if (amtHeal != 0)
+                {
                     mainDict.changeNum(target, "HP", amtHeal, mainDict.self, false); // gonna have to change this one when adding syncing
                     //updateText.changeEnemyText(target, "+" + skillInfo["Power"].Int + "\n" + Dictionaries.getStat(mainDict.self, target, "HP") + "/" + Dictionaries.getStat(mainDict.self, target, "Max HP"));
                     logMessage += target + " healing " + skillInfo["Power"].Int + " health.";
@@ -3212,41 +3320,48 @@ public class Dictionaries : UdonSharpBehaviour
                 mainDict.log.addToLog(logMessage);
                 return (strReturn);
             }
-            else if (skillTarget.Equals("All")){
+            else if (skillTarget.Equals("All"))
+            {
                 string targetTeam;
-                if (getStat(mainDict.self, user, "Tag", "Name").Equals("player") && skillTarget.Equals("All")){targetTeam = "enemy";}
-                else{targetTeam = "player";} 
+                if (getStat(mainDict.self, user, "Tag", "Name").Equals("player") && skillTarget.Equals("All")) { targetTeam = "enemy"; }
+                else { targetTeam = "player"; }
                 var enemyCount = Dictionaries.countActive(mainDict, mainDict.self, targetTeam); // too lazy to change the name
                 logMessage += "all " + targetTeam + "s: ";
                 string[] targetNames = getActiveArray(mainDict, mainDict.self, targetTeam);
-                for (int i = 0; i < enemyCount; i++){
+                for (int i = 0; i < enemyCount; i++)
+                {
                     // calculate damage for the enemy
                     var loopTarget = targetNames[i];
                     var damageDealt = damageCalc.damageTurn(mainDict, user, loopTarget, skillInfo, mainDict.network, player);
                     // this part could probably be its own function v
-                    if (damageDealt != -1){
+                    if (damageDealt != -1)
+                    {
                         mainDict.changeNum(loopTarget, "HP", damageDealt * -1, mainDict.self, false);
                         //updateText.changeEnemyText(loopTarget, "-" + damageDealt + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
                         logMessage += "[" + loopTarget + ", " + damageDealt + " damage], ";
-                        }
-                    else{
+                    }
+                    else
+                    {
                         //updateText.changeEnemyText(loopTarget, "" + "\n" + Dictionaries.getStat(mainDict.self, loopTarget, "HP") + "/" + Dictionaries.getStat(mainDict.self, loopTarget, "Max HP"));
                         updateText.enemyHitText(loopTarget, "Miss");
                         logMessage += "[" + loopTarget + ", Missed], ";
-                    }   
+                    }
                 }
                 mainDict.log.addToLog(logMessage + ".");
                 return (strReturn);
             }
-            else{ // if the skills target hasnt been added yet 
+            else
+            { // if the skills target hasnt been added yet 
                 return (null);
             }
         }
-        else{
+        else
+        {
             return (null);
         }
     }
-    public void networkTest(){
+    public void networkTest()
+    {
         Debug.Log("test sent");
         network.KSCNE("test", null, Networking.GetOwner(hi));
     }

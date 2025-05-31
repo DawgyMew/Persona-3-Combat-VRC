@@ -48,37 +48,49 @@ public class displaySkills : UdonSharpBehaviour
         if (/*GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.isLocal*/true){
             //Debug.Log("gheuawighewuighuoiwahgn");
             string playerName = GetComponent<VRC.SDKBase.VRC_Pickup>().currentPlayer.displayName;
-            testname.text = playerName;
             var dictionaryGO = GameObject.Find("Dictionary");
             dictionary = (Dictionaries)dictionaryGO.GetComponent(typeof(UdonBehaviour));
-            
+
             //ailmentBox.enabled = true; 
             //ailmentBox.material = plink; // if shows plink it got here
-            
 
+
+            if (Networking.IsMaster)
+            {
+                testname.text = "M";
+            }
+            else
+            {
+                testname.text = "";
+            }
             // Display the List of Skills //
-            if (dictionary != null){
+            if (dictionary != null)
+            {
                 var playerSkills = Dictionaries.getArray(dictionary.self, playerName, "Skills", "Name"); // get the array of skills the player has
                 int i = 1;
                 leftText = "|\n"; // the line indicates the top and bottom of the list of skills
-                foreach (var skill in playerSkills){
+                foreach (var skill in playerSkills)
+                {
                     // check if the skill is passive or not //
-                        var skillInfo = Dictionaries.getSkillInfo(dictionary, skill);
-                        var cost = skillInfo["Cost"].Number; // this one checks if its 0 or -1
-                        var displayCost = determineCost(dictionary, skillInfo, playerName); // this is the amount of hp or sp will be taken
-                            if (cost != -1){
-                                leftText += skill + " \t" + displayCost + "\n";
-                            }
-                            else{
-                                leftText += "null\n";
-                            }
-                            i++;
+                    var skillInfo = Dictionaries.getSkillInfo(dictionary, skill);
+                    var cost = skillInfo["Cost"].Number; // this one checks if its 0 or -1
+                    var displayCost = determineCost(dictionary, skillInfo, playerName); // this is the amount of hp or sp will be taken
+                    if (cost != -1)
+                    {
+                        leftText += skill + " \t" + displayCost + "\n";
+                    }
+                    else
+                    {
+                        leftText += "null\n";
+                    }
+                    i++;
                 }
                 //ailmentBox.material = null;
             }
-            else{
-                    //ailmentBox.material = charm; // show charm if the dictionary is null 
-                } // idk why it would be null but im just testing a bunch of possibilites
+            else
+            {
+                //ailmentBox.material = charm; // show charm if the dictionary is null 
+            } // idk why it would be null but im just testing a bunch of possibilites
 
             leftText += "|";
             txtBox.text = leftText;
@@ -332,8 +344,8 @@ public class displaySkills : UdonSharpBehaviour
     public void refreshMenu(){
         var pickup = GetComponent<VRC.SDKBase.VRC_Pickup>();
         if (pickup != null){ // make sure the evoker is being held
-            string playerName = pickup.currentPlayer.displayName;
-            testname.text = playerName;
+            // string playerName = pickup.currentPlayer.displayName;
+            // testname.text = playerName;
             //showAilment(playerName);
         }
     }

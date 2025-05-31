@@ -8,7 +8,7 @@ public class spawnEvoker : UdonSharpBehaviour
 {
     [SerializeField] private GameObject evoker;
     public override void OnPlayerJoined(VRCPlayerApi player){
-        Instantiate (evoker, this.gameObject.transform.position, this.gameObject.transform.rotation);
+        // https://udonsharp.docs.vrchat.com/vrchat-api/#vrcobjectpool
     }
     
 }

@@ -10,7 +10,7 @@ using VRC.Udon.Common.Interfaces;
 public class enemyAI : UdonSharpBehaviour
 {
     /// Class that determines the moves of the enemies ///
-    
+
     /*
         Guess I should write a priority list?
         1. Heal if low and can
@@ -27,14 +27,20 @@ public class enemyAI : UdonSharpBehaviour
 
     */
 
-    private static final int LOWHEALTH = 20;
-    private static final int SKIPCHANCE = 10;
+
+    
 
     // returns move name and targets //
     public static string[] determineMove(Dictionaries dict, string enemyName){
+        int LOWHEALTH = 20;
+        int SKIPCHANCE = 10;
         // get dictionaries of self
-        int ownID = Dictionaries.findID(dict, enemyName);
+        int ownID = Dictionaries.findID(dict.self, enemyName);
         DataDictionary ownDict = Dictionaries.getDict(dict.self, ownID); // get own dictionary
+        if (ownDict["HP"].Int <= 0)
+        {
+            return null;
+        }
         string[] skills = Dictionaries.getArray(ownDict, enemyName, "Skills");
         int randNum = Random.Range(0, 100);
         
@@ -62,14 +68,14 @@ public class enemyAI : UdonSharpBehaviour
             2 - Players
             3 - Secret fourth option
             */
-            int sp = ownDict["SP"].Integer;
+            int sp = ownDict["SP"].Int;
 
             if (!ownDict["Ailment"].String.Equals("")){
                 priority = 2;
                 targetPriority = 0;
             }
             // TODO: check if allies are ailmented
-            if ((ownDict["Max HP"].Integer / ownDict["HP"].Integer) < LOWHEALTH * 0.01){
+            if ((ownDict["Max HP"].Int / ownDict["HP"].Int) < (LOWHEALTH * 0.01)){
                 priority = 1;
                 targetPriority = 0;
             }
@@ -77,8 +83,8 @@ public class enemyAI : UdonSharpBehaviour
 
 
             foreach (string skill in skills){
-                DataDictionary skill = Dictionaries.getSkillInfo(dict, skill);
-                if (skill["Cost"] <= sp){
+                DataDictionary thisSkill = Dictionaries.getSkillInfo(dict, skill);
+                if (thisSkill["Cost"].Int <= sp){
                     // get the priority class of the move
                     // compare against last move chosen
                     // if a better priority class
@@ -87,7 +93,7 @@ public class enemyAI : UdonSharpBehaviour
         }
         
         // 
-        return new string[] {chosenSkill["Name"].String, target};
+        return new string[] {chosenSkillName, target};
     }
     
     
