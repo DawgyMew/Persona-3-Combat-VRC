@@ -2,7 +2,10 @@
 * _ means the feature is not as essential
 
 Known Bugs:
-    spidr, caterpliler
+    Turn order will desync after a while
+        every turn loop resync?
+    Log does not show attacks on remote
+    remote players evokers desync
 
 
 
@@ -126,6 +129,8 @@ Ideas:
 
 
 Complete:
+    
+    Required to have the active turn to attack
     code turn order based on agility
     complete turn logic turn.txt
     refresh evoker screens i think

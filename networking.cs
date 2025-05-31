@@ -183,7 +183,7 @@ public class networking : UdonSharpBehaviour
         var index = data[4];
         var newStat = arrayFromID(dict, data[3], data[4]);
         Debug.Log("Set stat on " + target + " to " + newStat + " on " + statToChange);
-        Dictionaries.setStat(dict.self, target, statToChange, newStat);
+        dict.setStat(dict.self, target, statToChange, newStat);
     }
 
 

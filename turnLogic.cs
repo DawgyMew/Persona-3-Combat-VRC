@@ -62,7 +62,7 @@ public class turnLogic : UdonSharpBehaviour
         // decrease stat change timers
         if (stats["isDown"].Boolean)
         {
-            Dictionaries.setStat(dict.self, turnOwner, "isDown", false);
+            dict.setStat(dict.self, turnOwner, "isDown", false);
         }
         Dictionaries.decreaseStatTimer(dict, turnOwner);
         // !regen if they have the passive skills
@@ -74,14 +74,14 @@ public class turnLogic : UdonSharpBehaviour
         {
             case "Freeze":
             case "Shocked":
-                Dictionaries.setStat(dict.self, turnOwner, "Ailment", "");
-                skipTurn();
+                dict.setStat(dict.self, turnOwner, "Ailment", "");
+                afterTurn();
                 break;
             case "Charm": // should write to potentially harm teamates but that sounds hard right now its been like 6 months
             case "Fear":
                 if (randNum <= 80)
                 {
-                    skipTurn();
+                    afterTurn();
                 }
                 break;
             default:
@@ -190,7 +190,7 @@ public class turnLogic : UdonSharpBehaviour
         // poison the player if applicable
         // check if the player downed an enemy and return true if so
         // if they dont move on to next turn
-        SendCustomNetworkEvent(NetworkEventTarget.All, "runescape"); // serialize something to the other players dont know yet lmao
+        RequestSerialization(); // serialize something to the other players dont know yet lmao
         Dictionaries.refreshMenu();
         return (false);
     }
@@ -201,10 +201,7 @@ public class turnLogic : UdonSharpBehaviour
         activePlayer.text = "you're winner !";
     }
 
-    public void skipTurn()
-    {
-        SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
-    }
+    
     // Determine the order of who will go when //
     // Run at the start of the battle, when a new player joins the battle, and whenever the agility changes //
     // i dont think increased agility affects the turn order until everyone else has gone?
@@ -335,7 +332,7 @@ public class turnLogic : UdonSharpBehaviour
                 isActive = false;
                 timerCount = 0.0f;
                 bl.addToLog(turnOwner + " passed.");
-                SendCustomNetworkEvent(NetworkEventTarget.All, "nextTurn");
+                nextTurn();
             }
             else
             {

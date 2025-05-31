@@ -42,7 +42,7 @@ public class Dictionaries : UdonSharpBehaviour
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
-    [UdonSynced]
+    // [UdonSynced]
     public DataDictionary self = new DataDictionary(){
         // hard code the options and apply the information from that //
 
@@ -2864,7 +2864,7 @@ public class Dictionaries : UdonSharpBehaviour
     }
 
     // replaces the current stat with a new string //
-    public static bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat)
+    public bool setStat(DataDictionary dict, string uStr, string statToChange, string newStat)
     {
         var id = findID(dict, uStr);
         //Debug.Log($"{newStat} replacing {statToChange} at id {id}");
@@ -2878,14 +2878,14 @@ public class Dictionaries : UdonSharpBehaviour
     }
 
     // changes the boolean //
-    public static void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat)
+    public void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat)
     {
         var id = findID(dict, uStr);
         dict[id].DataDictionary[statToChange] = newStat;
         RequestSerialization();
     }
     // changes the number
-    public static void setStat(DataDictionary dict, string uStr, string statToChange, int newStat)
+    public void setStat(DataDictionary dict, string uStr, string statToChange, int newStat)
     {
         var id = findID(dict, uStr);
         dict[id].DataDictionary[statToChange] = newStat;
@@ -3194,11 +3194,11 @@ public class Dictionaries : UdonSharpBehaviour
                 }
                 allStats += ",";
             }
-            setStat(dict.self, target, "Stat Changes", allStats);
+            dict.setStat(dict.self, target, "Stat Changes", allStats);
         }
         else
         {
-            setStat(dict.self, target, "Stat Changes", packet);
+            dict.setStat(dict.self, target, "Stat Changes", packet);
         }
     }
     // decreases all of the timers on one entries stat changes and repackages them //
@@ -3231,7 +3231,7 @@ public class Dictionaries : UdonSharpBehaviour
             {
                 newStr = string.Join(",", newStats);
             }
-            Dictionaries.setStat(mainDict.self, uStr, "Stat Changes", newStr);
+            mainDict.setStat(mainDict.self, uStr, "Stat Changes", newStr);
         }
     }
 

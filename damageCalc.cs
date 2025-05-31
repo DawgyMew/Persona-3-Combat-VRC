@@ -43,10 +43,10 @@ public class damageCalc : UdonSharpBehaviour
                 string name = enemyStats["Name"].String;
                 updateText.enemyHitText(name, "Weak");
                 if (!isDown){
-                    Dictionaries.setStat(mainDict.self, name, "isDown", true); // change the state of the enemy to downed if not already
+                    mainDict.setStat(mainDict.self, name, "isDown", true); // change the state of the enemy to downed if not already
                 }
                 else{
-                    Dictionaries.setStat(mainDict.self, name, "Ailment", "Dizzy"); // make them dizzy if they were already downed
+                    mainDict.setStat(mainDict.self, name, "Ailment", "Dizzy"); // make them dizzy if they were already downed
 
                 }
                 break;
@@ -99,7 +99,7 @@ public class damageCalc : UdonSharpBehaviour
                     ail = skill["Element"].String;
                     break;
             }
-            Dictionaries.setStat(dict.self, targetName, "Ailment", ail);
+            dict.setStat(dict.self, targetName, "Ailment", ail);
             return (ail);
         } 
         else{return ("");}

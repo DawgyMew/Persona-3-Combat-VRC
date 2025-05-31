@@ -36,7 +36,7 @@ public class Capsule : UdonSharpBehaviour
         ailNum = (ailNum + 1) % dictionaries.AILMENTS.Length; 
         string ailment = dictionaries.AILMENTS[ailNum];
         network.statFromArrayIndexO(dictionaries, player.displayName, "Ailment", 0, ailment, player);
-        Dictionaries.setStat(dictionaries.self, player.displayName, "Ailment", ailment);
+        dictionaries.setStat(dictionaries.self, player.displayName, "Ailment", ailment);
 
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "Plink");
         SendCustomNetworkEvent(VRC.Udon.Common.Interfaces.NetworkEventTarget.All, "refreshScreen");
