@@ -27,13 +27,7 @@ General:
     implement downed system
     finish passive skills
     code evasion effects on dodging and hitting
-    complete the turn logic, turn.txt
-        --make players not be able to act when its not their turn
-        
-        --implement one more! when hitting a weaknesses
-        use port priority to handle speed ties.
-    --add timer to skip turn of afk players?
-        make them wait and pass their tur
+    
     --implement ability to guard and wait (or just wait if im feeling lazy)
         guarding prevents you from being knocked for one hit
         enemies are only able to wait.
@@ -47,7 +41,7 @@ Enemy AI:
     check if allies have ailements.
     check if allies are debuffed.
     check for any reflectors
-
+    score each move with an effectiveness level to decide which one to use
 
 
 Unity Reliant:
@@ -104,7 +98,14 @@ Ideas:
 
 
 Complete:
-    
+
+    complete the turn logic, turn.txt
+        --make players not be able to act when its not their turn
+        
+        --implement one more! when hitting a weaknesses
+        use port priority to handle speed ties.
+    --add timer to skip turn of afk players?
+        make them wait and pass their tur
     Required to have the active turn to attack
     code turn order based on agility
     complete turn logic turn.txt
