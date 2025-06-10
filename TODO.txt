@@ -8,6 +8,8 @@ Known Bugs:
     remote players evokers desync
         remote players cannot scroll through the skill list sometimes
 
+https://udonsharp.docs.vrchat.com/vrchat-api/#vrcobjectpool
+
 General:
     add to the dictionary of preset personas and enemies
     code ailment functionality
@@ -73,9 +75,9 @@ Unity Reliant:
         Create spawning systems for the enemies
         remove the enemies when they die
         Write enemy ai (something other than just use dia on self)
-            create a new script for this :3
+            --create a new script for this :3
             --gonna need something to refresh the specific evoker of the player attacked
-            assign the enemies to the instance master
+            --assign the enemies to the instance master
                 --have the turns be ran on the master's machine and sync to the others
         show enemy name?
         show when an enemy has an ailment

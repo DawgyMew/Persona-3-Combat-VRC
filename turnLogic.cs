@@ -46,6 +46,19 @@ public class turnLogic : UdonSharpBehaviour
     {
         // summons enemies //
         string[] enemyPresets = {"Shouting Tiara", "Amorous Snake"};
+
+        for (int i = 0; i < enemyPresets.Length; i++)
+        {
+            // dont allow for slots that dont exist
+            if (i < dict.ENEMYSLOTS)
+            {
+                int nameId = i + 1;
+                string enemyName = "enemy" + nameId;
+                int id = i + dict.PLAYERSLOTS;
+                Dictionaries.addEnemy(id, enemyName, enemyPresets[i]);
+            }
+            else { break; }
+        }
         // start battle //
 
         turnOrder = determineTurnOrder(dict);
@@ -164,6 +177,7 @@ public class turnLogic : UdonSharpBehaviour
             {
                 if (!oneMore)
                 {
+                    turnOrder = determineTurnOrder(dict);
                     PlayerUp = (PlayerUp + 1) % turnOrder.Length;
                     RequestSerialization();
                     // SendCustomNetworkEvent(NetworkEventTarget.All, "showActivePlayer");

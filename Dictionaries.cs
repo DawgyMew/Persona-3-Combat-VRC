@@ -39,6 +39,9 @@ public class Dictionaries : UdonSharpBehaviour
     public string[] AILMENTS = { "Fear", "Panic", "Distress", "Poison", "Charm", "Rage", "Freeze", "Shock", "Dizzy" }; // ID: 0
     public string[] PATRA = { "Panic", "Fear", "Distress" };
 
+    public int PLAYERSLOTS = 4;
+    public int ENEMYSLOTS = 4;
+
     /// Players ///
     // save these on the local machine or something 
     // self now contains all the local data not skills tho
@@ -2875,6 +2878,18 @@ public class Dictionaries : UdonSharpBehaviour
         }
         else { return false; }
     }
+    public bool setStat(DataDictionary dict, int id, string statToChange, string newStat)
+    {
+        // var id = findID(dict, uStr);
+        //Debug.Log($"{newStat} replacing {statToChange} at id {id}");
+        if (id != -1)
+        {
+            dict[id].DataDictionary[statToChange] = newStat;
+            RequestSerialization();
+            return true;
+        }
+        else { return false; }
+    }
 
     // changes the boolean //
     public void setStat(DataDictionary dict, string uStr, string statToChange, bool newStat)
@@ -2989,10 +3004,18 @@ public class Dictionaries : UdonSharpBehaviour
         board.text = displayText;
     }
 
-    private void copyPreset(string name, string presetName)
+    private void copyPreset(string name, string presetName, int eid = -1)
     {
         var tag = getStat(self, name, "Tag");
-        var id = findID(self, name);
+        if (eid == -1)
+        {
+            var id = findID(self, name);
+        }
+        else
+        {
+            setStat(self, eid, "Name", name);
+            var id = eid;
+        }
         DataDictionary preset = null; // get the preset dictionary 
         if (tag.Equals("player"))
         {
@@ -3000,7 +3023,8 @@ public class Dictionaries : UdonSharpBehaviour
         }
         else
         {
-            preset = Presets.getDict(presetList.personas, "presetName");
+            // enemy presets
+            preset = Presets.getDict(presetList.enemies, "presetName");
         }
         if (preset != null)
         {
@@ -3024,6 +3048,16 @@ public class Dictionaries : UdonSharpBehaviour
         {
             copyPreset(name, "Personal Blank");
         }
+    }
+
+    public static void removeEnemy(string name)
+    {
+        copyPreset(name, "Blank");
+    }
+
+    public static void addEnemy(int id, string newName, string presetName)
+    {
+        copyPreset(newName, presetName, id); // set the preset at the id 
     }
 
     public bool changeNum(string uName, string numKey, int changeInNum, DataDictionary dictToChange, bool cantGoUnder, bool sync = true)
@@ -3068,11 +3102,7 @@ public class Dictionaries : UdonSharpBehaviour
         }
     }
 
-    public static void removeEnemy(string name)
-    {
-        // TODO: add this
-        //clearEntry(name);
-    }
+    
     public static string determineSkillType(Dictionaries mainDict, string skill)
     {
         DataDictionary skillInfo = Dictionaries.getSkillInfo(mainDict, skill);
