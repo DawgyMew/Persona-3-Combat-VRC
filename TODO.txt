@@ -6,33 +6,7 @@ Known Bugs:
         every turn loop resync?
     Log does not show attacks on remote
     remote players evokers desync
-
-
-
-Notes from testing:
-            p3vr the display for the scroll doesnt work but the move can be changed 
-            turn text is not sync
-            only the initial master of the instance can scroll on skills
-                i think something in displaySkills.cs is broken for the other players
-
-    
-    on join the dictionaries might not be synced up correctly
-    the dictionary doesnt exactly copy from the master 
-    make a functiont that requests a copy of the self dictionary from the master
-    get what preset the player/shadow has
-        get the stats/ailments that have changed from the preset
-    getdictfrommaster()
-
-    |
-    V
-
-    create a function that is called out exclusively to the master of the instance
-    the instance master will create a json containing each players/enemies base presets and how they differ 
-    ## i can have the master send a json plinK and set the new clients dictionary to that :3
-    the master will then run a function that syncs this new json over the network and alerts all the other clients
-    the initial getdictfrommaster() function will set a non-synced variable to true and this ensures the correct target
-    the new client parses the json and creates a caught up dictionary to the master (hopefully)
-    the non-synced variable is set to false at the end of this :3
+        remote players cannot scroll through the skill list sometimes
 
 General:
     add to the dictionary of preset personas and enemies
@@ -123,8 +97,7 @@ Ideas:
 
     Could load the skills into a dictionary in the self dictionary instead of refering to them by name
         would save processing power if assigned at entity creation instead of pulling the information every time the enemy attacks
-    Make the Dictionaries class static?
-    change constants in dictionary to static 
+    easier way to see the stat information about enemies for debugging
 
 
 
@@ -147,3 +120,29 @@ Complete:
     Display the menu of skills
     Display current hp and sp
     Damage Calculation :3
+
+
+Notes from testing:
+            p3vr the display for the scroll doesnt work but the move can be changed 
+            turn text is not sync
+            only the initial master of the instance can scroll on skills
+                i think something in displaySkills.cs is broken for the other players only sometimes?
+
+    
+    on join the dictionaries might not be synced up correctly
+    the dictionary doesnt exactly copy from the master 
+    make a functiont that requests a copy of the self dictionary from the master
+    get what preset the player/shadow has
+        get the stats/ailments that have changed from the preset
+    getdictfrommaster()
+
+    |
+    V
+
+    create a function that is called out exclusively to the master of the instance
+    the instance master will create a json containing each players/enemies base presets and how they differ 
+    ## i can have the master send a json plinK and set the new clients dictionary to that :3
+    the master will then run a function that syncs this new json over the network and alerts all the other clients
+    the initial getdictfrommaster() function will set a non-synced variable to true and this ensures the correct target
+    the new client parses the json and creates a caught up dictionary to the master (hopefully)
+    the non-synced variable is set to false at the end of this :3

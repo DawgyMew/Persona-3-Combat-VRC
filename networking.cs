@@ -65,7 +65,8 @@ public class networking : UdonSharpBehaviour
         }
         //sharedInfo[0] = 15; // temp test
 
-        SendCustomNetworkEvent(NetworkEventTarget.All, "rs");
+        RequestSerialization();
+        // SendCustomNetworkEvent(NetworkEventTarget.All, "rs");
     }
 
     // forces everyone to request that the variable is synced and run OnDeserialization

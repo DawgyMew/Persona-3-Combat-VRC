@@ -40,10 +40,17 @@ public class turnLogic : UdonSharpBehaviour
     [UdonSynced] public bool requireTurnToAttack = true; // debug variable that if disabled allows any player to attack at any time.
 
 
+    
+
     public void beforeBattle()
     {
+        // summons enemies //
+        string[] enemyPresets = {"Shouting Tiara", "Amorous Snake"};
+        // start battle //
+
         turnOrder = determineTurnOrder(dict);
-        SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
+        RequestSerialization();
+        // SendCustomNetworkEvent(NetworkEventTarget.All, "runescape");
 
         // !activate automatic skills for everyone
 
@@ -230,6 +237,7 @@ public class turnLogic : UdonSharpBehaviour
             returnArr[i] = Dictionaries.getStat(dictionary.self, sortArr[i][0], "Name");
         }
         turnOrder = returnArr;
+        RequestSerialization();
         //SendCustomNetworkEvent(NetworkEventTarget.All, "runescape"); // serialize it to everyone else
         return (returnArr);
     }
@@ -289,7 +297,7 @@ public class turnLogic : UdonSharpBehaviour
         }
     }
     // networking //
-    public void runescape() { RequestSerialization(); }
+    // public void runescape() { RequestSerialization(); }
     public override void OnDeserialization() { showTurnOrder(); }
     public void startBattle() { SendCustomNetworkEvent(NetworkEventTarget.All, "beforeBattle"); }
 

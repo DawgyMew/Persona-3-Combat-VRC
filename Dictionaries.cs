@@ -219,29 +219,29 @@ public class Dictionaries : UdonSharpBehaviour
         // enemies //
 
         {4, new DataDictionary(){
-            {"Name", "enemy1"}, // unique identifier
-            {"HP", 242},
-            {"Max HP", 242},
-            {"SP", 138},
-            {"Max SP", 138},
-            {"LVL", 35},
+            {"Name", "_"}, // empty placehilder 
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
             {"Tag", "enemy"},
             {"Weapon", ""},
             // persona stats //
-            {"pName", "Shouting Tiara"},
-            {"St", 19},
-            {"Mg", 31},
-            {"En", 19},
-            {"Ag", 22},
-            {"Lu", 21},
+            {"pName", ""},
+            {"St", 2},
+            {"Mg", 2},
+            {"En", 2},
+            {"Ag", 2},
+            {"Lu", 2},
             // persona type affinities //
             {"Strengths", ""},
-            {"Nullifies", "Light"},
-            {"Absorb", "Fire"},
+            {"Nullifies", ""},
+            {"Absorb", ""},
             {"Reflect", ""},
-            {"Weak", "Ice,Dark"},
+            {"Weak", ""},
             // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
+            {"Skills", "Wait"},
             {"Passive", ""},
             {"Preset Base", ""},
             // other //
@@ -250,30 +250,29 @@ public class Dictionaries : UdonSharpBehaviour
             {"Stat Changes", ""},
         }},
         {5, new DataDictionary(){
-            // currently just a clone of enemy1
-            {"Name", "enemy2"}, // unique identifier
-            {"HP", 150},
-            {"Max HP", 242},
-            {"SP", 138},
-            {"Max SP", 138},
-            {"LVL", 35},
+            {"Name", "_"}, // empty placehilder 
+            {"HP", 1},
+            {"Max HP", 1},
+            {"SP", 2},
+            {"Max SP", 2},
+            {"LVL", 2},
             {"Tag", "enemy"},
             {"Weapon", ""},
             // persona stats //
-            {"pName", "Shouting Tiara"},
-            {"St", 19},
-            {"Mg", 31},
-            {"En", 19},
-            {"Ag", 99},
-            {"Lu", 21},
+            {"pName", ""},
+            {"St", 2},
+            {"Mg", 2},
+            {"En", 2},
+            {"Ag", 2},
+            {"Lu", 2},
             // persona type affinities //
             {"Strengths", ""},
-            {"Nullifies", "Light"},
-            {"Absorb", "Fire"},
+            {"Nullifies", ""},
+            {"Absorb", ""},
             {"Reflect", ""},
-            {"Weak", "Ice,Dark"},
+            {"Weak", ""},
             // skills //
-            {"Skills", "Maragi,Agilao,Maragion,Mahama,Media,Wait"},
+            {"Skills", "Wait"},
             {"Passive", ""},
             {"Preset Base", ""},
             // other //

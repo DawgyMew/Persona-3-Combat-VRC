@@ -119,8 +119,9 @@ public class Presets : UdonSharpBehaviour
             {"Passive", ""},
             {"Preset Base", "E02"},
         }},
-        {"Blank", new DataDictionary(){ // use to clear stats
-            {"Max HP", 1},
+        {"Blank", new DataDictionary(){ // use to remove enemy
+            {"Name", "_"},
+            { "Max HP", 1},
             {"Max SP", 1},
             {"LVL", 1},
             // persona stats //
